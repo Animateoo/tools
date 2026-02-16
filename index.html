@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animateo Plugins | Herramientas con IA</title>
+    <title>Animateo Hub | Herramientas Profesionales de Post-Producción</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -18,155 +18,123 @@
     <header class="container">
         <div class="logo">Animateo</div>
         <nav>
-            <a href="#extensions">Extensiones</a>
-            <a href="#scripts">Scripts</a>
-            <a href="https://github.com/Animateoo" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+            <a href="https://www.behance.net/animateoo" target="_blank">Portfolio</a>
+            <a href="https://x.com/animateofx" target="_blank">X (Twitter)</a>
+            <a href="https://github.com/Animateoo" target="_blank">GitHub</a>
         </nav>
     </header>
 
     <main>
+        <!-- HERO SECTION WITH VIDEO BACKGROUND -->
         <section class="hero container">
-            <h1>Herramientas que <span>potencian</span> tu creatividad.</h1>
-            <p>He implementado estas funciones con IA y quería compartirlas con ustedes con mucho amor, para que la
-                comunidad pueda usarlas, modificarlas y mejorarlas libremente.</p>
-            <a href="#extensions" class="btn-primary">Ver Proyectos</a>
+            <div class="hero-video-container">
+                <video autoplay muted loop playsinline class="hero-video">
+                    <source src="background_hero.mp4" type="video/mp4">
+                    Tu navegador no soporta videos.
+                </video>
+            </div>
+
+            <div class="hero-content-wrapper">
+                <div class="hero-card">
+                    <div class="hero-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <h1>Tools for <span>Motion Masters</span></h1>
+                    <p>Herramientas que potencian tu creatividad. He implementado estas funciones con IA y quería
+                        compartirlas con ustedes con mucho amor, para que la comunidad pueda usarlas, modificarlas y
+                        mejorarlas libremente.</p>
+                    <a href="https://github.com/Animateoo" class="btn-download" target="_blank">
+                        <i class="fab fa-github"></i> Explorar en GitHub
+                    </a>
+                </div>
+            </div>
         </section>
 
-        <div class="showcase-container">
-            <!-- GraphEditor AE -->
-            <section id="extensions" class="showcase-item">
-                <div class="showcase-visual">
-                    <div class="mockup-wrapper">
-                        <img src="grapheditor_ae.png" alt="GraphEditor After Effects Preview">
-                    </div>
-                </div>
-                <div class="showcase-info">
-                    <div class="showcase-badge"><i class="fas fa-circle"></i> After Effects • Estable</div>
-                    <h2 class="showcase-title">GraphEditor</h2>
-                    <p class="showcase-description">
-                        La forma más intuitiva de pulir tus animaciones. Manipulación visual de curvas Bezier y
-                        velocidad con precisión quirúrgica.
-                    </p>
-                    <div class="feature-list">
-                        <div class="feature-item"><span>>></span> Control Bezier</div>
-                        <div class="feature-item"><span>>></span> Influencia Real</div>
-                        <div class="feature-item"><span>>></span> Multi-propiedad</div>
-                        <div class="feature-item"><span>>></span> Curvas Suaves</div>
-                    </div>
-                    <a href="https://github.com/Animateoo/GraphEditorAE" class="card-link">Explorar Repositorio <i
-                            class="fas fa-arrow-right"></i></a>
-                </div>
-            </section>
+        <!-- Dynamic Grid Hub with Categories -->
+        <div class="container">
 
-            <!-- TextPresets -->
-            <section class="showcase-item reverse">
-                <div class="showcase-visual">
-                    <div class="mockup-wrapper">
-                        <img src="textpresets.png" alt="TextPresets Preview">
-                    </div>
-                </div>
-                <div class="showcase-info">
-                    <div class="showcase-badge"><i class="fas fa-circle"></i> After Effects • Estable</div>
-                    <h2 class="showcase-title">TextPresets</h2>
-                    <p class="showcase-description">
-                        Gestión avanzada de subtítulos y presets de texto personalizables. Automatiza estilos complejos
-                        con aplicación masiva en segundos.
-                    </p>
-                    <div class="feature-list">
-                        <div class="feature-item"><span>>></span> Galería FFX</div>
-                        <div class="feature-item"><span>>></span> Timing Pro</div>
-                        <div class="feature-item"><span>>></span> Importación SRT</div>
-                        <div class="feature-item"><span>>></span> Batch Apply</div>
-                    </div>
-                    <a href="https://github.com/Animateoo/TextsPresetsAE" class="card-link">Explorar Repositorio <i
-                            class="fas fa-arrow-right"></i></a>
-                </div>
-            </section>
-
-            <!-- GraphEditor Premiere -->
-            <section class="showcase-item">
-                <div class="showcase-visual">
-                    <div class="mockup-wrapper">
-                        <img src="grapheditor_ppro.png" alt="GraphEditor Premiere Preview">
-                        <div class="floating-terminal">
-                            <span class="terminal-dot"></span>
-                            Colaboración activa
+            <!-- Category: After Effects Extensions -->
+            <section class="category-section">
+                <h2 class="category-title">Extensiones After Effects</h2>
+                <div class="tools-grid">
+                    <a href="https://github.com/Animateoo/GraphEditorAE" class="tool-card" target="_blank">
+                        <div class="card-visual">
+                            <img src="grapheditor_ae.png" alt="GraphEditor AE">
                         </div>
-                    </div>
-                </div>
-                <div class="showcase-info">
-                    <div class="showcase-badge" style="color:#ff4757; border-color:#ff4757;"><i
-                            class="fas fa-circle"></i> Premiere Pro • En Prueba</div>
-                    <h2 class="showcase-title">GraphEditor PPro</h2>
-                    <p class="showcase-description">
-                        Versión experimental funcional para Premiere Pro. Buscamos desarrolladores para romper las
-                        limitaciones técnicas de la plataforma.
-                    </p>
-                    <div class="feature-list">
-                        <div class="feature-item"><span>>></span> Curvas PPro</div>
-                        <div class="feature-item"><span>>></span> Beta Abierta</div>
-                        <div class="feature-item"><span>>></span> Open Source</div>
-                        <div class="feature-item"><span>>></span> Dev Wanted</div>
-                    </div>
-                    <a href="https://github.com/Animateoo/GraphEditorPR" class="card-link">Unirse al Proyecto <i
-                            class="fas fa-arrow-right"></i></a>
+                        <div class="card-content">
+                            <span class="card-badge">v1.2 • Profesional</span>
+                            <h3 class="card-title">GRAPH EDITOR</h3>
+                            <p class="card-desc">Control avanzado de curvas y velocidad para movimiento profesional.</p>
+                        </div>
+                    </a>
+
+                    <a href="https://github.com/Animateoo/TextsPresetsAE" class="tool-card" target="_blank">
+                        <div class="card-visual">
+                            <img src="textpresets.png" alt="TextPresets">
+                        </div>
+                        <div class="card-content">
+                            <span class="card-badge">v2.0 • Automatización</span>
+                            <h3 class="card-title">TextPresets</h3>
+                            <p class="card-desc">Gestión masiva de subtítulos y aplicación de estilos FFX por lotes.</p>
+                        </div>
+                    </a>
                 </div>
             </section>
 
-            <!-- Aura Pro -->
-            <section id="scripts" class="showcase-item reverse">
-                <div class="showcase-visual">
-                    <div class="mockup-wrapper">
-                        <img src="aurapro.png" alt="Aura Pro Preview">
-                    </div>
-                </div>
-                <div class="showcase-info">
-                    <div class="showcase-badge"><i class="fas fa-circle"></i> After Effects • Script</div>
-                    <h2 class="showcase-title">Aura Pro</h2>
-                    <p class="showcase-description">
-                        Biblioteca de colores inteligente. Gestión de paletas orgánicas con aplicación en un clic y
-                        sincronización con selección.
-                    </p>
-                    <div class="feature-list">
-                        <div class="feature-item"><span>>></span> Paletas Dinámicas</div>
-                        <div class="feature-item"><span>>></span> Eye Dropper</div>
-                        <div class="feature-item"><span>>></span> Sync AE</div>
-                        <div class="feature-item"><span>>></span> Clean UI</div>
-                    </div>
-                    <a href="https://github.com/Animateoo/Aura-Pro" class="card-link">Explorar Repositorio <i
-                            class="fas fa-arrow-right"></i></a>
+            <!-- Category: After Effects Scripts -->
+            <section class="category-section">
+                <h2 class="category-title">Scripts After Effects</h2>
+                <div class="tools-grid">
+                    <a href="https://github.com/Animateoo/Aura-Pro" class="tool-card" target="_blank">
+                        <div class="card-visual">
+                            <img src="aurapro.png" alt="Aura Pro">
+                        </div>
+                        <div class="card-content">
+                            <span class="card-badge">Script • Paleta de Colores</span>
+                            <h3 class="card-title">Aura Pro</h3>
+                            <p class="card-desc">Gestor de paletas inteligente con sincronización en tiempo real.</p>
+                        </div>
+                    </a>
+
+                    <a href="https://github.com/Animateoo/Cache-Pro" class="tool-card" target="_blank">
+                        <div class="card-visual">
+                            <img src="cachepro.png" alt="Cache Pro">
+                        </div>
+                        <div class="card-content">
+                            <span class="card-badge">Utilidad • Optimización</span>
+                            <h3 class="card-title">Cache Pro</h3>
+                            <p class="card-desc">Purga de RAM y gestión de rendimiento en un solo clic.</p>
+                        </div>
+                    </a>
                 </div>
             </section>
 
-            <!-- Cache Pro -->
-            <section class="showcase-item">
-                <div class="showcase-visual">
-                    <div class="mockup-wrapper">
-                        <img src="cachepro.png" alt="Cache Pro Preview">
-                    </div>
-                </div>
-                <div class="showcase-info">
-                    <div class="showcase-badge"><i class="fas fa-circle"></i> After Effects • Utility</div>
-                    <h2 class="showcase-title">Cache Pro</h2>
-                    <p class="showcase-description">
-                        La navaja suiza de rendimiento. Purga de caché, toggle de efectos y guardado con versionado en
-                        un solo panel.
-                    </p>
-                    <div class="feature-list">
-                        <div class="feature-item"><span>>></span> RAM Purge</div>
-                        <div class="feature-item"><span>>></span> Toggle FX</div>
-                        <div class="feature-item"><span>>></span> Auto-Save</div>
-                        <div class="feature-item"><span>>></span> Disk Cleanup</div>
-                    </div>
-                    <a href="https://github.com/Animateoo/Cache-Pro" class="card-link">Explorar Repositorio <i
-                            class="fas fa-arrow-right"></i></a>
+            <!-- Category: Premiere Pro Extensions -->
+            <section class="category-section">
+                <h2 class="category-title">Extensiones Premiere Pro</h2>
+                <div class="tools-grid">
+                    <a href="https://github.com/Animateoo/GraphEditorPR" class="tool-card" target="_blank">
+                        <div class="card-visual">
+                            <div class="card-tag">En Prueba + Ayuda</div>
+                            <img src="grapheditor_ppro.png" alt="GraphEditor PR">
+                        </div>
+                        <div class="card-content">
+                            <span class="card-badge">BETA • Colaboración</span>
+                            <h3 class="card-title">GRAPH EDITOR PR</h3>
+                            <p class="card-desc">Llevando el control visual de curvas a la línea de tiempo de Premiere
+                                Pro.</p>
+                        </div>
+                    </a>
                 </div>
             </section>
+
         </div>
     </main>
 
-    <footer class="container">
-        <p>&copy; 2025 Animateo Tools. Hecho con amor para la comunidad.</p>
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 ANIMATEO TOOLS PRO. HECHO CON AMOR PARA LA COMUNIDAD.</p>
+        </div>
     </footer>
 
     <script src="script.js"></script>
