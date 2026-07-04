@@ -1,0 +1,1777 @@
+/**
+ * Subtitles Preset Tool - Complete Application Logic
+ * Includes: Quick Animator + Full Preset Manager
+ */
+
+// Initialize CSInterface
+const csInterface = new CSInterface();
+
+// ============================================================================
+// STATE MANAGEMENT
+// ============================================================================
+
+let state = {
+    // Quick Animator
+    currentPresets: { entrance: [], exit: [] },
+    selectedEffects: { entrance: null, exit: null },
+
+    // Preset Manager
+    currentTab: 'quick',
+    currentPresetTab: 'custom',
+    currentCategory: 'favorites',
+    aePresets: { animateIn: [], animateOut: [] },
+    customPresets: [],
+    selectedPreset: null,
+    editingPreset: null,
+    searchQuery: '',
+
+    // Favorites (stored as preset IDs for AE presets, effect keys for quick effects)
+    favoritePresets: new Set(),
+    favoriteEffects: new Set(),
+
+    // Favorites filter toggle
+    showOnlyFavorites: false
+};
+
+// Category mapping for quick animator + AE presets
+const categoryMapping = {
+    'entrance-basic': ['fade_in', 'slide_up', 'slide_right'],
+    'entrance-dynamic': ['bounce_in', 'pop_in', 'expand'],
+    'entrance-advanced': ['zoom_blur', 'rotate_3d', 'glitch'],
+    'entrance-special': ['tiktok_style', 'double_shadow'],
+    'exit': ['fade_out', 'slide_down', 'zoom_out', 'shrink']
+};
+
+// Keyword-based animation mapping for AE presets
+// This maps keywords in preset names to animation classes
+function getAnimationForPreset(presetName) {
+    const name = presetName.toLowerCase();
+
+    // Fade animations
+    if (name.includes('fade') && (name.includes('up') || name.includes('in') || name.includes('on'))) {
+        return 'fade-in';
+    }
+    if (name.includes('fade') && (name.includes('down') || name.includes('out') || name.includes('off'))) {
+        return 'fade-out';
+    }
+    if (name.includes('opacity') || name.includes('decoder')) {
+        return 'fade-in';
+    }
+
+    // Slide animations
+    if (name.includes('slide') && name.includes('up')) {
+        return 'slide-up';
+    }
+    if (name.includes('slide') && (name.includes('down') || name.includes('out'))) {
+        return 'slide-down';
+    }
+    if (name.includes('slide') && (name.includes('in') || name.includes('right') || name.includes('edge'))) {
+        return 'slide-right';
+    }
+
+    // Drop/Fall animations
+    if (name.includes('drop') || name.includes('rain')) {
+        return 'slide-down';
+    }
+
+    // Fly animations
+    if (name.includes('fly') && (name.includes('bottom') || name.includes('in'))) {
+        return 'slide-up';
+    }
+    if (name.includes('fly') && (name.includes('top') || name.includes('out'))) {
+        return 'slide-up';
+    }
+
+    // Pop/Bounce animations
+    if (name.includes('pop') || name.includes('buzz')) {
+        return 'pop-in';
+    }
+    if (name.includes('bounce')) {
+        return 'bounce-in';
+    }
+
+    // Spin/Rotate/Twirl animations
+    if (name.includes('spin') || name.includes('twirl') || name.includes('twist')) {
+        return 'rotate-3d';
+    }
+    if (name.includes('spiral')) {
+        return 'rotate-3d';
+    }
+
+    // Shuffle/Glitch/Random animations
+    if (name.includes('shuffle') || name.includes('random') || name.includes('alternating')) {
+        return 'glitch';
+    }
+    if (name.includes('decode')) {
+        return 'glitch';
+    }
+
+    // Typewriter
+    if (name.includes('typewriter') || name.includes('cursor')) {
+        return 'fade-in';
+    }
+
+    // Straight/Wipe animations
+    if (name.includes('straight') || name.includes('wipe')) {
+        return 'slide-right';
+    }
+
+    // Smooth/Move
+    if (name.includes('smooth') || name.includes('move')) {
+        return 'slide-up';
+    }
+
+    // Stretch/Expand
+    if (name.includes('stretch') || name.includes('expand')) {
+        return 'expand';
+    }
+
+    // Shrink/Zoom
+    if (name.includes('shrink')) {
+        return 'shrink';
+    }
+    if (name.includes('zoom') && name.includes('out')) {
+        return 'zoom-out';
+    }
+    if (name.includes('zoom') || name.includes('eye chart')) {
+        return 'zoom-blur';
+    }
+
+    // Default fallback based on type
+    if (name.includes('out') || name.includes('off')) {
+        return 'fade-out';
+    }
+
+    // Default for entrance
+    return 'fade-in';
+}
+
+// Animation mapping
+const animationMap = {
+    'fade_in': 'fade-in', 'slide_up': 'slide-up', 'slide_right': 'slide-right',
+    'bounce_in': 'bounce-in', 'expand': 'expand', 'zoom_blur': 'zoom-blur',
+    'glitch': 'glitch', 'rotate_3d': 'rotate-3d', 'pop_in': 'pop-in',
+    'tiktok_style': 'tiktok-style', 'double_shadow': 'double-shadow',
+    'fade_out': 'fade-out', 'slide_down': 'slide-down', 'zoom_out': 'zoom-out',
+    'shrink': 'shrink'
+};
+
+// Icons mapping
+const ICON_MAP = {
+    'fade_in': '🌫️', 'slide_up': '⬆️', 'slide_right': '➡️', 'bounce_in': '🏀',
+    'expand': '💥', 'zoom_blur': '🔭', 'glitch': '📺', 'rotate_3d': '🔄',
+    'pop_in': '🎈', 'tiktok_style': '🎵', 'double_shadow': '👥',
+    'fade_out': '🌫️', 'slide_down': '⬇️', 'zoom_out': '🔭', 'shrink': '🤏'
+};
+
+// DOM Elements
+const elements = {
+    // Quick Animator
+    batchModeCheckbox: document.getElementById('batchMode'),
+    applyEntranceBtn: document.getElementById('applyEntranceBtn'),
+    applyExitBtn: document.getElementById('applyExitBtn'),
+    applyBothBtn: document.getElementById('applyBothBtn'),
+    resetBtn: document.getElementById('resetBtn'),
+    refreshBtn: document.getElementById('refreshBtn'),
+    importSRTBtn: document.getElementById('importSRTBtn'),
+    srtFileInput: document.getElementById('srtFileInput'),
+    status: document.getElementById('status'),
+    compName: document.getElementById('compName'),
+    compResolution: document.getElementById('compResolution'),
+    textLayers: document.getElementById('textLayers'),
+    entranceSpeed: document.getElementById('entranceSpeed'),
+    exitSpeed: document.getElementById('exitSpeed'),
+    entranceSpeedValue: document.getElementById('entranceSpeedValue'),
+    exitSpeedValue: document.getElementById('exitSpeedValue'),
+
+    // Preset Manager
+    presetSearch: document.getElementById('presetSearch'),
+    presetGrid: document.getElementById('presetGrid'),
+    createPresetBtn: document.getElementById('createPresetBtn'),
+    importPresetsBtn: document.getElementById('importPresetsBtn'),
+    exportPresetsBtn: document.getElementById('exportPresetsBtn'),
+    applyPresetBtn: document.getElementById('applyPresetBtn'),
+    presetImportInput: document.getElementById('presetImportInput'),
+
+    // Modal
+    presetModal: document.getElementById('presetModal'),
+    modalTitle: document.getElementById('modalTitle'),
+    modalClose: document.getElementById('modalClose'),
+    presetName: document.getElementById('presetName'),
+    presetType: document.getElementById('presetType'),
+    baseEntranceAnim: document.getElementById('baseEntranceAnim'),
+    baseExitAnim: document.getElementById('baseExitAnim'),
+    modalEntranceSpeed: document.getElementById('modalEntranceSpeed'),
+    modalExitSpeed: document.getElementById('modalExitSpeed'),
+    modalEntranceSpeedValue: document.getElementById('modalEntranceSpeedValue'),
+    modalExitSpeedValue: document.getElementById('modalExitSpeedValue'),
+    presetFavorite: document.getElementById('presetFavorite'),
+    cancelPresetBtn: document.getElementById('cancelPresetBtn'),
+    savePresetBtn: document.getElementById('savePresetBtn')
+};
+
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+
+function init() {
+    console.log('Initializing Subtitles Preset Tool...');
+
+    // Load quick animator presets
+    loadPresets();
+
+    // Update comp info
+    updateCompInfo();
+
+    // Setup event listeners
+    setupEventListeners();
+
+    // Load AE presets
+    loadAEPresets();
+
+    // Load custom presets
+    loadCustomPresets();
+
+    // Load saved state
+    loadState();
+
+    setStatus('Listo', 'success');
+}
+
+function loadPresets() {
+    evalScript('$.global.getPresets()', function (result) {
+        try {
+            const data = JSON.parse(result);
+            if (data.error) {
+                console.error('Error loading presets:', data.error);
+                setStatus('Error cargando presets', 'error');
+                return;
+            }
+            state.currentPresets = data;
+            populateEffectGrid();
+        } catch (e) {
+            console.error('Error parsing presets:', e);
+            setStatus('Error: ' + e.message, 'error');
+        }
+    });
+}
+
+function loadAEPresets() {
+    // Get extension path and use local presets folder
+    const extensionPath = csInterface.getSystemPath(SystemPath.EXTENSION);
+    const aePresetsPath = extensionPath + "/presets";
+
+    console.log('Loading AE presets from extension:', aePresetsPath);
+
+    evalScript(`$.global.scanAEPresets("${aePresetsPath.replace(/\\/g, '\\\\')}")`, function (result) {
+        console.log('AE Presets scan result:', result);
+
+        try {
+            const data = JSON.parse(result);
+            if (data.error) {
+                console.log('AE Presets not available:', data.error);
+                setStatus('Presets de AE no disponibles: ' + data.error, 'error');
+                return;
+            }
+
+            console.log('AE Presets loaded:', data);
+            state.aePresets = data;
+
+            // Always populate the grids in the quick tab
+            populateAEPresetGrids();
+
+            updateCategoryCounts();
+
+            // Also render grid if we're on AE presets tab
+            if (state.currentPresetTab === 'ae') {
+                renderPresetGrid();
+            }
+
+            const totalPresets = (data.animateIn?.length || 0) + (data.animateOut?.length || 0);
+            console.log(`Loaded ${totalPresets} AE presets (${data.animateIn?.length || 0} entrance, ${data.animateOut?.length || 0} exit)`);
+
+            if (totalPresets > 0) {
+                setStatus(`✓ ${totalPresets} presets de AE cargados`, 'success');
+            }
+
+        } catch (e) {
+            console.error('Could not load AE presets:', e);
+            setStatus('Error cargando presets de AE', 'error');
+        }
+    });
+}
+
+function loadCustomPresets() {
+    evalScript('$.global.loadCustomPresets()', function (result) {
+        try {
+            const data = JSON.parse(result);
+            if (!data.error) {
+                state.customPresets = data;
+                updateCategoryCounts();
+                if (state.currentPresetTab === 'custom') {
+                    renderPresetGrid();
+                }
+            }
+        } catch (e) {
+            console.log('Could not load custom presets:', e);
+        }
+    });
+}
+
+// ============================================================================
+// QUICK ANIMATOR FUNCTIONS
+// ============================================================================
+
+function populateEffectGrid() {
+    const showOnlyFavorites = state.showOnlyFavorites || false;
+
+    // Populate built-in presets
+    Object.keys(categoryMapping).forEach(categoryId => {
+        const gridElement = document.getElementById(`grid-${categoryId}`);
+        if (!gridElement) return;
+
+        gridElement.innerHTML = '';
+        const effectKeys = categoryMapping[categoryId];
+        const isExit = categoryId === 'exit';
+        const presetList = isExit ? state.currentPresets.exit : state.currentPresets.entrance;
+
+        effectKeys.forEach(effectKey => {
+            const preset = presetList.find(p => p.key === effectKey);
+            if (!preset) return;
+
+            // Filter by favorites if toggle is active
+            if (showOnlyFavorites && !state.favoriteEffects.has(effectKey)) {
+                return;
+            }
+
+            const effectBtn = createEffectButton(preset, isExit);
+            gridElement.appendChild(effectBtn);
+        });
+    });
+
+    // Populate AE presets
+    populateAEPresetGrids();
+}
+
+function populateFlatFavorites() {
+    const flatGrid = document.getElementById('favoritesFlatGrid');
+    if (!flatGrid) return;
+
+    flatGrid.innerHTML = '';
+
+    const allFavorites = [];
+
+    // Collect all favorite quick effects
+    state.favoriteEffects.forEach(effectKey => {
+        const preset = [...state.currentPresets.entrance, ...state.currentPresets.exit]
+            .find(p => p.key === effectKey);
+        if (preset) {
+            const isExit = state.currentPresets.exit.some(p => p.key === effectKey);
+            allFavorites.push({ preset, isExit, isQuick: true });
+        }
+    });
+
+    // Collect all favorite AE presets
+    const favAEEntrance = (state.aePresets.animateIn || [])
+        .filter(p => state.favoritePresets.has(p.id));
+    const favAEExit = (state.aePresets.animateOut || [])
+        .filter(p => state.favoritePresets.has(p.id));
+
+    favAEEntrance.forEach(preset => {
+        allFavorites.push({ preset, isExit: false, isQuick: false });
+    });
+
+    favAEExit.forEach(preset => {
+        allFavorites.push({ preset, isExit: true, isQuick: false });
+    });
+
+    // Show message if no favorites
+    if (allFavorites.length === 0) {
+        flatGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">No hay favoritos<br>Haz click en ☆ para agregar</div>';
+        return;
+    }
+
+    // Create buttons for all favorites
+    allFavorites.forEach(({ preset, isExit, isQuick }) => {
+        const effectBtn = isQuick
+            ? createEffectButton(preset, isExit)
+            : createAEPresetButton(preset, isExit);
+        flatGrid.appendChild(effectBtn);
+    });
+}
+
+
+function populateAEPresetGrids() {
+    const showOnlyFavorites = state.showOnlyFavorites || false;
+
+    // Populate AE Entrance presets
+    const aeEntranceGrid = document.getElementById('grid-ae-entrance');
+    if (aeEntranceGrid) {
+        aeEntranceGrid.innerHTML = '';
+
+        let entrancePresets = state.aePresets.animateIn || [];
+
+        // Filter by favorites if toggle is active
+        if (showOnlyFavorites) {
+            entrancePresets = entrancePresets.filter(p => state.favoritePresets.has(p.id));
+        }
+
+        if (entrancePresets.length > 0) {
+            entrancePresets.forEach(preset => {
+                const effectBtn = createAEPresetButton(preset, false);
+                aeEntranceGrid.appendChild(effectBtn);
+            });
+            console.log(`Populated ${entrancePresets.length} AE entrance presets`);
+        } else {
+            aeEntranceGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: #666; font-size: 11px;">No se encontraron presets de AE<br>Verifica la ruta de instalación</div>';
+        }
+    }
+
+    // Populate AE Exit presets
+    const aeExitGrid = document.getElementById('grid-ae-exit');
+    if (aeExitGrid) {
+        aeExitGrid.innerHTML = '';
+
+        let exitPresets = state.aePresets.animateOut || [];
+
+        // Filter by favorites if toggle is active
+        if (showOnlyFavorites) {
+            exitPresets = exitPresets.filter(p => state.favoritePresets.has(p.id));
+        }
+
+        if (exitPresets.length > 0) {
+            exitPresets.forEach(preset => {
+                const effectBtn = createAEPresetButton(preset, true);
+                aeExitGrid.appendChild(effectBtn);
+            });
+            console.log(`Populated ${exitPresets.length} AE exit presets`);
+        } else {
+            aeExitGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: #666; font-size: 11px;">No se encontraron presets de AE<br>Verifica la ruta de instalación</div>';
+        }
+    }
+}
+
+function createAEPresetButton(preset, isExit) {
+    const btn = document.createElement('div');
+    btn.className = 'effect-btn';
+    btn.dataset.presetPath = preset.path;
+    btn.dataset.presetName = preset.name;
+    btn.dataset.presetId = preset.id;
+    btn.dataset.effectType = isExit ? 'exit' : 'entrance';
+    btn.dataset.isAEPreset = 'true';
+
+    const previewBox = document.createElement('div');
+    previewBox.className = 'effect-preview';
+
+    const previewText = document.createElement('div');
+    previewText.className = 'effect-preview-text';
+    previewText.textContent = 'ABC';
+
+    // Use keyword-based mapping
+    const animationClass = getAnimationForPreset(preset.name);
+
+    console.log('Mapped', preset.name, '→', animationClass);
+
+    if (animationClass) {
+        previewText.dataset.animation = animationClass;
+    }
+
+    previewBox.appendChild(previewText);
+
+    // Add favorite star button
+    const starBtn = document.createElement('button');
+    starBtn.className = 'favorite-star';
+    starBtn.innerHTML = state.favoritePresets.has(preset.id) ? '⭐' : '☆';
+    starBtn.onclick = (e) => {
+        e.stopPropagation();
+        toggleFavorite(preset.id);
+    };
+    previewBox.appendChild(starBtn);
+
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'effect-name';
+    nameDiv.textContent = `🎬 ${preset.name}`;
+
+    btn.appendChild(previewBox);
+    btn.appendChild(nameDiv);
+
+    btn.addEventListener('mouseenter', () => {
+        if (animationClass) {
+            console.log('Activating animation:', animationClass, 'for', preset.name);
+            previewText.classList.add('animate-' + animationClass);
+        }
+    });
+
+    btn.addEventListener('mouseleave', () => {
+        if (animationClass) {
+            previewText.classList.remove('animate-' + animationClass);
+        }
+    });
+
+    btn.addEventListener('click', () => handleAEPresetClick(btn, preset, isExit));
+
+    return btn;
+}
+
+function handleAEPresetClick(btn, preset, isExit) {
+    const effectType = isExit ? 'exit' : 'entrance';
+
+    // Deselect all AE presets of this type
+    document.querySelectorAll(`.effect-btn[data-is-ae-preset="true"][data-effect-type="${effectType}"]`).forEach(b => {
+        b.classList.remove('selected', 'selected-entrance', 'selected-exit');
+    });
+
+    // Also deselect built-in presets of this type
+    document.querySelectorAll(`.effect-btn[data-effect-type="${effectType}"]:not([data-is-ae-preset])`).forEach(b => {
+        b.classList.remove('selected', 'selected-entrance', 'selected-exit');
+    });
+
+    // Select this preset
+    btn.classList.add('selected', `selected-${effectType}`);
+
+    // Store AE preset info in state
+    state.selectedEffects[effectType] = {
+        isAEPreset: true,
+        path: preset.path,
+        name: preset.name
+    };
+
+    saveState();
+}
+
+function createEffectButton(preset, isExit) {
+    const btn = document.createElement('div');
+    btn.className = 'effect-btn';
+    btn.dataset.effectKey = preset.key;
+    btn.dataset.effectType = isExit ? 'exit' : 'entrance';
+
+    // Add favorite button
+    const favoriteBtn = document.createElement('button');
+    favoriteBtn.className = 'effect-favorite-btn';
+    favoriteBtn.innerHTML = state.favoriteEffects.has(preset.key) ? '⭐' : '☆';
+    if (state.favoriteEffects.has(preset.key)) {
+        favoriteBtn.classList.add('favorited');
+    }
+    favoriteBtn.onclick = (e) => {
+        e.stopPropagation();
+        toggleEffectFavorite(preset.key, favoriteBtn);
+    };
+
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'effect-name';
+    const icon = ICON_MAP[preset.key] || '🎬';
+    nameDiv.textContent = `${icon} ${preset.name}`;
+
+    btn.appendChild(favoriteBtn);
+    btn.appendChild(nameDiv);
+
+    btn.addEventListener('click', () => {
+        handleEffectClick(btn, preset.key, isExit);
+        updatePreview(preset.key, preset.name, isExit);
+    });
+
+    return btn;
+}
+
+function handleEffectHover(btn, effectKey, previewText) {
+    const animClass = animationMap[effectKey];
+    if (animClass) {
+        previewText.classList.add('animate-' + animClass);
+    }
+}
+
+function handleEffectLeave(previewText, effectKey) {
+    const animClass = animationMap[effectKey];
+    if (animClass) {
+        previewText.classList.remove('animate-' + animClass);
+    }
+}
+
+function updatePreview(effectKey, effectName, isExit) {
+    const previewText = document.getElementById('previewText');
+    const previewName = document.getElementById('previewName');
+    const previewDisplay = document.querySelector('.preview-display');
+
+    if (!previewText || !previewName) return;
+
+    // Store current effect for replay
+    previewDisplay.dataset.currentEffect = effectKey;
+    previewDisplay.dataset.currentName = effectName;
+
+    // Remove all animation classes
+    previewText.className = 'preview-text';
+
+    // Update name
+    previewName.textContent = effectName;
+
+    // Add animation class
+    const animClass = animationMap[effectKey];
+    if (animClass) {
+        // Small delay to restart animation
+        setTimeout(() => {
+            previewText.classList.add('animate-' + animClass);
+        }, 50);
+    }
+}
+
+// Add click handler to preview display (only once)
+if (!window.previewClickHandlerAdded) {
+    const previewDisplay = document.querySelector('.preview-display');
+    if (previewDisplay) {
+        previewDisplay.addEventListener('click', () => {
+            const effectKey = previewDisplay.dataset.currentEffect;
+            const effectName = previewDisplay.dataset.currentName;
+            if (effectKey) {
+                updatePreview(effectKey, effectName, false);
+            }
+        });
+        window.previewClickHandlerAdded = true;
+    }
+}
+
+
+
+function handleEffectClick(btn, effectKey, isExit) {
+    const effectType = isExit ? 'exit' : 'entrance';
+
+    if (state.selectedEffects[effectType] === effectKey) {
+        state.selectedEffects[effectType] = null;
+        btn.classList.remove('selected', 'selected-entrance', 'selected-exit');
+    } else {
+        const previousBtn = document.querySelector(`.effect-btn.selected-${effectType}`);
+        if (previousBtn) {
+            previousBtn.classList.remove('selected', 'selected-entrance', 'selected-exit');
+        }
+
+        state.selectedEffects[effectType] = effectKey;
+        btn.classList.add('selected', `selected-${effectType}`);
+    }
+
+    saveState();
+}
+
+function handleApply(mode) {
+    const batchMode = elements.batchModeCheckbox.checked;
+    let entranceKey = 'null';
+    let exitKey = 'null';
+    let entranceAEPreset = null;
+    let exitAEPreset = null;
+
+    if (mode === 'entrance' || mode === 'both') {
+        const entrance = state.selectedEffects.entrance;
+        if (entrance) {
+            if (typeof entrance === 'object' && entrance.isAEPreset) {
+                entranceAEPreset = entrance;
+            } else {
+                entranceKey = entrance;
+            }
+        }
+    }
+
+    if (mode === 'exit' || mode === 'both') {
+        const exit = state.selectedEffects.exit;
+        if (exit) {
+            if (typeof exit === 'object' && exit.isAEPreset) {
+                exitAEPreset = exit;
+            } else {
+                exitKey = exit;
+            }
+        }
+    }
+
+    if (entranceKey === 'null' && exitKey === 'null' && !entranceAEPreset && !exitAEPreset) {
+        setStatus('Selecciona al menos un efecto', 'error');
+        return;
+    }
+
+    elements.applyEntranceBtn.disabled = true;
+    elements.applyExitBtn.disabled = true;
+    elements.applyBothBtn.disabled = true;
+
+    const modeText = mode === 'entrance' ? 'entrada' : mode === 'exit' ? 'salida' : 'ambas';
+    setStatus(`Aplicando animación de ${modeText}...`, 'loading');
+
+    // If using AE presets, apply them directly
+    if (entranceAEPreset || exitAEPreset) {
+        applyAEPresetsSequentially(entranceAEPreset, exitAEPreset, batchMode, () => {
+            elements.applyEntranceBtn.disabled = false;
+            elements.applyExitBtn.disabled = false;
+            elements.applyBothBtn.disabled = false;
+        });
+    } else {
+        // Use built-in presets
+        const entSpeed = elements.entranceSpeed.value;
+        const exSpeed = elements.exitSpeed.value;
+
+        const script = `$.global.applyAnimations('${entranceKey}', '${exitKey}', ${batchMode}, ${entSpeed}, ${exSpeed})`;
+
+        evalScript(script, function (result) {
+            elements.applyEntranceBtn.disabled = false;
+            elements.applyExitBtn.disabled = false;
+            elements.applyBothBtn.disabled = false;
+
+            try {
+                const data = JSON.parse(result);
+
+                if (data.error) {
+                    setStatus(`Error: ${data.error}`, 'error');
+                    return;
+                }
+
+                if (data.success) {
+                    const message = `✓ ${data.layersAnimated} capas animadas`;
+                    setStatus(message, 'success');
+                    updateCompInfo();
+                }
+
+            } catch (e) {
+                setStatus(`Error: ${e.message}`, 'error');
+            }
+            elements.applyEntranceBtn.disabled = false;
+            elements.applyExitBtn.disabled = false;
+            elements.applyBothBtn.disabled = false;
+        });
+    }
+}
+
+function applyAEPresetsSequentially(entrancePreset, exitPreset, batchMode, callback) {
+    let totalLayers = 0;
+    let hasError = false;
+    // Apply entrance first, then exit (sequential, not parallel)
+    if (entrancePreset && exitPreset) {
+        // Both presets: apply entrance first
+        const escapedPath1 = entrancePreset.path.replace(/\\/g, '\\\\');
+        const script1 = `$.global.applyFFXPreset("${escapedPath1}", ${batchMode}, "entrance")`;
+
+        console.log('Applying entrance preset:', entrancePreset.name);
+
+        evalScript(script1, function (result1) {
+            console.log('Entrance result:', result1);
+            try {
+                const data1 = JSON.parse(result1);
+                if (data1.success) {
+                    totalLayers = data1.layersAnimated;
+
+                    // Now apply exit preset
+                    const escapedPath2 = exitPreset.path.replace(/\\/g, '\\\\');
+                    const script2 = `$.global.applyFFXPreset("${escapedPath2}", ${batchMode}, "exit")`;
+
+                    console.log('Applying exit preset:', exitPreset.name);
+
+                    evalScript(script2, function (result2) {
+                        console.log('Exit result:', result2);
+                        try {
+                            const data2 = JSON.parse(result2);
+                            if (data2.success) {
+                                setStatus(`✓ ${totalLayers} capas animadas (entrada + salida)`, 'success');
+                                updateCompInfo();
+                            } else if (data2.error) {
+                                setStatus('Error aplicando salida: ' + data2.error, 'error');
+                            }
+                        } catch (e) {
+                            console.error('Error parsing exit result:', e);
+                            setStatus('Error aplicando salida', 'error');
+                        }
+                        if (callback) callback();
+                    });
+                } else if (data1.error) {
+                    setStatus('Error aplicando entrada: ' + data1.error, 'error');
+                    if (callback) callback();
+                }
+            } catch (e) {
+                console.error('Error parsing entrance result:', e);
+                setStatus('Error aplicando entrada', 'error');
+                if (callback) callback();
+            }
+        });
+    } else if (entrancePreset) {
+        // Only entrance
+        const escapedPath = entrancePreset.path.replace(/\\/g, '\\\\');
+        const script = `$.global.applyFFXPreset("${escapedPath}", ${batchMode}, "entrance")`;
+
+        console.log('Applying entrance preset:', entrancePreset.name);
+
+        evalScript(script, function (result) {
+            console.log('Entrance result:', result);
+            try {
+                const data = JSON.parse(result);
+                if (data.success) {
+                    totalLayers = data.layersAnimated;
+                    setStatus(`✓ ${totalLayers} capas animadas (entrada)`, 'success');
+                    updateCompInfo();
+                } else if (data.error) {
+                    setStatus('Error: ' + data.error, 'error');
+                }
+            } catch (e) {
+                console.error('Error:', e);
+                setStatus('Error aplicando preset', 'error');
+            }
+            if (callback) callback();
+        });
+    } else if (exitPreset) {
+        // Only exit
+        const escapedPath = exitPreset.path.replace(/\\/g, '\\\\');
+        const script = `$.global.applyFFXPreset("${escapedPath}", ${batchMode}, "exit")`;
+
+        console.log('Applying exit preset:', exitPreset.name);
+
+        evalScript(script, function (result) {
+            console.log('Exit result:', result);
+            try {
+                const data = JSON.parse(result);
+                if (data.success) {
+                    totalLayers = data.layersAnimated;
+                    setStatus(`✓ ${totalLayers} capas animadas (salida)`, 'success');
+                    updateCompInfo();
+                } else if (data.error) {
+                    setStatus('Error: ' + data.error, 'error');
+                }
+            } catch (e) {
+                console.error('Error:', e);
+                setStatus('Error aplicando preset', 'error');
+            }
+            if (callback) callback();
+        });
+    }
+}
+
+// ============================================================================
+// PRESET MANAGER FUNCTIONS
+// ============================================================================
+
+function renderPresetGrid() {
+    const grid = document.getElementById('presetGrid');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+
+    let presets = [];
+
+    // Get presets based on current tab and category
+    if (state.currentPresetTab === 'custom') {
+        if (state.currentCategory === 'favorites') {
+            // Show favorited AE presets AND quick effects in favorites view
+            const favEntrance = (state.aePresets.animateIn || []).filter(p => state.favoritePresets.has(p.id));
+            const favExit = (state.aePresets.animateOut || []).filter(p => state.favoritePresets.has(p.id));
+
+            // Add favorite quick effects
+            const favoriteQuickEffects = [];
+            state.favoriteEffects.forEach(effectKey => {
+                const preset = [...state.currentPresets.entrance, ...state.currentPresets.exit]
+                    .find(p => p.key === effectKey);
+                if (preset) {
+                    favoriteQuickEffects.push({
+                        ...preset,
+                        id: effectKey,
+                        isQuickEffect: true
+                    });
+                }
+            });
+
+            presets = [...favEntrance, ...favExit, ...favoriteQuickEffects];
+        } else {
+            presets = state.customPresets;
+        }
+    } else if (state.currentPresetTab === 'ae') {
+        if (state.currentCategory === 'animate-in') {
+            presets = state.aePresets.animateIn || [];
+        } else if (state.currentCategory === 'animate-out') {
+            presets = state.aePresets.animateOut || [];
+        }
+    }
+
+    // Apply search filter
+    if (state.searchQuery) {
+        const query = state.searchQuery.toLowerCase();
+        presets = presets.filter(p => p.name.toLowerCase().includes(query));
+    }
+
+    if (presets.length === 0) {
+        const message = state.currentCategory === 'favorites'
+            ? 'No hay presets favoritos<br>Haz click en ☆ en el tab Rápido para agregar'
+            : 'No hay presets disponibles';
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">${message}</div>`;
+        return;
+    }
+
+    presets.forEach(preset => {
+        const card = createPresetCard(preset);
+        grid.appendChild(card);
+    });
+}
+
+function createPresetCard(preset) {
+    const card = document.createElement('div');
+    card.className = 'preset-card';
+    if (state.selectedPreset && state.selectedPreset.id === preset.id) {
+        card.classList.add('selected');
+    }
+
+    const thumbnail = document.createElement('div');
+    thumbnail.className = 'preset-thumbnail';
+
+    const thumbnailText = document.createElement('div');
+    thumbnailText.className = 'preset-thumbnail-text';
+    thumbnailText.textContent = 'ABC';
+
+    // Add animation class if it's a quick effect or has baseEntrance
+    let animClass = null;
+    if (preset.isQuickEffect && preset.key) {
+        animClass = animationMap[preset.key];
+    } else if (preset.baseEntrance && animationMap[preset.baseEntrance]) {
+        animClass = animationMap[preset.baseEntrance];
+    } else if (preset.name) {
+        // For AE presets, use keyword mapping
+        animClass = getAnimationForPreset(preset.name);
+    }
+
+    if (animClass) {
+        thumbnailText.dataset.animation = animClass;
+    }
+
+    thumbnail.appendChild(thumbnailText);
+
+    // Add hover animation
+    card.addEventListener('mouseenter', () => {
+        if (animClass) {
+            thumbnailText.classList.add('animate-' + animClass);
+        }
+    });
+
+    card.addEventListener('mouseleave', () => {
+        if (animClass) {
+            thumbnailText.classList.remove('animate-' + animClass);
+        }
+    });
+
+    const info = document.createElement('div');
+    info.className = 'preset-info';
+
+    const name = document.createElement('div');
+    name.className = 'preset-name';
+    name.textContent = preset.name;
+
+    const meta = document.createElement('div');
+    meta.className = 'preset-meta';
+
+    const badge = document.createElement('span');
+    badge.className = `preset-badge ${preset.type || 'both'}`;
+    badge.textContent = preset.type === 'entrance' ? 'Entrada' : preset.type === 'exit' ? 'Salida' : 'Ambos';
+
+    const actionsBtn = document.createElement('button');
+    actionsBtn.className = 'preset-actions-btn';
+    actionsBtn.textContent = '⋮';
+    actionsBtn.onclick = (e) => {
+        e.stopPropagation();
+        showPresetContextMenu(preset, e);
+    };
+
+    meta.appendChild(badge);
+    if (preset.isCustom !== false) {
+        meta.appendChild(actionsBtn);
+    }
+
+    info.appendChild(name);
+    info.appendChild(meta);
+
+    card.appendChild(thumbnail);
+    card.appendChild(info);
+
+    card.onclick = () => selectPreset(preset);
+
+    return card;
+}
+
+function selectPreset(preset) {
+    state.selectedPreset = preset;
+    renderPresetGrid();
+}
+
+function showPresetContextMenu(preset, event) {
+    // Simple implementation: show options
+    const options = ['Editar', 'Duplicar', 'Eliminar'];
+    const choice = prompt(`Preset: ${preset.name}\n\n1. Editar\n2. Duplicar\n3. Eliminar\n\nElige opción (1-3):`);
+
+    if (choice === '1') {
+        editPreset(preset);
+    } else if (choice === '2') {
+        duplicatePreset(preset);
+    } else if (choice === '3') {
+        deletePreset(preset);
+    }
+}
+
+function openPresetCreator() {
+    state.editingPreset = null;
+    elements.modalTitle.textContent = 'Crear Nuevo Preset';
+    elements.presetName.value = '';
+    elements.presetType.value = 'entrance';
+    elements.baseEntranceAnim.value = 'fade_in';
+    elements.baseExitAnim.value = 'fade_out';
+    elements.modalEntranceSpeed.value = '1.0';
+    elements.modalExitSpeed.value = '1.0';
+    elements.modalEntranceSpeedValue.textContent = '1.0x';
+    elements.modalExitSpeedValue.textContent = '1.0x';
+    elements.presetFavorite.checked = false;
+
+    elements.presetModal.classList.add('active');
+}
+
+function editPreset(preset) {
+    state.editingPreset = preset;
+    elements.modalTitle.textContent = 'Editar Preset';
+    elements.presetName.value = preset.name;
+    elements.presetType.value = preset.type || 'both';
+    elements.baseEntranceAnim.value = preset.baseEntrance || 'fade_in';
+    elements.baseExitAnim.value = preset.baseExit || 'fade_out';
+    elements.modalEntranceSpeed.value = preset.entranceSpeed || '1.0';
+    elements.modalExitSpeed.value = preset.exitSpeed || '1.0';
+    elements.modalEntranceSpeedValue.textContent = (preset.entranceSpeed || '1.0') + 'x';
+    elements.modalExitSpeedValue.textContent = (preset.exitSpeed || '1.0') + 'x';
+    elements.presetFavorite.checked = preset.favorite || false;
+
+    elements.presetModal.classList.add('active');
+}
+
+function savePreset() {
+    const presetData = {
+        id: state.editingPreset ? state.editingPreset.id : 'custom_' + Date.now(),
+        name: elements.presetName.value || 'Nuevo Preset',
+        type: elements.presetType.value,
+        baseEntrance: elements.baseEntranceAnim.value,
+        baseExit: elements.baseExitAnim.value,
+        entranceSpeed: parseFloat(elements.modalEntranceSpeed.value),
+        exitSpeed: parseFloat(elements.modalExitSpeed.value),
+        favorite: elements.presetFavorite.checked,
+        isCustom: true,
+        created: state.editingPreset ? state.editingPreset.created : new Date().toISOString()
+    };
+
+    const script = `$.global.saveCustomPreset(${JSON.stringify(JSON.stringify(presetData))})`;
+
+    evalScript(script, function (result) {
+        try {
+            const data = JSON.parse(result);
+            if (data.success) {
+                setStatus('✓ Preset guardado', 'success');
+                loadCustomPresets();
+                closeModal();
+            } else {
+                setStatus('Error guardando preset', 'error');
+            }
+        } catch (e) {
+            setStatus('Error: ' + e.message, 'error');
+        }
+    });
+}
+
+function duplicatePreset(preset) {
+    const newPreset = {
+        ...preset,
+        id: 'custom_' + Date.now(),
+        name: preset.name + ' (Copia)',
+        created: new Date().toISOString()
+    };
+
+    const script = `$.global.saveCustomPreset(${JSON.stringify(JSON.stringify(newPreset))})`;
+
+    evalScript(script, function (result) {
+        try {
+            const data = JSON.parse(result);
+            if (data.success) {
+                setStatus('✓ Preset duplicado', 'success');
+                loadCustomPresets();
+            }
+        } catch (e) {
+            setStatus('Error: ' + e.message, 'error');
+        }
+    });
+}
+
+function deletePreset(preset) {
+    if (!confirm(`¿Eliminar preset "${preset.name}"?`)) return;
+
+    const script = `$.global.deleteCustomPreset("${preset.id}")`;
+
+    evalScript(script, function (result) {
+        try {
+            const data = JSON.parse(result);
+            if (data.success) {
+                setStatus('✓ Preset eliminado', 'success');
+                state.selectedPreset = null;
+                loadCustomPresets();
+            }
+        } catch (e) {
+            setStatus('Error: ' + e.message, 'error');
+        }
+    });
+}
+
+function applySelectedPreset() {
+    if (!state.selectedPreset) {
+        setStatus('Selecciona un preset primero', 'error');
+        return;
+    }
+
+    const preset = state.selectedPreset;
+    const batchMode = elements.batchModeCheckbox.checked;
+
+    // If it's an AE preset (.ffx file)
+    if (preset.path) {
+        const script = `$.global.applyFFXPreset("${preset.path}", ${batchMode})`;
+
+        setStatus('Aplicando preset de AE...', 'loading');
+
+        evalScript(script, function (result) {
+            try {
+                const data = JSON.parse(result);
+                if (data.success) {
+                    setStatus(`✓ ${data.layersAnimated} capas animadas`, 'success');
+                    updateCompInfo();
+                } else {
+                    setStatus('Error: ' + data.error, 'error');
+                }
+            } catch (e) {
+                setStatus('Error: ' + e.message, 'error');
+            }
+        });
+    } else {
+        // Custom preset - apply using built-in animations
+        const entranceKey = preset.baseEntrance || 'null';
+        const exitKey = preset.baseExit || 'null';
+        const entSpeed = preset.entranceSpeed || 1.0;
+        const exSpeed = preset.exitSpeed || 1.0;
+
+        const script = `$.global.applyAnimations('${entranceKey}', '${exitKey}', ${batchMode}, ${entSpeed}, ${exSpeed})`;
+
+        setStatus('Aplicando preset...', 'loading');
+
+        evalScript(script, function (result) {
+            try {
+                const data = JSON.parse(result);
+                if (data.success) {
+                    setStatus(`✓ ${data.layersAnimated} capas animadas`, 'success');
+                    updateCompInfo();
+                } else {
+                    setStatus('Error: ' + data.error, 'error');
+                }
+            } catch (e) {
+                setStatus('Error: ' + e.message, 'error');
+            }
+        });
+    }
+}
+
+function closeModal() {
+    elements.presetModal.classList.remove('active');
+}
+
+function updateCategoryCounts() {
+    // Update custom presets count
+    const customCount = document.getElementById('count-custom');
+    if (customCount) {
+        customCount.textContent = state.customPresets.length;
+    }
+
+    // Update favorites count
+    const favoritesCount = document.getElementById('count-favorites');
+    if (favoritesCount) {
+        favoritesCount.textContent = state.favoritePresets.size;
+    }
+}
+
+// ============================================================================
+// EVENT LISTENERS
+// ============================================================================
+
+function setupEventListeners() {
+    // Tab navigation
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            e.target.classList.add('active');
+            const tabId = e.target.dataset.tab;
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            state.currentTab = tabId;
+        });
+    });
+
+    // Preset sub-tabs
+    document.querySelectorAll('.preset-tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.preset-tab-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+
+            state.currentPresetTab = e.target.dataset.presetTab;
+            state.currentCategory = state.currentPresetTab === 'custom' ? 'custom' : 'animate-in';
+
+            // Update active category
+            document.querySelectorAll('.preset-category').forEach(c => c.classList.remove('active'));
+            const activeCategory = document.querySelector(`[data-category="${state.currentCategory}"]`);
+            if (activeCategory) activeCategory.classList.add('active');
+
+            renderPresetGrid();
+        });
+    });
+
+    // Category selection
+    document.querySelectorAll('.preset-category').forEach(cat => {
+        cat.addEventListener('click', (e) => {
+            document.querySelectorAll('.preset-category').forEach(c => c.classList.remove('active'));
+            cat.classList.add('active');
+
+            state.currentCategory = cat.dataset.category;
+            renderPresetGrid();
+        });
+    });
+
+    // Search
+    if (elements.presetSearch) {
+        elements.presetSearch.addEventListener('input', (e) => {
+            state.searchQuery = e.target.value;
+            renderPresetGrid();
+        });
+    }
+
+    // Favorites toggle button
+    const favoritesToggleBtn = document.getElementById('favoritesToggleBtn');
+    if (favoritesToggleBtn) {
+        favoritesToggleBtn.addEventListener('click', () => {
+            state.showOnlyFavorites = !state.showOnlyFavorites;
+            favoritesToggleBtn.classList.toggle('active');
+
+            // Update star icon
+            const starIcon = favoritesToggleBtn.querySelector('.star-icon');
+            if (starIcon) {
+                starIcon.textContent = state.showOnlyFavorites ? '⭐' : '☆';
+            }
+
+            // Toggle between flat favorites and categorized view
+            const flatContainer = document.getElementById('favoritesFlatContainer');
+            const categorizedContainer = document.getElementById('categorizedEffects');
+
+            if (state.showOnlyFavorites) {
+                // Show flat favorites list
+                flatContainer.style.display = 'block';
+                categorizedContainer.style.display = 'none';
+                populateFlatFavorites();
+            } else {
+                // Show categorized view
+                flatContainer.style.display = 'none';
+                categorizedContainer.style.display = 'block';
+                populateEffectGrid();
+            }
+        });
+    }
+
+    // Category headers (accordion)
+    document.querySelectorAll('.category-header').forEach(header => {
+        header.addEventListener('click', toggleCategory);
+    });
+
+    // Quick    // Apply buttons - Quick Animator
+    elements.applyEntranceBtn.addEventListener('click', () => handleApply('entrance'));
+    elements.applyExitBtn.addEventListener('click', () => handleApply('exit'));
+    elements.applyBothBtn.addEventListener('click', () => handleApply('both'));
+
+    // Apply buttons - Preset Manager (same functionality)
+    const applyPresetEntranceBtn = document.getElementById('applyPresetEntranceBtn');
+    const applyPresetExitBtn = document.getElementById('applyPresetExitBtn');
+    const applyPresetBothBtn = document.getElementById('applyPresetBothBtn');
+
+    if (applyPresetEntranceBtn) applyPresetEntranceBtn.addEventListener('click', () => handleApply('entrance'));
+    if (applyPresetExitBtn) applyPresetExitBtn.addEventListener('click', () => handleApply('exit'));
+    if (applyPresetBothBtn) applyPresetBothBtn.addEventListener('click', () => handleApply('both'));
+    elements.resetBtn.addEventListener('click', handleReset);
+    elements.refreshBtn.addEventListener('click', handleRefresh);
+    elements.importSRTBtn.addEventListener('click', handleImportSRT);
+    elements.srtFileInput.addEventListener('change', handleSRTFileSelected);
+
+    // Speed sliders
+    elements.entranceSpeed.addEventListener('input', function () {
+        elements.entranceSpeedValue.textContent = this.value + 'x';
+        saveState();
+    });
+
+    elements.exitSpeed.addEventListener('input', function () {
+        elements.exitSpeedValue.textContent = this.value + 'x';
+        saveState();
+    });
+
+    elements.batchModeCheckbox.addEventListener('change', saveState);
+
+    // Preset Manager buttons
+    elements.createPresetBtn.addEventListener('click', openPresetCreator);
+    elements.applyPresetBtn.addEventListener('click', applySelectedPreset);
+    elements.importPresetsBtn.addEventListener('click', handleImportPresets);
+    elements.exportPresetsBtn.addEventListener('click', handleExportPresets);
+    elements.presetImportInput.addEventListener('change', handlePresetFilesSelected);
+
+    // Modal
+    elements.modalClose.addEventListener('click', closeModal);
+    elements.cancelPresetBtn.addEventListener('click', closeModal);
+    elements.savePresetBtn.addEventListener('click', savePreset);
+
+    // Modal speed sliders
+    elements.modalEntranceSpeed.addEventListener('input', function () {
+        elements.modalEntranceSpeedValue.textContent = this.value + 'x';
+    });
+
+    elements.modalExitSpeed.addEventListener('input', function () {
+        elements.modalExitSpeedValue.textContent = this.value + 'x';
+    });
+
+    // Close modal on background click
+    elements.presetModal.addEventListener('click', (e) => {
+        if (e.target === elements.presetModal) {
+            closeModal();
+        }
+    });
+}
+
+function toggleEffectFavorite(effectKey, buttonElement) {
+    if (state.favoriteEffects.has(effectKey)) {
+        state.favoriteEffects.delete(effectKey);
+        buttonElement.innerHTML = '☆';
+        buttonElement.classList.remove('favorited');
+    } else {
+        state.favoriteEffects.add(effectKey);
+        buttonElement.innerHTML = '⭐';
+        buttonElement.classList.add('favorited');
+    }
+    saveState();
+
+    // Update preset grid if we're viewing favorites
+    if (state.currentCategory === 'favorites') {
+        renderPresetGrid();
+    }
+}
+
+function toggleCategory(event) {
+    const header = event.currentTarget;
+    const categoryId = header.dataset.category;
+    const content = document.getElementById(categoryId);
+
+    header.classList.toggle('collapsed');
+    content.classList.toggle('collapsed');
+
+    saveCategoryState();
+}
+
+function handleReset() {
+    const batchMode = elements.batchModeCheckbox.checked;
+
+    elements.resetBtn.disabled = true;
+    setStatus('Reseteando animaciones...', 'loading');
+
+    const script = `$.global.resetAnimations(${batchMode})`;
+
+    evalScript(script, function (result) {
+        elements.resetBtn.disabled = false;
+
+        try {
+            const data = JSON.parse(result);
+
+            if (data.error) {
+                setStatus(`Error: ${data.error}`, 'error');
+                return;
+            }
+
+            if (data.success) {
+                setStatus(`✓ ${data.layersReset} capas reseteadas`, 'success');
+                updateCompInfo();
+            }
+
+        } catch (e) {
+            setStatus(`Error: ${e.message}`, 'error');
+        }
+    });
+}
+
+function handleRefresh() {
+    setStatus('Actualizando...', 'loading');
+    loadPresets();
+    loadAEPresets();
+    loadCustomPresets();
+    updateCompInfo();
+    setTimeout(() => {
+        setStatus('Actualizado', 'success');
+    }, 500);
+}
+
+function handleImportSRT() {
+    elements.srtFileInput.click();
+}
+
+function handleImportPresets() {
+    elements.presetImportInput.click();
+}
+
+function handlePresetFilesSelected(event) {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    setStatus('Importando presets...', 'loading');
+    elements.importPresetsBtn.disabled = true;
+
+    // Get extension presets path
+    const extensionPath = csInterface.getSystemPath(SystemPath.EXTENSION);
+    const presetsPath = extensionPath + "/presets";
+
+    let importedCount = 0;
+    let errorCount = 0;
+    const totalFiles = files.length;
+
+    // Process each file
+    Array.from(files).forEach((file, index) => {
+        // Validate .ffx extension
+        if (!file.name.toLowerCase().endsWith('.ffx')) {
+            errorCount++;
+            if (index === totalFiles - 1) {
+                finishImport();
+            }
+            return;
+        }
+
+        // Read file as base64
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const base64Data = btoa(e.target.result);
+            const fileName = file.name;
+
+            // Call JSX to save file
+            const script = `$.global.saveFFXFile("${presetsPath.replace(/\\/g, '\\\\')}", "${fileName}", "${base64Data}")`;
+
+            evalScript(script, function (result) {
+                try {
+                    const data = JSON.parse(result);
+                    if (data.success) {
+                        importedCount++;
+                    } else {
+                        errorCount++;
+                    }
+                } catch (e) {
+                    errorCount++;
+                }
+
+                // Check if this was the last file
+                if (index === totalFiles - 1) {
+                    finishImport();
+                }
+            });
+        };
+        reader.readAsBinaryString(file);
+    });
+
+    function finishImport() {
+        elements.importPresetsBtn.disabled = false;
+
+        if (importedCount > 0) {
+            setStatus(`✓ ${importedCount} preset(s) importado(s)`, 'success');
+            // Reload AE presets to show new files
+            loadAEPresets();
+        } else if (errorCount > 0) {
+            setStatus(`Error: Solo se aceptan archivos .ffx`, 'error');
+        }
+
+        // Clear input
+        event.target.value = '';
+    }
+}
+
+function handleSRTFileSelected(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const srtContent = e.target.result;
+        importSRTContent(srtContent);
+    };
+    reader.readAsText(file);
+
+    event.target.value = '';
+}
+
+function importSRTContent(srtContent) {
+    setStatus('Importando subtítulos...', 'loading');
+    elements.importSRTBtn.disabled = true;
+
+    const extensionPath = csInterface.getSystemPath(SystemPath.EXTENSION);
+    const escapedPath = extensionPath.replace(/\\/g, "\\\\");
+
+    const script = `$.global.importSRT(` + JSON.stringify(srtContent) + `, "${escapedPath}")`;
+
+    evalScript(script, function (result) {
+        elements.importSRTBtn.disabled = false;
+
+        try {
+            const data = JSON.parse(result);
+
+            if (data.error) {
+                setStatus(`Error: ${data.error}`, 'error');
+                return;
+            }
+
+            if (data.success) {
+                const message = `✓ ${data.layersCreated} capas creadas`;
+                setStatus(message, 'success');
+                updateCompInfo();
+            }
+
+        } catch (e) {
+            setStatus(`Error: ${e.message}`, 'error');
+        }
+    });
+}
+
+function updateCompInfo() {
+    evalScript('$.global.getCompInfo()', function (result) {
+        try {
+            const data = JSON.parse(result);
+
+            if (data.error) {
+                elements.compName.textContent = 'No activa';
+                elements.compResolution.textContent = '-';
+                elements.textLayers.textContent = '-';
+                return;
+            }
+
+            elements.compName.textContent = data.name;
+            elements.compResolution.textContent = `${data.width}x${data.height}`;
+            elements.textLayers.textContent = `${data.numTextLayers} (${data.numSelectedTextLayers} seleccionadas)`;
+
+        } catch (e) {
+            console.error('Error updating comp info:', e);
+        }
+    });
+}
+
+// ============================================================================
+// UTILITIES
+// ============================================================================
+
+function evalScript(script, callback) {
+    csInterface.evalScript(script, callback);
+}
+
+function setStatus(message, type = '') {
+    elements.status.textContent = message;
+    elements.status.className = 'status ' + type;
+
+    if (type === 'loading') {
+        const spinner = document.createElement('span');
+        spinner.className = 'loading-spinner';
+        elements.status.prepend(spinner);
+    }
+}
+
+function saveState() {
+    try {
+        const stateToSave = {
+            selectedEffects: state.selectedEffects,
+            currentTab: state.currentTab,
+            favoritePresets: Array.from(state.favoritePresets), // Convert Set to Array
+            favoriteEffects: Array.from(state.favoriteEffects) // Save favorite effects
+        };
+        localStorage.setItem('subtitlesToolState', JSON.stringify(stateToSave));
+    } catch (e) {
+        console.error('Error saving state:', e);
+    }
+}
+
+function loadState() {
+    try {
+        const saved = localStorage.getItem('subtitlesToolState');
+        if (saved) {
+            const savedState = JSON.parse(saved);
+            state.selectedEffects = savedState.selectedEffects || { entrance: null, exit: null };
+            state.currentTab = savedState.currentTab || 'quick';
+            state.favoritePresets = new Set(savedState.favoritePresets || []);
+            state.favoriteEffects = new Set(savedState.favoriteEffects || []); // Load favorite effects
+        }
+    } catch (e) {
+        console.error('Error loading state:', e);
+    }
+}
+
+function toggleFavorite(presetId) {
+    if (state.favoritePresets.has(presetId)) {
+        state.favoritePresets.delete(presetId);
+    } else {
+        state.favoritePresets.add(presetId);
+    }
+
+    saveState();
+
+    // Update the star button in Quick Animator
+    const btn = document.querySelector(`[data-preset-id="${presetId}"]`);
+    if (btn) {
+        const star = btn.querySelector('.favorite-star');
+        if (star) {
+            star.innerHTML = state.favoritePresets.has(presetId) ? '⭐' : '☆';
+        }
+    }
+
+    // Update counts
+    updateCategoryCounts();
+
+    // If we're in Preset Manager favorites view, re-render
+    if (state.currentTab === 'presets' && state.currentCategory === 'favorites') {
+        renderPresetGrid();
+    }
+}
+
+function saveCategoryState() {
+    const categoryStates = {};
+    document.querySelectorAll('.category-header').forEach(header => {
+        const categoryId = header.dataset.category;
+        categoryStates[categoryId] = header.classList.contains('collapsed');
+    });
+
+    localStorage.setItem('subtitlesPresetToolCategories', JSON.stringify(categoryStates));
+}
+
+function loadCategoryState() {
+    const saved = localStorage.getItem('subtitlesPresetToolCategories');
+
+    if (saved) {
+        try {
+            const categoryStates = JSON.parse(saved);
+
+            Object.keys(categoryStates).forEach(categoryId => {
+                if (categoryStates[categoryId]) {
+                    const header = document.querySelector(`[data-category="${categoryId}"]`);
+                    const content = document.getElementById(categoryId);
+
+                    if (header && content) {
+                        header.classList.add('collapsed');
+                        content.classList.add('collapsed');
+                    }
+                }
+            });
+
+        } catch (e) {
+            console.error('Error loading category state:', e);
+        }
+    }
+}
+
+// ============================================================================
+// IMPORT/EXPORT FUNCTIONS
+// ============================================================================
+
+function handleImportPresets() {
+    elements.presetImportInput.click();
+}
+
+function handlePresetFilesSelected(event) {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    setStatus('Importando presets...', 'loading');
+
+    let importedCount = 0;
+    let processedFiles = 0;
+
+    Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const presetData = JSON.parse(e.target.result);
+
+                // Validate preset structure
+                if (!presetData.name || !presetData.type) {
+                    throw new Error('Formato de preset inválido');
+                }
+
+                // Generate new ID to avoid conflicts
+                presetData.id = 'custom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                presetData.isCustom = true;
+                presetData.created = new Date().toISOString();
+
+                // Save preset
+                const script = `$.global.saveCustomPreset(${JSON.stringify(JSON.stringify(presetData))})`;
+
+                evalScript(script, function (result) {
+                    processedFiles++;
+
+                    try {
+                        const data = JSON.parse(result);
+                        if (data.success) {
+                            importedCount++;
+                        }
+                    } catch (e) {
+                        console.error('Error saving imported preset:', e);
+                    }
+
+                    // Check if all files processed
+                    if (processedFiles === files.length) {
+                        setStatus(`✓ ${importedCount} presets importados`, 'success');
+                        loadCustomPresets();
+                    }
+                });
+
+            } catch (e) {
+                processedFiles++;
+                console.error('Error parsing preset file:', e);
+
+                if (processedFiles === files.length) {
+                    setStatus(`✓ ${importedCount} presets importados`, importedCount > 0 ? 'success' : 'error');
+                    if (importedCount > 0) {
+                        loadCustomPresets();
+                    }
+                }
+            }
+        };
+        reader.readAsText(file);
+    });
+
+    // Reset file input
+    event.target.value = '';
+}
+
+function handleExportPresets() {
+    if (state.customPresets.length === 0) {
+        setStatus('No hay presets personalizados para exportar', 'error');
+        return;
+    }
+
+    setStatus('Exportando presets...', 'loading');
+
+    evalScript('$.global.exportCustomPresets()', function (result) {
+        try {
+            const data = JSON.parse(result);
+
+            if (data.error) {
+                setStatus('Error: ' + data.error, 'error');
+                return;
+            }
+
+            if (data.success) {
+                const message = `✓ ${data.presetsExported} presets exportados a:\n${data.exportPath}`;
+                setStatus(`✓ ${data.presetsExported} presets exportados`, 'success');
+
+                // Show alert with full path
+                setTimeout(() => {
+                    alert(message);
+                }, 100);
+            }
+
+        } catch (e) {
+            setStatus('Error: ' + e.message, 'error');
+        }
+    });
+}
+
+// ============================================================================
+// START
+// ============================================================================
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}

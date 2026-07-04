@@ -1,0 +1,813 @@
+/**
+ * BadFX / BadEdits visual theme for TextPresets
+ * Solo estilos — no modifica funcionalidad ni IDs.
+ */
+
+:root {
+    --bfx-bg: #191919;
+    --bfx-bg-elevated: #212121;
+    --bfx-bg-surface: #222222;
+    --bfx-bg-hover: #262626;
+    --bfx-bg-active: #2a2a2a;
+    --bfx-bg-input: #262626;
+    --bfx-border: #282828;
+    --bfx-border-subtle: #222222;
+    --bfx-text: #f3f3f3;
+    --bfx-text-secondary: #e0e0e0;
+    --bfx-text-muted: #b0b0b0;
+    --bfx-text-dim: #737373;
+    --bfx-text-faint: #5b5b5b;
+    --bfx-accent: #006ede;
+    --bfx-accent-hover: #1a7fff;
+    --bfx-brand: #fc9300;
+    --bfx-brand-soft: rgba(252, 147, 0, 0.14);
+    --bfx-radius: 6px;
+    --bfx-radius-sm: 4px;
+    --bfx-font: "Adobe Clean", "Inter", "Segoe UI", Arial, sans-serif;
+    --bfx-tracking: -0.02em;
+}
+
+/* ── Base ─────────────────────────────────────────────────── */
+html,
+body {
+    font-family: var(--bfx-font);
+    letter-spacing: var(--bfx-tracking);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: var(--bfx-bg);
+    color: var(--bfx-text-secondary);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #6e6e6e #202020;
+}
+
+*::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #252525;
+    border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #6e6e6e 0%, #6e6e6e 100%);
+    border-radius: 9999px;
+    border: 2px solid #202020;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #929292 0%, #929292 100%);
+}
+
+.container {
+    padding: 0;
+    background: var(--bfx-bg);
+}
+
+/* ── Header (toolbar BadFX) ─────────────────────────────── */
+.header {
+    background: var(--bfx-bg-elevated);
+    border-bottom: 1px solid var(--bfx-border);
+    padding: 8px 12px;
+    box-shadow: none;
+}
+
+.header h1 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--bfx-text);
+    letter-spacing: var(--bfx-tracking);
+}
+
+.header-right {
+    gap: 4px;
+}
+
+.favorites-toggle-btn {
+    width: 30px;
+    height: 30px;
+    background: var(--bfx-bg-surface);
+    border: 1px solid var(--bfx-border);
+    border-radius: var(--bfx-radius-sm);
+    color: var(--bfx-text-muted);
+    box-shadow: none;
+}
+
+.favorites-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--bfx-border);
+    color: var(--bfx-text);
+    filter: brightness(1.15);
+}
+
+.favorites-toggle-btn.active {
+    background: var(--bfx-bg-surface);
+    border-color: var(--bfx-border);
+    color: var(--bfx-brand);
+    box-shadow: none;
+}
+
+.favorites-toggle-btn.active svg {
+    fill: var(--bfx-brand);
+}
+
+.favorites-toggle-btn svg {
+    width: 15px;
+    height: 15px;
+}
+
+/* ── Status bar ───────────────────────────────────────────── */
+.status-container-top {
+    background: var(--bfx-bg-elevated);
+    border-bottom: 1px solid var(--bfx-border-subtle);
+    padding: 6px 12px;
+    margin-bottom: 0;
+}
+
+.status-message {
+    color: var(--bfx-text-muted);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
+
+#status.status {
+    background: var(--bfx-bg-surface);
+    border: 1px solid var(--bfx-border);
+    color: var(--bfx-text-muted);
+    border-radius: var(--bfx-radius-sm);
+}
+
+.status.success {
+    color: #8fd49a;
+    border-color: rgba(143, 212, 154, 0.25);
+    background: rgba(143, 212, 154, 0.08);
+}
+
+.status.error {
+    color: #ff9a9a;
+    border-color: rgba(255, 154, 154, 0.25);
+    background: rgba(255, 154, 154, 0.08);
+}
+
+.status.loading {
+    color: var(--bfx-text-muted);
+    border-color: var(--bfx-border);
+}
+
+/* ── Scroll area ──────────────────────────────────────────── */
+.quick-animator-scroll {
+    padding: 8px 10px 150px;
+    background: var(--bfx-bg);
+}
+
+/* ── Categories ───────────────────────────────────────────── */
+.category {
+    margin-bottom: 4px;
+}
+
+.category-header {
+    background: transparent;
+    border: none;
+    border-radius: var(--bfx-radius-sm);
+    padding: 8px 6px;
+}
+
+.category-header:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.category-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--bfx-text-dim);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+}
+
+.category-icon {
+    color: var(--bfx-text-faint);
+    font-size: 9px;
+}
+
+.category-content {
+    padding: 4px 0 0;
+}
+
+.effects-grid {
+    gap: 6px;
+}
+
+/* ── Vista favoritos (lista BadFX) ────────────────────────── */
+.favorites-flat-container {
+    padding: 4px 2px 16px;
+}
+
+.favorites-flat-header {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--bfx-text-dim);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    padding: 6px 4px 10px;
+    border-bottom: 1px solid var(--bfx-border-subtle);
+    margin-bottom: 10px;
+}
+
+.favorites-flat-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.favorites-flat-grid .effect-btn {
+    margin: 0;
+    min-height: 42px;
+    padding: 11px 14px;
+    border-radius: var(--bfx-radius);
+}
+
+.favorites-flat-grid .effect-name {
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.favorites-flat-grid > div[style*="grid-column"] {
+    padding: 32px 16px !important;
+    color: var(--bfx-text-dim) !important;
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+}
+
+/* ── Preset list rows ─────────────────────────────────────── */
+.effect-btn {
+    background: var(--bfx-bg-surface);
+    border: 1px solid var(--bfx-border);
+    border-radius: var(--bfx-radius);
+    padding: 9px 12px;
+    min-height: 36px;
+    box-shadow: none;
+}
+
+.effect-btn:hover {
+    background: var(--bfx-bg-hover);
+    border-color: #333333;
+    filter: brightness(1.06);
+}
+
+.effect-btn.selected,
+.effect-btn.selected-entrance,
+.effect-btn.selected-exit {
+    border-color: var(--bfx-brand);
+    background: var(--bfx-brand-soft);
+    box-shadow: inset 0 0 0 1px rgba(252, 147, 0, 0.3);
+}
+
+.effect-btn.selected .effect-name,
+.effect-btn.selected-entrance .effect-name,
+.effect-btn.selected-exit .effect-name {
+    color: var(--bfx-brand);
+}
+
+.effect-name {
+    font-size: 12px;
+    color: var(--bfx-text-secondary);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
+
+/* ── Favorites star (BadFX: solo icono) ───────────────────── */
+.favorite-star {
+    background: transparent !important;
+    border: none !important;
+    color: #5b5b5b !important;
+}
+
+.favorite-star.favorited {
+    color: var(--bfx-brand) !important;
+    background: transparent !important;
+}
+
+.favorite-star:hover {
+    color: var(--bfx-brand) !important;
+    background: transparent !important;
+    filter: brightness(1.12);
+}
+
+/* ── Bottom toolbar (BadFX dock) ──────────────────────────── */
+.controls-panel-fixed {
+    background: var(--bfx-bg-elevated);
+    border-top: 1px solid var(--bfx-border);
+    padding: 6px 8px 8px;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(12px);
+}
+
+.controls-row {
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.btn-compact {
+    height: 34px;
+    background: var(--bfx-bg-surface);
+    border: 1px solid var(--bfx-border);
+    border-radius: var(--bfx-radius-sm);
+    color: var(--bfx-text-muted);
+}
+
+.btn-compact:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #333;
+    color: var(--bfx-text);
+    filter: brightness(1.12);
+}
+
+.btn-compact:hover svg,
+.btn-compact svg {
+    fill: currentColor !important;
+}
+
+#keysInOutBtn.btn-compact {
+    color: var(--bfx-brand);
+}
+
+#keysInOutBtn.btn-compact:hover {
+    color: #ffa31a;
+    border-color: rgba(252, 147, 0, 0.4);
+    background: var(--bfx-brand-soft);
+}
+
+/* ── APLICAR ──────────────────────────────────────────────── */
+.apply-buttons-row .btn-apply,
+.btn-apply-main {
+    background: var(--bfx-bg-surface) !important;
+    border: 1px solid rgba(252, 147, 0, 0.55) !important;
+    border-bottom: 1px solid rgba(252, 147, 0, 0.55) !important;
+    border-radius: var(--bfx-radius) !important;
+    color: var(--bfx-brand) !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em;
+    padding: 11px 8px !important;
+    box-shadow: none !important;
+}
+
+.apply-buttons-row .btn-apply:hover,
+.btn-apply-main:hover {
+    background: var(--bfx-brand-soft) !important;
+    border-color: var(--bfx-brand) !important;
+    color: #ffa31a !important;
+    filter: brightness(1.08);
+    box-shadow: none !important;
+}
+
+.apply-buttons-row .btn-apply:active,
+.btn-apply-main:active {
+    filter: brightness(0.95);
+    transform: scale(0.99);
+}
+
+.apply-buttons-row .btn-apply:disabled,
+.btn-apply-main:disabled {
+    opacity: 0.45;
+    border-color: var(--bfx-border) !important;
+    color: var(--bfx-text-faint) !important;
+}
+
+/* ── Tabs ─────────────────────────────────────────────────── */
+.tab-navigation {
+    border-bottom: 1px solid var(--bfx-border);
+    gap: 0;
+    margin-bottom: 0;
+    padding: 0 8px;
+    background: var(--bfx-bg-elevated);
+}
+
+.tab-btn {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--bfx-text-dim);
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    padding: 10px 12px;
+    letter-spacing: -0.01em;
+}
+
+.tab-btn:hover {
+    color: var(--bfx-text-muted);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.tab-btn.active {
+    color: var(--bfx-text);
+    background: transparent;
+    border-bottom-color: var(--bfx-accent);
+    box-shadow: none;
+}
+
+/* ── Preset manager ───────────────────────────────────────── */
+#tab-presets {
+    padding: 10px;
+    background: var(--bfx-bg);
+}
+
+.search-input {
+    background: var(--bfx-bg-input);
+    border: 1px solid var(--bfx-border);
+    border-radius: var(--bfx-radius);
+    color: var(--bfx-text-secondary);
+    font-size: 12px;
+    padding: 9px 12px;
+}
+
+.search-input:focus {
+    border-color: var(--bfx-accent);
+    background: var(--bfx-bg-hover);
+    outline: none;
+    box-shadow: 0 0 0 1px rgba(0, 110, 222, 0.25);
+}
+
+.search-input::placeholder {
+    color: var(--bfx-text-faint);
+}
+
+.preset-sidebar {
+    width: 130px;
+}
+
+.preset-category-header {
+    background: var(--bfx-bg-surface);
+    border: 1px solid transparent;
+    border-radius: var(--bfx-radius-sm);
+    color: var(--bfx-text-muted);
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.preset-category:hover .preset-category-header {
+    background: var(--bfx-bg-hover);
+    border-color: var(--bfx-border);
+}
+
+.preset-category.active .preset-category-header {
+    background: rgba(0, 110, 222, 0.15);
+    border-color: rgba(0, 110, 222, 0.35);
+    color: var(--bfx-text);
+}
+
+.preset-count {
+    background: var(--bfx-bg-hover);
+    color: var(--bfx-text-dim);
+    font-size: 10px;
+    border-radius: 999px;
+}
+
+.preset-main {
+    background: var(--bfx-bg-surface);
+    border: 1px solid var(--bfx-border);
+    border-radius: var(--bfx-radius);
+}
+
+.preset-card {
+    background: var(--bfx-bg-elevated);
+    border: 1px solid var(--bfx-border);
+    border-radius: var(--bfx-radius);
+}
+
+.preset-card:hover {
+    background: var(--bfx-bg-hover);
+    border-color: #333;
+    filter: brightness(1.05);
+}
+
+.preset-card.selected {
+    border-color: var(--bfx-brand);
+    background: var(--bfx-brand-soft);
+    box-shadow: inset 0 0 0 1px rgba(252, 147, 0, 0.3);
+}
+
+.preset-thumbnail {
+    background: var(--bfx-bg);
+}
+
+.preset-info {
+    background: var(--bfx-bg-surface);
+}
+
+.preset-name {
+    color: var(--bfx-text-secondary);
+    font-size: 11px;
+}
+
+.preset-tab-btn {
+    background: var(--bfx-bg-surface);
+    border: 1px solid var(--bfx-border);
+    border-radius: var(--bfx-radius-sm);
+    color: var(--bfx-text-dim);
+}
+
+.preset-tab-btn.active {
+    background: rgba(0, 110, 222, 0.18);
+    border-color: rgba(0, 110, 222, 0.4);
+    color: var(--bfx-text);
+}
+
+.preset-tab-btn:hover {
+    background: var(--bfx-bg-hover);
+}
+
+.apply-buttons-fixed {
+    background: var(--bfx-bg-elevated);
+    border-top: 1px solid var(--bfx-border);
+    border-radius: var(--bfx-radius) var(--bfx-radius) 0 0;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* ── Action buttons ───────────────────────────────────────── */
+.btn-secondary {
+    background: var(--bfx-bg-surface);
+    border: 1px solid var(--bfx-border);
+    border-radius: var(--bfx-radius-sm);
+    color: var(--bfx-text-muted);
+    font-size: 12px;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #333;
+    color: var(--bfx-text);
+}
+
+.btn-create-preset {
+    background: var(--bfx-accent);
+    border: none;
+    border-radius: var(--bfx-radius);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: none;
+    letter-spacing: -0.01em;
+}
+
+.btn-create-preset:hover {
+    background: var(--bfx-accent-hover);
+    box-shadow: none;
+    transform: none;
+    filter: brightness(1.08);
+}
+
+/* ── Modals & menus (BadFX overlay) ───────────────────────── */
+.modal {
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content,
+.modal-content-compact {
+    background: var(--bfx-bg-elevated);
+    border: 1px solid var(--bfx-border);
+    border-radius: var(--bfx-radius);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--bfx-border);
+    padding: 14px 16px;
+}
+
+.modal-header h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--bfx-text);
+    letter-spacing: var(--bfx-tracking);
+}
+
+.modal-body {
+    padding: 14px 16px;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--bfx-border);
+    padding: 12px 16px;
+    gap: 8px;
+}
+
+.form-input,
+.form-select {
+    background: var(--bfx-bg-input);
+    border: 1px solid var(--bfx-border);
+    border-radius: var(--bfx-radius-sm);
+    color: var(--bfx-text-secondary);
+    font-size: 12px;
+}
+
+.form-input:focus,
+.form-select:focus {
+    border-color: var(--bfx-accent);
+    outline: none;
+    box-shadow: 0 0 0 1px rgba(0, 110, 222, 0.25);
+}
+
+.form-group label {
+    color: var(--bfx-text-muted);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
+
+.preset-context-menu {
+    background: var(--bfx-bg-elevated);
+    border: 1px solid var(--bfx-border);
+    border-radius: var(--bfx-radius);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.preset-context-menu-item {
+    color: var(--bfx-text-muted);
+    font-size: 12px;
+    padding: 8px 12px;
+}
+
+.preset-context-menu-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--bfx-text);
+}
+
+.preset-context-menu-item-danger:hover {
+    background: rgba(255, 154, 154, 0.12);
+    color: #ff9a9a;
+}
+
+/* ── Diálogos UI (prompt / confirm / alert) — BadFX ─────── */
+.ui-shell-modal .modal-content-compact {
+    max-width: 340px;
+    width: calc(100% - 24px);
+    overflow: hidden;
+}
+
+.ui-shell-modal .modal-close {
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+    color: var(--bfx-text-dim);
+    border-radius: var(--bfx-radius-sm);
+    background: transparent;
+}
+
+.ui-shell-modal .modal-close:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--bfx-text);
+}
+
+.ui-shell-modal .modal-body .form-group {
+    margin-bottom: 0;
+}
+
+.ui-shell-modal .form-input {
+    padding: 9px 11px;
+    margin-top: 4px;
+}
+
+.ui-shell-modal .form-input:focus {
+    border-color: var(--bfx-accent);
+    box-shadow: 0 0 0 1px rgba(0, 110, 222, 0.35);
+    background: var(--bfx-bg-hover);
+}
+
+.ui-shell-modal .ui-dialog-message {
+    color: var(--bfx-text-muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.ui-shell-modal .modal-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px 14px;
+    border-top: 1px solid var(--bfx-border);
+    background: var(--bfx-bg-elevated);
+}
+
+/* Anular btn-apply grande / gradiente en diálogos */
+.ui-shell-modal .modal-footer .btn-secondary,
+.ui-shell-modal .modal-footer .btn-apply {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: 32px;
+    padding: 0 14px !important;
+    margin: 0;
+    font-size: 12px !important;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    border-radius: var(--bfx-radius-sm) !important;
+    box-shadow: none !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s, filter 0.15s;
+}
+
+.ui-shell-modal .modal-footer .btn-secondary {
+    background: var(--bfx-bg-surface) !important;
+    border: 1px solid var(--bfx-border) !important;
+    color: var(--bfx-text-muted) !important;
+}
+
+.ui-shell-modal .modal-footer .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: #333 !important;
+    color: var(--bfx-text) !important;
+    filter: none;
+}
+
+.ui-shell-modal .modal-footer .btn-apply.btn-both,
+.ui-shell-modal .modal-footer #uiPromptOk,
+.ui-shell-modal .modal-footer #uiMessageOk {
+    background: var(--bfx-brand) !important;
+    border: 1px solid rgba(252, 147, 0, 0.45) !important;
+    color: #fff !important;
+}
+
+.ui-shell-modal .modal-footer .btn-apply.btn-both:hover,
+.ui-shell-modal .modal-footer #uiPromptOk:hover,
+.ui-shell-modal .modal-footer #uiMessageOk:hover {
+    background: #ffa31a !important;
+    border-color: var(--bfx-brand) !important;
+    filter: brightness(1.05);
+    box-shadow: none !important;
+}
+
+.ui-shell-modal .modal-footer .btn-apply.btn-destructive,
+.ui-shell-modal .modal-footer #uiConfirmOk.btn-destructive {
+    background: #b33c3c !important;
+    border: 1px solid #922f2f !important;
+    color: #fff !important;
+}
+
+.ui-shell-modal .modal-footer .btn-apply.btn-destructive:hover,
+.ui-shell-modal .modal-footer #uiConfirmOk.btn-destructive:hover {
+    background: #c44 !important;
+    filter: brightness(1.06);
+}
+
+.ui-shell-modal .modal-footer .btn-apply:active,
+.ui-shell-modal .modal-footer .btn-secondary:active {
+    filter: brightness(0.94);
+    transform: scale(0.98);
+}
+
+/* Un solo botón (alert) alineado a la derecha */
+.ui-shell-modal .modal-footer:has(#uiMessageOk:only-child) {
+    justify-content: flex-end;
+}
+
+/* ── Misc ─────────────────────────────────────────────────── */
+.comp-info,
+.preview-container-fixed {
+    background: var(--bfx-bg-surface);
+    border: 1px solid var(--bfx-border);
+    border-radius: var(--bfx-radius);
+}
+
+.divider,
+.divider-small {
+    background: var(--bfx-border);
+}
+
+.version {
+    background: var(--bfx-bg-surface);
+    border: 1px solid var(--bfx-border);
+    color: var(--bfx-text-dim);
+}
+
+#debugLog {
+    background: var(--bfx-bg) !important;
+    border: 1px solid var(--bfx-border) !important;
+    border-radius: var(--bfx-radius-sm) !important;
+}
+
+.quick-animator-scroll::-webkit-scrollbar-thumb,
+.preset-manager::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #6e6e6e 0%, #6e6e6e 100%);
+    border: 2px solid #202020;
+}
+
+.quick-animator-scroll::-webkit-scrollbar-thumb:hover,
+.preset-manager::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #929292 0%, #929292 100%);
+}
+
+.quick-animator-scroll::-webkit-scrollbar-track,
+.preset-manager::-webkit-scrollbar-track {
+    background: #252525;
+}

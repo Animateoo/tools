@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#262626;font:11px Tahoma,'Segoe UI',sans-serif;color:#ccc;overflow:hidden}
+.shell{display:flex;flex-direction:column;width:100%}
+.titlebar{display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:#323232;color:#e0e0e0;font-size:12px;border-bottom:1px solid #1a1a1a;flex-shrink:0}
+.titlebar button{background:none;border:none;color:#ccc;font-size:14px;line-height:1;cursor:pointer;padding:2px 4px}
+.win{display:flex;flex-direction:column;padding:6px;gap:4px;background:#262626}
+.topbar{display:flex;align-items:center;gap:3px}
+.hex-group{display:flex;align-items:center;gap:2px;min-width:0}
+.chip{width:24px;height:22px;border:1px solid #737373;background:#262626;cursor:pointer;position:relative;flex-shrink:0}
+.chip-fill{position:absolute;left:3px;top:3px;right:3px;bottom:3px;background:#fff}
+.hex{width:65px;height:22px;border:1px solid #555;background:#1f1f1f;color:#fff;padding:1px 4px;font:11px monospace;flex-shrink:0}
+.btn{border:1px solid #555;background:#3a3a3a;color:#bbb;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.btn svg{display:block;pointer-events:none}
+.btn-sm{width:24px;height:22px}
+.btn-sm svg{width:11px;height:11px}
+.btn-lg{width:28px;height:24px}
+.btn-lg svg{width:14px;height:14px}
+.btn:hover{background:#454545;color:#eee}
+.spacer{flex:1;min-width:4px}
+.label{font:bold 10px Tahoma;color:#aaa;text-transform:uppercase;line-height:1.2}
+.swatch-grid{display:flex;flex-direction:column;gap:3px;width:100%}
+.swatch-row{display:flex;gap:3px;width:100%}
+.swatch{flex:1;height:24px;min-width:0;border:1px solid rgba(0,0,0,.45);cursor:pointer}
+.swatch:hover{outline:1px solid #fff;z-index:1}
+.bottom{display:flex;gap:2px;align-items:center;margin-top:1px}
+.dropdown{flex:1;height:22px;min-width:0;border:1px solid #555;background:#1f1f1f;color:#ccc;font:11px Tahoma;padding:0 4px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="titlebar"><span>Aura Pro</span><button type="button" aria-label="Menú">☰</button></div>
+  <div class="win">
+    <div class="topbar">
+      <div class="hex-group">
+        <div class="chip" id="chip"><div class="chip-fill" id="chipFill"></div></div>
+        <input class="hex" id="hex" value="#FFFFFF">
+        <button class="btn btn-sm" type="button" title="Añadir color">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+        </button>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn btn-lg" type="button" id="stroke" title="Trazo">
+        <svg id="strokeIcon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="2.5" y="2.5" width="11" height="11" rx="0.5"/><rect x="2.5" y="2.5" width="5.5" height="11" fill="currentColor" stroke="none"/></svg>
+      </button>
+      <button class="btn btn-lg" type="button" title="Swap">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5.5H3.5M3.5 5.5L5.5 3.5M3.5 5.5L5.5 7.5"/><path d="M5 10.5h7.5M12.5 10.5L10.5 8.5M12.5 10.5L10.5 12.5"/></svg>
+      </button>
+      <button class="btn btn-lg" type="button" title="Importar">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M2.5 5.5h3.5l1-1.5h4.5a1 1 0 0 1 1 1v7H2.5V5.5z"/></svg>
+      </button>
+      <button class="btn btn-lg" type="button" title="Exportar">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3.5h5l2.5 2.5V13H4V3.5z"/><path d="M9 3.5v2.5h2.5"/><path d="M6 9h4"/><path d="M6 11h4"/></svg>
+      </button>
+    </div>
+    <div class="label" id="palLabel">DIDI PRÉSTAMOS (7)</div>
+    <div class="swatch-grid" id="swatches"></div>
+    <div class="bottom">
+      <select class="dropdown" id="dropdown">
+        <option selected>DiDi Préstamos</option>
+        <option>DiDi Principal</option>
+        <option>DiDi Card</option>
+      </select>
+      <button class="btn btn-sm" type="button" title="Nueva paleta">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+      </button>
+      <button class="btn btn-sm" type="button" title="Eliminar">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 8h10"/></svg>
+      </button>
+      <button class="btn btn-sm" type="button" title="Renombrar">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.5l1-3.5 7.5-7.5 2.5 2.5-7.5 7.5-3.5 1z"/><path d="M9.5 4.5l2 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+<script>
+var COLS=6;
+var palettes={
+  'DiDi Préstamos':['#A9D2A1','#FC4C02','#0056EF','#FFBC00','#F5EDEB','#3A2932','#FFFFFF'],
+  'DiDi Principal':['#FC4C02','#F5EDEB','#3A2932','#FFBC00','#0056EF','#720085','#3AA537','#FFFFFF','#000000'],
+  'DiDi Card':['#FC4C02','#FC765B','#E4572E','#FFBC00','#F5EDEB','#FFC8BD','#FFE7E4','#FFF1EF','#F0F0F0']
+};
+var chipFill=document.getElementById('chipFill'),hex=document.getElementById('hex'),sw=document.getElementById('swatches'),dd=document.getElementById('dropdown'),lbl=document.getElementById('palLabel');
+var strokeFill=true;
+function setChip(c){chipFill.style.background=c;}
+function render(name){
+  var colors=palettes[name]||palettes['DiDi Préstamos'];
+  lbl.textContent=name.toUpperCase()+' ('+colors.length+')';
+  sw.innerHTML='';
+  var row,i,c,s;
+  for(i=0;i<colors.length;i++){
+    if(i%COLS===0){row=document.createElement('div');row.className='swatch-row';sw.appendChild(row);}
+    c=colors[i];
+    s=document.createElement('div');s.className='swatch';s.style.background=c;
+    s.onclick=function(col){return function(){hex.value=col;setChip(col);};}(c);
+    row.appendChild(s);
+  }
+}
+render('DiDi Préstamos');
+dd.onchange=function(){render(this.value);};
+setChip('#FFFFFF');
+hex.oninput=function(){setChip(this.value);};
+document.getElementById('stroke').onclick=function(){
+  strokeFill=!strokeFill;
+  document.getElementById('strokeIcon').innerHTML=strokeFill
+    ?'<rect x="2.5" y="2.5" width="11" height="11" rx="0.5"/><rect x="2.5" y="2.5" width="5.5" height="11" fill="currentColor" stroke="none"/>'
+    :'<rect x="2.5" y="2.5" width="11" height="11" rx="0.5"/><rect x="8" y="2.5" width="5.5" height="11" fill="currentColor" stroke="none"/>';
+};
+</script>
+</body>
+</html>

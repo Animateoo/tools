@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>MediaVault</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div id="app" class="app">
+
+    <header class="header">
+      <div class="header-brand">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="12" height="10" rx="1"/>
+            <path d="M7 6.5l4 2.5-4 2.5V6.5z" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div class="header-brand-text">
+          <h1 class="title">MediaVault</h1>
+          <p class="subtitle" id="host-label">Biblioteca de medios</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="btn-accent" id="btn-link-folder">
+          <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6.5 8.5a3.5 3.5 0 0 0 5.3.4l2-2a3.5 3.5 0 0 0-5-5l-1.2 1.2"/>
+            <path d="M9.5 7.5a3.5 3.5 0 0 0-5.3-.4l-2 2a3.5 3.5 0 0 0 5 5l1.2-1.2"/>
+          </svg>
+          Vincular carpeta
+        </button>
+        <button type="button" class="icon-btn" id="btn-settings" title="Ajustes">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="8" cy="8" r="2"/>
+            <path d="M8 1.5v1.2M8 13.3v1.2M1.5 8h1.2M13.3 8h1.2M3.2 3.2l.85.85M11.95 11.95l.85.85M3.2 12.8l.85-.85M11.95 4.05l.85-.85"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="workspace" id="workspace">
+      <aside class="sidebar" id="sidebar">
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+            <circle cx="7" cy="7" r="4.5"/><line x1="10.5" y1="10.5" x2="13.5" y2="13.5"/>
+          </svg>
+          <input type="search" id="search-input" placeholder="Buscar medios…" autocomplete="off">
+        </div>
+
+        <div class="sidebar-section-label">Bibliotecas</div>
+        <div class="mv-tree-panel" id="folder-tree"></div>
+      </aside>
+
+      <div class="content-col">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <button type="button" class="icon-btn toolbar-sidebar-toggle is-active" id="btn-toggle-sidebar" title="Ocultar biblioteca (Ctrl+B)" aria-label="Mostrar u ocultar biblioteca"></button>
+            <span class="breadcrumb" id="breadcrumb">—</span>
+          </div>
+          <div class="toolbar-right">
+            <div class="view-toggle" id="view-toggle">
+              <button type="button" class="view-btn" id="view-list" title="Lista" aria-label="Lista"></button>
+              <button type="button" class="view-btn active" id="view-grid" title="Cuadrícula" aria-label="Cuadrícula"></button>
+            </div>
+            <div class="size-toggle is-hidden" id="size-toggle" title="Tamaño de iconos">
+              <button type="button" class="size-btn" data-size="120" title="Mediano">M</button>
+              <button type="button" class="size-btn active" data-size="180" title="Grande">L</button>
+              <button type="button" class="size-btn" data-size="220" title="Extra grande">XL</button>
+            </div>
+            <button type="button" class="tool-btn" id="btn-favorites" title="Solo favoritos" aria-label="Favoritos"></button>
+          </div>
+        </div>
+
+        <div class="grid-scroll">
+          <div class="asset-list" id="asset-list"></div>
+          <div class="asset-grid is-hidden" id="asset-grid"></div>
+
+          <div class="welcome-state" id="welcome-state">
+            <div class="welcome-drop" id="welcome-drop">
+              <div class="welcome-icon">
+                <svg viewBox="0 0 48 48" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M24 32V16M24 16l-6 6M24 16l6 6"/>
+                  <rect x="6" y="6" width="36" height="36" rx="8" stroke-dasharray="4 3"/>
+                </svg>
+              </div>
+              <p class="welcome-title">Arrastra una carpeta aquí</p>
+              <p class="welcome-hint">Vincula tus audios, videos e imágenes sin abrir el Explorador de Windows.</p>
+              <button type="button" class="btn-accent" id="btn-link-welcome">O vincular manualmente</button>
+            </div>
+          </div>
+
+          <div class="empty-state is-hidden" id="empty-state">
+            <p>No hay archivos en esta carpeta</p>
+          </div>
+        </div>
+
+        <!-- Preview player -->
+        <section class="preview-bar is-hidden" id="preview-bar">
+          <div class="preview-resize-handle" id="preview-resize-handle" title="Arrastrar para ajustar altura"></div>
+          <button type="button" class="preview-close" id="btn-preview-close" title="Cerrar (Esc)" aria-label="Cerrar preview">
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/>
+            </svg>
+          </button>
+          <div class="preview-wave-row" id="preview-media"></div>
+          <div class="preview-bottom">
+            <div class="preview-info">
+              <div class="preview-head">
+                <div class="preview-name" id="preview-name">—</div>
+                <div class="preview-meta" id="preview-meta">—</div>
+                <div class="preview-controls" id="preview-controls"></div>
+              </div>
+            </div>
+            <div class="preview-actions">
+              <button type="button" class="preview-icon-btn preview-icon-btn-accent" id="btn-preview-use" title="Añadir a timeline" aria-label="Añadir a timeline"></button>
+              <button type="button" class="preview-icon-btn" id="btn-preview-import" title="Solo importar" aria-label="Solo importar"></button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <footer class="statusbar">
+      <span id="status-count">0 archivos</span>
+      <span id="status-hint">Arrastrar → timeline · Doble clic → timeline</span>
+    </footer>
+
+    <!-- Drop overlay -->
+    <div class="drop-overlay is-hidden" id="drop-overlay">
+      <div class="drop-card">
+        <div class="drop-ring"></div>
+        <p class="drop-title">Soltar aquí</p>
+        <p class="drop-sub" id="drop-sub">Carpeta → vincular biblioteca · Archivo → importar</p>
+      </div>
+    </div>
+
+    <!-- Custom link browser (no Windows dialog) -->
+    <div class="modal is-hidden" id="link-modal">
+      <div class="modal-panel link-panel">
+        <div class="modal-head">
+          <h2>Vincular carpeta</h2>
+          <button type="button" class="icon-btn" id="btn-link-close">✕</button>
+        </div>
+
+        <div class="link-drop" id="link-drop">
+          <span>Arrastra una carpeta desde el escritorio</span>
+        </div>
+
+        <div class="link-path-row">
+          <input type="text" id="link-path-input" class="text-input" placeholder="Pega la ruta: C:\Users\...\Mis audios" spellcheck="false">
+          <button type="button" class="btn-sm" id="link-path-go">Ir</button>
+        </div>
+
+        <div class="link-quick" id="link-quick"></div>
+
+        <div class="link-browser">
+          <div class="link-crumb" id="link-crumb"></div>
+          <ul class="link-list" id="link-list"></ul>
+        </div>
+
+        <div class="modal-foot">
+          <span class="link-selected-path" id="link-selected-path">—</span>
+          <button type="button" class="btn-accent" id="link-confirm" disabled>Vincular carpeta</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm / prompt dialog -->
+    <div class="modal is-hidden" id="dialog-modal">
+      <div class="modal-panel dialog-panel">
+        <div class="modal-head">
+          <h2 id="dialog-title">Confirmar</h2>
+        </div>
+        <div class="dialog-body">
+          <p class="dialog-message" id="dialog-message"></p>
+          <input type="text" class="text-input dialog-input is-hidden" id="dialog-input" spellcheck="false">
+        </div>
+        <div class="modal-foot dialog-foot">
+          <button type="button" class="btn-dialog-cancel" id="dialog-cancel">Cancelar</button>
+          <button type="button" class="btn-accent" id="dialog-confirm">Confirmar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Context menu (items built dynamically) -->
+    <div class="ctx-menu is-hidden" id="ctx-menu"></div>
+
+    <!-- Settings -->
+    <aside class="settings-drawer is-hidden" id="settings-drawer">
+      <div class="settings-head">
+        <h2>Ajustes</h2>
+        <button type="button" class="icon-btn" id="btn-close-settings">✕</button>
+      </div>
+      <label class="field-label">Carpetas vinculadas</label>
+      <ul class="folder-list" id="settings-folders"></ul>
+      <button type="button" class="btn-sm" id="btn-settings-link">+ Vincular carpeta</button>
+      <label class="field-label">Búsqueda rápida</label>
+      <ul class="folder-list" id="settings-search-pins"></ul>
+      <p class="settings-hint">Clic derecho en carpeta o biblioteca → «Añadir a búsqueda rápida». El buscador mirará dentro de esas carpetas (y subcarpetas). Sin entradas aquí, busca en toda la biblioteca activa.</p>
+      <label class="checkbox-row">
+        <input type="checkbox" id="opt-copy-footage" checked>
+        Copiar a carpeta del proyecto → (Footage)/Audio, Footage, Images…
+      </label>
+      <label class="checkbox-row">
+        <input type="checkbox" id="opt-add-timeline" checked>
+        Al usar archivo, añadir a timeline (playhead)
+      </label>
+      <label class="checkbox-row">
+        <input type="checkbox" id="opt-scan-subfolders" checked>
+        Escanear subcarpetas
+      </label>
+      <label class="checkbox-row">
+        <input type="checkbox" id="opt-hover-preview" checked>
+        Preview al pasar el mouse (video)
+      </label>
+      <button type="button" class="btn-ghost" id="btn-rescan">Reescanear biblioteca</button>
+      <p class="settings-credit">MediaVault · creado por Animateoo</p>
+    </aside>
+
+    <div class="toast is-hidden" id="toast"></div>
+    <div class="loading-overlay is-hidden" id="loading">
+      <div class="spinner"></div>
+      <span id="loading-text">Importando…</span>
+    </div>
+  </div>
+
+  <script src="js/CSInterface.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/library.js"></script>
+  <script src="js/project.js"></script>
+  <script src="js/drop.js"></script>
+  <script src="js/preview.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

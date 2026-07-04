@@ -1,0 +1,173 @@
+/**
+ * Layout adaptable al tamaño del panel CEP (sin quitar funciones).
+ */
+
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.header {
+    flex-shrink: 0;
+}
+
+#tab-quick.tab-content.active {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.quick-panel-layout {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.status-container-top {
+    flex-shrink: 0;
+}
+
+.quick-animator-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 6px !important;
+}
+
+.controls-panel-fixed {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    flex-shrink: 0;
+    z-index: 2;
+}
+
+/* Escala fluida según ancho/alto del panel */
+:root {
+    --tp-row-h: clamp(26px, 7.2vw, 34px);
+    --tp-icon: clamp(11px, 3vw, 14px);
+    --tp-list-pad-y: clamp(6px, 1.6vw, 10px);
+    --tp-list-pad-x: clamp(8px, 2.4vw, 12px);
+    --tp-list-font: clamp(10.5px, 2.7vw, 12px);
+    --tp-apply-font: clamp(10px, 2.6vw, 12px);
+    --tp-gap: clamp(3px, 0.8vw, 6px);
+}
+
+.controls-row {
+    grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+    gap: clamp(2px, 0.5vw, 4px) !important;
+}
+
+.btn-compact {
+    height: var(--tp-row-h) !important;
+    min-height: 0;
+    padding: 0 2px !important;
+}
+
+.btn-compact svg {
+    width: var(--tp-icon) !important;
+    height: var(--tp-icon) !important;
+}
+
+.btn-compact-tx {
+    font-size: clamp(9px, 2.4vw, 11px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+.btn-text-exploder {
+    color: #fc9300 !important;
+}
+
+.btn-text-exploder:hover {
+    color: #ffa31a !important;
+    border-color: rgba(252, 147, 0, 0.45) !important;
+    background: rgba(252, 147, 0, 0.1) !important;
+}
+
+.effect-btn {
+    min-height: clamp(30px, 8.5vw, 40px);
+    padding: var(--tp-list-pad-y) var(--tp-list-pad-x) !important;
+}
+
+.effect-name {
+    font-size: var(--tp-list-font) !important;
+}
+
+.favorites-flat-grid {
+    gap: var(--tp-gap) !important;
+}
+
+.favorites-flat-grid .effect-btn {
+    min-height: clamp(30px, 8.5vw, 40px);
+}
+
+.effects-grid {
+    gap: var(--tp-gap) !important;
+}
+
+.apply-buttons-row .btn-apply,
+.btn-apply-main {
+    padding: clamp(7px, 1.8vw, 10px) 6px !important;
+    font-size: var(--tp-apply-font) !important;
+}
+
+.header h1 {
+    font-size: clamp(13px, 3.6vw, 15px);
+}
+
+.favorites-toggle-btn {
+    width: clamp(26px, 7vw, 30px) !important;
+    height: clamp(26px, 7vw, 30px) !important;
+}
+
+.status-message {
+    font-size: clamp(10px, 2.6vw, 11px);
+}
+
+.category-title {
+    font-size: clamp(10px, 2.6vw, 11px) !important;
+}
+
+/* Panel muy bajo: compactar aún más */
+@media (max-height: 380px) {
+    .status-container-top {
+        padding: 4px 10px !important;
+    }
+
+    .header {
+        padding: 6px 10px !important;
+    }
+
+    .quick-animator-scroll {
+        padding: 4px 8px 4px !important;
+    }
+
+    .controls-panel-fixed {
+        padding: 4px 6px 6px !important;
+    }
+}
+
+/* Panel muy estrecho: botones en 2 filas */
+@media (max-width: 220px) {
+    .controls-row {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+}

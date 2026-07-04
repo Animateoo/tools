@@ -1,0 +1,107 @@
+/* ============================================================================
+   FAVORITE STAR — estilo BadFX: solo icono, sin círculo
+   ============================================================================ */
+
+.favorite-star {
+    position: absolute !important;
+    top: 50% !important;
+    right: 10px !important;
+    transform: translateY(-50%) !important;
+    z-index: 15 !important;
+
+    width: 20px !important;
+    height: 20px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    color: #5b5b5b !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    opacity: 0.75;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: color 0.15s ease, opacity 0.15s ease, filter 0.15s ease !important;
+}
+
+.favorite-star-icon {
+    width: 15px;
+    height: 15px;
+    display: block;
+    flex-shrink: 0;
+}
+
+.favorite-star-icon path {
+    fill: currentColor;
+}
+
+.favorite-star:not(.favorited) .favorite-star-icon path[stroke] {
+    fill: none;
+}
+
+.favorite-star:hover {
+    background: transparent !important;
+    color: #fc9300 !important;
+    opacity: 1 !important;
+    filter: brightness(1.12);
+}
+
+.favorite-star.favorited {
+    color: #fc9300 !important;
+    background: transparent !important;
+    opacity: 1 !important;
+}
+
+.favorite-star.favorited .favorite-star-icon path {
+    fill: currentColor;
+}
+
+.favorite-star:active {
+    filter: brightness(0.9);
+}
+
+.effect-btn {
+    position: relative !important;
+    padding-right: 30px !important;
+}
+
+.effect-btn .favorite-star,
+.effect-btn:hover .favorite-star,
+.effect-btn.selected .favorite-star {
+    background: transparent !important;
+    border: none !important;
+}
+
+.effect-btn:hover .favorite-star {
+    opacity: 1 !important;
+}
+
+.favorite-star:focus {
+    outline: none !important;
+}
+
+.favorite-star:focus-visible {
+    outline: 1px solid rgba(252, 147, 0, 0.5) !important;
+    outline-offset: 2px !important;
+}
+
+@media (max-width: 400px) {
+    .favorite-star {
+        right: 8px !important;
+    }
+
+    .favorite-star-icon {
+        width: 14px;
+        height: 14px;
+    }
+
+    .effect-btn {
+        padding-right: 26px !important;
+    }
+}

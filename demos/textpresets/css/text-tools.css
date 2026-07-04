@@ -1,0 +1,143 @@
+/* Texto — panel compacto (sin heredar .modal-content global) */
+
+.text-tools-modal {
+    z-index: 1200;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: none;
+}
+
+.text-tools-panel {
+    width: 200px;
+    padding: 8px;
+    border: 1px solid rgba(252, 147, 0, 0.35);
+    border-radius: 8px;
+    background: #1e1e1e;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.text-tools-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.text-tools-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #fc9300;
+    letter-spacing: 0.02em;
+}
+
+.text-tools-x {
+    all: unset;
+    box-sizing: border-box;
+    width: 18px;
+    height: 18px;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+    color: #888;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.text-tools-x:hover {
+    color: #ccc;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.text-tools-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.text-tools-btn {
+    all: unset;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    padding: 4px 2px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background: #262626;
+    color: #d8d8d8;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.1s, border-color 0.1s;
+}
+
+.text-tools-btn:hover {
+    background: #2e2e2e;
+    border-color: rgba(252, 147, 0, 0.4);
+    color: #fff;
+}
+
+.text-tools-btn:active {
+    background: rgba(252, 147, 0, 0.12);
+}
+
+.text-tools-btn-full {
+    width: 100%;
+    margin-bottom: 6px;
+}
+
+.text-tools-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+    padding-top: 4px;
+    border-top: 1px solid #2a2a2a;
+}
+
+.text-tools-opt {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 9px;
+    color: #888;
+    cursor: pointer;
+    user-select: none;
+}
+
+.text-tools-opt input {
+    width: 11px;
+    height: 11px;
+    margin: 0;
+    accent-color: #fc9300;
+    cursor: pointer;
+}
+
+.text-tools-order {
+    flex: 1 1 100%;
+    min-width: 0;
+    height: 22px;
+    padding: 0 4px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background: #222;
+    color: #aaa;
+    font-family: inherit;
+    font-size: 9px;
+    cursor: pointer;
+}
+
+.text-tools-order:focus {
+    outline: none;
+    border-color: rgba(252, 147, 0, 0.4);
+}
+
+.text-tools-btn:disabled {
+    opacity: 0.4;
+    cursor: wait;
+}

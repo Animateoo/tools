@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>GraphEditor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="panel-shell">
+        <header class="panel-titlebar">
+            <span>GraphEditor</span>
+            <button type="button" class="panel-menu" aria-label="Menú">☰</button>
+        </header>
+
+    <div class="main-layout layout-vertical" id="mainLayout">
+
+        <div class="primary-column curve-family-graph" id="primaryColumn">
+
+            <div class="curve-type-bar" id="curveTypeBar" title="Tipo de curva (solo After Effects)">
+                <button type="button" class="curve-type-btn active" data-curve="graph" id="curveTypeGraph" title="Graph (CURVE / VALUE)">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 18V6M3 12h4l4-6 4 9 4-3h4"/></svg>
+                </button>
+                <button type="button" class="curve-type-btn" data-curve="elastic" title="Elastic">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 18c4-14 8 14 18-14"/></svg>
+                </button>
+                <button type="button" class="curve-type-btn" data-curve="bounce" title="Bounce">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 18V8M3 8c3-3 5 6 7-2c2 4 4-4 6 0c2-3 4 8 8-2"/></svg>
+                </button>
+                <button type="button" class="curve-type-btn" data-curve="step" title="Step">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 18V12h6V8h6V4h6"/></svg>
+                </button>
+            </div>
+
+            <div class="mode-selector" id="modeSelectorRow">
+                <button class="mode-btn active" id="btnModeVelocity">CURVE</button>
+                <button class="mode-btn" id="btnModeValue">VALUE</button>
+            </div>
+
+            <div class="graph-container" id="graphContainer">
+                <svg id="speedGraphSVG" viewBox="0 0 300 300" preserveAspectRatio="xMidYMid meet">
+                    <g id="graphGrid">
+                        <path id="gridPath" class="graph-grid-line" d="" />
+                    </g>
+
+                    <line id="graphBaseLeft" class="graph-base-left" x1="0" y1="140" x2="150" y2="140" />
+                    <line id="graphBaseRight" class="graph-base-right" x1="150" y1="140" x2="300" y2="140" />
+
+                    <path id="graphFill" class="graph-fill" d="" />
+                    <path id="graphCurve" class="graph-curve" d="" />
+                    <line id="handleLineLeft" class="graph-handle-line" x1="0" y1="140" x2="50" y2="140" />
+                    <line id="handleLineRight" class="graph-handle-line" x1="250" y1="140" x2="300" y2="140" />
+
+                    <g id="dragGroupLeft" style="cursor: move;">
+                        <rect id="dragAreaLeft" x="40" y="125" width="30" height="30" fill="transparent" />
+                        <circle id="handlePointLeft" class="graph-handle-point" cx="50" cy="140" r="4.5" />
+                    </g>
+                    <g id="dragGroupRight" style="cursor: move;">
+                        <rect id="dragAreaRight" x="230" y="125" width="30" height="30" fill="transparent" />
+                        <circle id="handlePointRight" class="graph-handle-point" cx="250" cy="140" r="4.5" />
+                    </g>
+
+                    <!-- Optional guide (toggle) -->
+                    <line id="graphGuideVertical" class="graph-guide-vertical" x1="150" y1="-2000" x2="150" y2="2000"
+                        style="display:none;" />
+                    <circle id="graphGuideDot" class="graph-guide-dot" cx="150" cy="20" r="4" style="display:none;" />
+                    <g id="customHandleLayer"></g>
+                </svg>
+            </div>
+
+            <div class="controls-section compact-mode">
+                <!-- Hidden legacy controls (kept for internal state) -->
+                <div style="display:none;">
+                    <div id="outValDisplay">50%</div>
+                    <input type="range" id="sliderOut" min="0.1" max="100" value="50" step="0.1">
+                    <div id="inValDisplay">50%</div>
+                    <input type="range" id="sliderIn" min="0.1" max="100" value="50" step="0.1">
+                </div>
+
+                <div class="tools-row">
+                    <div class="tools-box tools-box--keys">
+                        <div class="kf-btn kf-btn--sm" data-type="linear" title="Linear">
+                            <img src="icons/linear.svg" draggable="false">
+                        </div>
+                        <div class="kf-btn kf-btn--sm" data-type="bezier" title="Auto Bezier">
+                            <img src="icons/bezier.svg" draggable="false">
+                        </div>
+                        <div class="kf-btn kf-btn--sm" data-type="hold" title="Toggle Hold">
+                            <img src="icons/hold.svg" draggable="false">
+                        </div>
+
+                        <div class="separator-vertical kf-tools-sep" aria-hidden="true"></div>
+
+                        <div class="kf-btn kf-btn--sm preset-trigger" data-out="33.3" data-in="33.3" title="Easy Ease (influencia temporal)">
+                            <img src="icons/easyease.svg" draggable="false">
+                        </div>
+                    </div>
+                    <div class="tools-box tools-box--actions">
+                        <button type="button" class="icon-btn icon-btn--toolbar" id="reverseBtn" title="Reverse (intercambiar influencias)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <polyline points="9 21 3 21 3 15"></polyline>
+                                <path d="M21 3l-7 7"></path>
+                                <path d="M3 21l7-7"></path>
+                            </svg>
+                        </button>
+                        <button type="button" class="icon-btn icon-btn--toolbar" id="guideBtn" title="CTI: línea en el tiempo actual (sincroniza con el playhead de AE)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="3" x2="12" y2="21"></line>
+                                <circle cx="12" cy="5" r="1.8"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons-container">
+                <button id="copyBtn" class="copy-btn" title="Copiar curva desde AE">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </button>
+                <button id="applyBtn" class="apply-btn">APLICAR</button>
+            </div>
+        </div>
+
+    </div>
+
+    </div><!-- /.panel-shell -->
+
+    <script src="../_shared/CSInterface.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>

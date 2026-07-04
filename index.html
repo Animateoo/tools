@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animateo | Tools for Motion Masters</title>
+    <meta name="description"
+        content="Herramientas para After Effects, Premiere Pro, Illustrator y Photoshop. Extensiones y scripts que aceleran tu flujo creativo.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="noise" aria-hidden="true"></div>
+
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="logo" href="#">Animateo</a>
+            <div class="header-actions">
+                <a href="https://github.com/Animateoo" class="btn btn-ghost" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://www.behance.net/animateoo" class="btn btn-primary" target="_blank" rel="noopener">Portfolio</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO -->
+        <section class="hero hero-solo">
+            <div class="container hero-solo-inner">
+                <span class="eyebrow">After Effects · Premiere · Ai · Ps</span>
+                <h1>Herramientas para motion designers que valoran su tiempo</h1>
+                <p>Acelera tu flujo con paneles integrados y scripts listos para producción. Sin plantillas, sin
+                    buscar archivos — solo crear.</p>
+                <div class="hero-cta">
+                    <a href="https://github.com/Animateoo" class="btn btn-ghost btn-lg" target="_blank"
+                        rel="noopener">Explorar repos</a>
+                    <a href="https://www.behance.net/animateoo" class="btn btn-primary btn-lg" target="_blank"
+                        rel="noopener">Portfolio</a>
+                </div>
+                <div class="hero-stats">
+                    <div><strong>10</strong><span>tools activas</span></div>
+                    <div><strong>CEP + JSX</strong><span>integradas</span></div>
+                    <div><strong>Win + Mac</strong><span>soportados</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DEMOS — scroll, una sección por tool -->
+        <section class="demos-scroll" id="playground">
+            <div class="container">
+                <div class="section-head">
+                    <h2>Prueba cada tool</h2>
+                    <p>Interfaz real de tus paneles. Scroll para verlas todas — agregar una nueva es solo añadir un bloque.</p>
+                </div>
+
+                <article class="demo-block" id="demo-grapheditor">
+                    <div class="demo-block-layout">
+                        <div class="demo-block-info">
+                            <header class="demo-block-head">
+                                <span class="demo-block-tag">Extensión · AE</span>
+                                <h3>GraphEditor</h3>
+                            </header>
+                            <p class="demo-block-desc">Control visual de curvas CURVE / VALUE con easing profesional y botón APLICAR directo al timeline.</p>
+                            <a href="https://github.com/Animateoo/GraphEditorAE" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
+                        </div>
+                        <div class="demo-block-frame" style="--demo-h:440px;--demo-bg:#161616">
+                            <iframe src="demos/grapheditor/index.html" title="GraphEditor" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="demo-block" id="demo-textpresets">
+                    <div class="demo-block-layout">
+                        <div class="demo-block-info">
+                            <header class="demo-block-head">
+                                <span class="demo-block-tag">Extensión · AE</span>
+                                <h3>TextPresets</h3>
+                            </header>
+                            <p class="demo-block-desc">Presets .ffx organizados, favoritos y aplicación masiva con un clic.</p>
+                            <a href="https://github.com/Animateoo/TextsPresetsAE" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
+                        </div>
+                        <div class="demo-block-frame" style="--demo-h:460px;--demo-bg:#191919">
+                            <iframe src="demos/textpresets/preview.html" title="TextPresets" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="demo-block" id="demo-compvault">
+                    <div class="demo-block-layout">
+                        <div class="demo-block-info">
+                            <header class="demo-block-head">
+                                <span class="demo-block-tag">Extensión · AE</span>
+                                <h3>CompVault</h3>
+                            </header>
+                            <p class="demo-block-desc">Biblioteca local de comps, capas y presets. Vista lista o cuadrícula con categorías.</p>
+                            <a href="https://github.com/Animateoo" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
+                        </div>
+                        <div class="demo-block-frame demo-block-frame--vault" style="--demo-h:320px;--demo-bg:#1c1c1c">
+                            <iframe src="demos/compvault/preview.html" title="CompVault" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="demo-block" id="demo-mediavault">
+                    <div class="demo-block-layout">
+                        <div class="demo-block-info">
+                            <header class="demo-block-head">
+                                <span class="demo-block-tag">Extensión · AE + Pr</span>
+                                <h3>MediaVault</h3>
+                            </header>
+                            <p class="demo-block-desc">Biblioteca de audios y footage con waveforms, árbol de carpetas y arrastre al timeline.</p>
+                            <a href="https://github.com/Animateoo/MediaVault" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
+                        </div>
+                        <div class="demo-block-frame demo-block-frame--vault" style="--demo-h:420px;--demo-bg:#1c1c1c">
+                            <iframe src="demos/mediavault/preview.html" title="MediaVault" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="demo-block" id="demo-rootpro">
+                    <div class="demo-block-layout">
+                        <div class="demo-block-info">
+                            <header class="demo-block-head">
+                                <span class="demo-block-tag">Extensión · AE</span>
+                                <h3>Root Pro</h3>
+                            </header>
+                            <p class="demo-block-desc">Organiza footage en (Footage), collect nativo, busca missing files y badge de assets OK.</p>
+                            <a href="https://github.com/Animateoo" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
+                        </div>
+                        <div class="demo-block-frame demo-block-frame--wide-bar" style="--demo-h:52px;--demo-bg:#232323">
+                            <iframe src="demos/rootpro/preview.html" title="Root Pro" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="demo-block" id="demo-maskunlinker">
+                    <div class="demo-block-layout">
+                        <div class="demo-block-info">
+                            <header class="demo-block-head">
+                                <span class="demo-block-tag">ScriptUI · AE</span>
+                                <h3>Mask Unlinker</h3>
+                            </header>
+                            <p class="demo-block-desc">Unlink, relink, mask ↔ shape y separar máscaras en un panel compacto.</p>
+                            <a href="https://github.com/Animateoo/Mask-Unliker" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
+                        </div>
+                        <div class="demo-block-frame demo-block-frame--bar" style="--demo-h:62px;--demo-bg:#1f1f1f">
+                            <iframe src="demos/maskunlinker/index.html" title="Mask Unlinker" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="demo-block" id="demo-aurapro">
+                    <div class="demo-block-layout">
+                        <div class="demo-block-info">
+                            <header class="demo-block-head">
+                                <span class="demo-block-tag">ScriptUI · AE</span>
+                                <h3>Aura Pro</h3>
+                            </header>
+                            <p class="demo-block-desc">Gestor de paletas con sync en tiempo real, import/export JSON y picker nativo de AE.</p>
+                            <a href="https://github.com/Animateoo/Aura-Pro" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
+                        </div>
+                        <div class="demo-block-frame" style="--demo-h:168px;--demo-bg:#262626">
+                            <iframe src="demos/aurapro/index.html" title="Aura Pro" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="demo-block" id="demo-audify">
+                    <div class="demo-block-layout">
+                        <div class="demo-block-info">
+                            <header class="demo-block-head">
+                                <span class="demo-block-tag">ScriptUI · AE</span>
+                                <h3>Audify</h3>
+                            </header>
+                            <p class="demo-block-desc">Fade in/out, volumen en dB, reverse, high-low pass, compressor y ducking automático.</p>
+                            <a href="https://github.com/Animateoo/Audify-After-Effect" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
+                        </div>
+                        <div class="demo-block-frame" style="--demo-h:268px;--demo-bg:#141414">
+                            <iframe src="demos/audify/index.html" title="Audify" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="demo-block" id="demo-cachepro">
+                    <div class="demo-block-layout">
+                        <div class="demo-block-info">
+                            <header class="demo-block-head">
+                                <span class="demo-block-tag">ScriptUI · AE</span>
+                                <h3>Cache Pro</h3>
+                            </header>
+                            <p class="demo-block-desc">Snap, purge, caché de imagen, borrar footage y guardar versión — iconos del script real.</p>
+                            <a href="https://github.com/Animateoo/Cache-Pro" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
+                        </div>
+                        <div class="demo-block-frame demo-block-frame--bar" style="--demo-h:58px;--demo-bg:#1f1f21">
+                            <iframe src="demos/cachepro/index.html" title="Cache Pro" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="demo-block" id="demo-shuttle">
+                    <div class="demo-block-layout">
+                        <div class="demo-block-info">
+                            <header class="demo-block-head">
+                                <span class="demo-block-tag">Extensión · Ai + Ps</span>
+                                <h3>Shuttle</h3>
+                            </header>
+                            <p class="demo-block-desc">Push & Pull entre Illustrator y Photoshop sin exportar archivos intermedios.</p>
+                            <a href="https://github.com/Animateoo" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
+                        </div>
+                        <div class="demo-block-frame demo-block-frame--bar" style="--demo-h:52px;--demo-bg:#212121">
+                            <iframe src="demos/shuttle/preview.html" title="Shuttle" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- TRUST STRIP -->
+        <section class="trust">
+            <div class="container trust-grid">
+                <div class="trust-item">
+                    <span class="trust-icon">⚡</span>
+                    <h3>Ahorra tiempo</h3>
+                    <p>Scripts que eliminan lo repetitivo para que te enfoques en lo creativo.</p>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">🧩</span>
+                    <h3>Integradas</h3>
+                    <p>Paneles nativos dentro de AE, Pr, Illustrator y Photoshop.</p>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">🛡️</span>
+                    <h3>Probadas en producción</h3>
+                    <p>Cada tool se usa en proyectos reales antes de publicarse.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- INSTALL -->
+        <section class="install-section" id="install">
+            <div class="container">
+                <div class="section-head">
+                    <h2>Cómo instalar</h2>
+                    <p>Extensiones CEP (.zxp) o scripts ScriptUI (.jsx).</p>
+                </div>
+                <div class="install-grid">
+                    <div class="install-step">
+                        <span class="step-num">01</span>
+                        <h3>Descarga</h3>
+                        <p>Entra al repo de la tool y descarga el release (.zxp o .jsx).</p>
+                    </div>
+                    <div class="install-step">
+                        <span class="step-num">02</span>
+                        <h3>Instala</h3>
+                        <p><strong>CEP:</strong> arrastra el .zxp con ZXP Installer.<br>
+                            <strong>ScriptUI:</strong> copia el .jsx en <code>Scripts/ScriptUI Panels/</code>.
+                        </p>
+                    </div>
+                    <div class="install-step">
+                        <span class="step-num">03</span>
+                        <h3>Abre el panel</h3>
+                        <p><strong>AE/Pr:</strong> Window → Extensions → [Tool]<br>
+                            <strong>Scripts:</strong> Window → [Tool]
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>&copy; 2026 Animateo Tools. Hecho con amor para la comunidad.</p>
+            <div class="footer-links">
+                <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener">Behance</a>
+                <a href="https://x.com/animateofx" target="_blank" rel="noopener">X</a>
+                <a href="https://github.com/Animateoo" target="_blank" rel="noopener">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

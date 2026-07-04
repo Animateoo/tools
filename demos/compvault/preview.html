@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <title>CompVault</title>
+
+  <link rel="stylesheet" href="css/app.css">
+
+  <style>
+
+    html,body{height:100%;overflow:hidden}
+
+    .workspace{grid-template-columns:1fr!important}
+
+    .sidebar{display:none!important}
+
+    .asset-grid{display:none!important}
+
+    .asset-list{display:flex!important}
+
+    .category-tabs{display:flex!important}
+
+    .grid-scroll{display:flex;flex-direction:column;flex:1;min-height:0}
+    .asset-list{flex:0 0 auto}
+    .empty-state{display:flex!important;flex-direction:column;align-items:center;justify-content:center;flex:1;min-height:120px}
+
+    .statusbar{display:flex!important}
+
+  </style>
+
+</head>
+
+<body>
+
+  <div id="app" class="app">
+
+    <header class="header">
+
+      <div class="header-brand">
+
+        <div class="logo" aria-hidden="true">
+
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="2" y="2" width="5" height="5" rx=".5"/><rect x="9" y="2" width="5" height="5" rx=".5"/><rect x="2" y="9" width="5" height="5" rx=".5"/><rect x="9" y="9" width="5" height="5" rx=".5"/></svg>
+
+        </div>
+
+        <div class="header-brand-text">
+
+          <h1 class="title">CompVault</h1>
+
+          <p class="subtitle">After Effects</p>
+
+        </div>
+
+      </div>
+
+      <div class="header-actions">
+
+        <button type="button" class="btn-accent"><span>Vincular carpeta</span></button>
+
+        <button type="button" class="icon-btn" title="Guardar">📄</button>
+
+        <button type="button" class="icon-btn" title="Ajustes">⚙</button>
+
+        <button type="button" class="icon-btn" title="Tema">☀</button>
+
+      </div>
+
+    </header>
+
+    <div class="workspace">
+
+      <div class="content-col" style="width:100%">
+
+        <div class="toolbar">
+
+          <div class="toolbar-left">
+
+            <button type="button" class="icon-btn toolbar-sidebar-toggle" title="Biblioteca">☰</button>
+
+            <span class="breadcrumb">Archivos de Ediciones</span>
+
+          </div>
+
+          <div class="toolbar-right">
+
+            <button type="button" class="tool-btn" title="Vincular">🔗</button>
+
+            <button type="button" class="tool-btn" title="Exportar">↑</button>
+
+            <button type="button" class="tool-btn" title="Importar">↓</button>
+
+            <button type="button" class="view-btn active" title="Lista">≡</button>
+
+            <button type="button" class="view-btn" title="Cuadrícula">⊞</button>
+
+            <button type="button" class="tool-btn" title="Favoritos">★</button>
+
+          </div>
+
+        </div>
+
+        <div class="category-tabs" id="category-tabs">
+
+          <button type="button" class="category-tab active">ALL (0)</button>
+
+          <button type="button" class="category-tab">General (0)</button>
+
+        </div>
+
+        <div class="grid-scroll">
+
+          <div class="asset-list" id="asset-list">
+
+            <div class="list-head"><span>Nombre</span><span>Tipo</span><span>Detalle</span></div>
+
+          </div>
+
+          <div class="empty-state" id="empty-state">
+
+            <p class="empty-title">Sin elementos en esta categoría</p>
+
+            <p class="empty-hint">Pulsa Guardar para añadir el primero</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <footer class="statusbar">
+
+      <span>0 elementos</span>
+
+      <span>Clic = seleccionar · Doble clic = aplicar · Ctrl+B = biblioteca</span>
+
+    </footer>
+
+  </div>
+
+</body>
+
+</html>
+
+

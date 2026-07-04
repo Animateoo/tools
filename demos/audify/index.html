@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#141414;overflow:hidden;font:11px 'Segoe UI',Tahoma,sans-serif}
+.wrap{display:flex;flex-direction:column;padding:14px;gap:8px;width:100%}
+.hdr{height:20px;background:#F59B00;color:#000;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.row{display:flex;gap:6px;flex-shrink:0;width:100%}
+.cell{flex:1;min-width:0;height:36px;border:none;background:#222;cursor:pointer;padding:0;display:block;overflow:hidden}
+.cell canvas{display:block;width:100%!important;height:36px!important}
+.cell-txt{flex:1;height:36px;border:none;background:#222;color:#F59B00;font:bold 13px 'Segoe UI',Tahoma;cursor:pointer}
+.cell-txt:hover{background:#333;color:#fff}
+.db-row{display:flex;gap:6px;align-items:stretch;flex-shrink:0;width:100%}
+.db-in{flex:1 1 auto;min-width:0;height:36px;border:1px solid #333;background:#222;color:#ccc;font:bold 16px 'Segoe UI';text-align:center;padding:0 6px}
+.db-lbl{display:flex;align-items:center;flex:0 0 auto;color:#F59B00;font:bold 14px 'Segoe UI';padding:0 2px}
+.db-btn{flex:1 1 0;min-width:36px;height:36px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">Audio Controls</div>
+  <div class="row" id="r1"></div>
+  <div class="db-row">
+    <input class="db-in" value="3" aria-label="dB">
+    <span class="db-lbl">dB</span>
+    <div class="cell db-btn" data-id="VOL-"></div>
+    <div class="cell db-btn" data-id="VOL+"></div>
+  </div>
+  <div class="hdr">Effects &amp; Ducking</div>
+  <div class="row" id="r3"></div>
+  <div class="row">
+    <button class="cell-txt" type="button">Detect</button>
+    <button class="cell-txt" type="button">Ducking</button>
+  </div>
+</div>
+<script>
+var PAL={bg:'#222222',hover:'#333333',hi:'#F59B00',iconHov:'#FFFFFF'};
+var VECTORS={
+  IN:function(ctx,bw,bh,col){
+    var cx=bw/2,cy=bh/2;ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=2;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(cx-10,cy+5);ctx.lineTo(cx-4,cy+5);ctx.lineTo(cx+6,cy-5);ctx.stroke();
+    ctx.beginPath();ctx.arc(cx+4.5,cy-6.5,1.5,0,Math.PI*2);ctx.fill();
+  },
+  OUT:function(ctx,bw,bh,col){
+    var cx=bw/2,cy=bh/2;ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=2;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(cx-8,cy-5);ctx.lineTo(cx+2,cy+5);ctx.lineTo(cx+8,cy+5);ctx.stroke();
+    ctx.beginPath();ctx.arc(cx-9.5,cy-6.5,1.5,0,Math.PI*2);ctx.fill();
+  },
+  INOUT:function(ctx,bw,bh,col){
+    var cx=bw/2,cy=bh/2;ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=2;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(cx-10,cy+5);ctx.lineTo(cx-6,cy+5);ctx.lineTo(cx-2,cy-4);ctx.lineTo(cx+2,cy-4);ctx.lineTo(cx+6,cy+5);ctx.lineTo(cx+10,cy+5);ctx.stroke();
+    ctx.beginPath();ctx.arc(cx-1.5,cy-5.5,1.5,0,Math.PI*2);ctx.fill();
+  },
+  'VOL+':function(ctx,bw,bh,col){
+    var cx=bw/2,cy=bh/2+1;ctx.fillStyle=col;ctx.strokeStyle=col;ctx.lineWidth=2;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(cx-12,cy-3);ctx.lineTo(cx-8,cy-3);ctx.lineTo(cx-4,cy-7);ctx.lineTo(cx-4,cy+7);ctx.lineTo(cx-8,cy+3);ctx.lineTo(cx-12,cy+3);ctx.fill();
+    ctx.beginPath();ctx.moveTo(cx+2,cy);ctx.lineTo(cx+10,cy);ctx.moveTo(cx+6,cy-4);ctx.lineTo(cx+6,cy+4);ctx.stroke();
+  },
+  'VOL-':function(ctx,bw,bh,col){
+    var cx=bw/2,cy=bh/2+1;ctx.fillStyle=col;ctx.strokeStyle=col;ctx.lineWidth=2;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(cx-12,cy-3);ctx.lineTo(cx-8,cy-3);ctx.lineTo(cx-4,cy-7);ctx.lineTo(cx-4,cy+7);ctx.lineTo(cx-8,cy+3);ctx.lineTo(cx-12,cy+3);ctx.fill();
+    ctx.beginPath();ctx.moveTo(cx+2,cy);ctx.lineTo(cx+10,cy);ctx.stroke();
+  },
+  REV:function(ctx,bw,bh,col){
+    var cx=bw/2,cy=bh/2;ctx.strokeStyle=col;ctx.lineWidth=2;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(cx+8,cy-4);ctx.lineTo(cx-4,cy-4);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx-4,cy-4);ctx.lineTo(cx-1,cy-7);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx-4,cy-4);ctx.lineTo(cx-1,cy-1);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx-8,cy+4);ctx.lineTo(cx+4,cy+4);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx+4,cy+4);ctx.lineTo(cx+1,cy+1);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx+4,cy+4);ctx.lineTo(cx+1,cy+7);ctx.stroke();
+  },
+  HIGHLOW:function(ctx,bw,bh,col){
+    var cx=bw/2,cy=bh/2;ctx.strokeStyle=col;ctx.lineWidth=2;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(cx-10,cy+6);ctx.lineTo(cx-5,cy+6);ctx.lineTo(cx-2,cy-4);ctx.lineTo(cx+2,cy-4);ctx.lineTo(cx+5,cy+6);ctx.lineTo(cx+10,cy+6);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx-5,cy+8);ctx.lineTo(cx-5,cy+2);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx+5,cy+8);ctx.lineTo(cx+5,cy+2);ctx.stroke();
+  },
+  COMPRESSOR:function(ctx,bw,bh,col){
+    var cx=bw/2,cy=bh/2;ctx.strokeStyle=col;ctx.lineWidth=2;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(cx-4,cy-6);ctx.lineTo(cx,cy-2);ctx.lineTo(cx+4,cy-6);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx,cy-8);ctx.lineTo(cx,cy-2);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx-4,cy+6);ctx.lineTo(cx,cy+2);ctx.lineTo(cx+4,cy+6);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx,cy+8);ctx.lineTo(cx,cy+2);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx-8,cy);ctx.lineTo(cx+8,cy);ctx.stroke();
+  }
+};
+function mountCell(el,id){
+  var c=document.createElement('canvas');el.appendChild(c);
+  function draw(hov){
+    var bw=Math.max(28,el.clientWidth||36),bh=36;
+    c.width=bw;c.height=bh;
+    var ctx=c.getContext('2d');
+    ctx.fillStyle=hov?PAL.hover:PAL.bg;ctx.fillRect(0,0,bw,bh);
+    VECTORS[id](ctx,bw,bh,hov?PAL.iconHov:PAL.hi);
+  }
+  el.onmouseenter=function(){draw(true);};el.onmouseleave=function(){draw(false);};
+  requestAnimationFrame(function(){draw(false);});
+  window.addEventListener('resize',function(){draw(false);});
+}
+['IN','OUT','INOUT'].forEach(function(id){var d=document.createElement('div');d.className='cell';document.getElementById('r1').appendChild(d);mountCell(d,id);});
+['REV','HIGHLOW','COMPRESSOR'].forEach(function(id){var d=document.createElement('div');d.className='cell';document.getElementById('r3').appendChild(d);mountCell(d,id);});
+document.querySelectorAll('.cell[data-id]').forEach(function(el){mountCell(el,el.dataset.id);});
+</script>
+</body>
+</html>

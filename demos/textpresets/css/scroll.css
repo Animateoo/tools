@@ -1,0 +1,325 @@
+/* ============================================================================
+   FIXED CONTROLS PANEL - Compact & Always Visible
+   ============================================================================ */
+
+/* Scrollable Content Area — altura la controla responsive.css (flex) */
+.quick-animator-scroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Fixed Controls Panel */
+.controls-panel-fixed {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(26, 26, 26, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid #fc9300;
+    padding: 2px;
+    z-index: 1000;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Controls Rows */
+.controls-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 2px;
+}
+
+/* Speed Compact Controls */
+.speed-compact {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.speed-compact label {
+    font-size: 9px;
+    color: #999;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 500;
+}
+
+.speed-compact input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 3px;
+    background: #3a3a3a;
+    border-radius: 2px;
+    outline: none;
+}
+
+.speed-compact input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #5a9fd4;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.speed-compact input[type="range"]::-webkit-slider-thumb:hover {
+    background: #6aafde;
+    transform: scale(1.1);
+}
+
+/* Checkbox Compact */
+.checkbox-compact {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 4px 8px;
+    background: #2a2a2a;
+    border-radius: 3px;
+    transition: all 0.2s;
+}
+
+.checkbox-compact:hover {
+    background: #323232;
+}
+
+.checkbox-compact input {
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
+}
+
+/* Compact Buttons */
+.btn-compact {
+    padding: 4px 6px;
+    height: 32px;
+    font-size: 13px;
+    background: #333;
+    border: 1px solid #444;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-appearance: none;
+    appearance: none;
+    user-select: none;
+    color: #fff;
+}
+
+.btn-compact:hover {
+    background: #444;
+    border-color: #fc9300;
+    color: #fc9300;
+    filter: brightness(1.1);
+}
+
+.btn-compact:hover svg {
+    fill: #fc9300;
+}
+
+.btn-compact:active {
+    filter: brightness(0.92);
+}
+
+/* Apply Buttons Row */
+.apply-buttons-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+}
+
+/* Button Theme - Professional Dark with Subtle Accents */
+.apply-buttons-row .btn-apply {
+    padding: 10px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid #444;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    background: #333;
+    color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    user-select: none;
+}
+
+.btn-entrance {
+    border-bottom: 2px solid #4CAF50 !important;
+}
+
+.btn-entrance:hover {
+    background: #3a3a3a;
+    color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+.btn-exit {
+    border-bottom: 2px solid #FF5722 !important;
+}
+
+.btn-exit:hover {
+    background: #3a3a3a;
+    color: #FF5722;
+    border-color: #FF5722;
+}
+
+.btn-both {
+    border-bottom: 2px solid #5a9fd4 !important;
+}
+
+.btn-both:hover {
+    background: #3a3a3a;
+    color: #6aafde;
+    border-color: #5a9fd4;
+}
+
+.btn-apply-main {
+    border-bottom: 2px solid #fc9300 !important;
+}
+
+.btn-apply-main:hover {
+    background: #3d3d3d;
+    color: #fc9300;
+    border-color: #fc9300;
+    filter: brightness(1.12);
+    box-shadow: 0 0 8px rgba(252, 147, 0, 0.25);
+}
+
+.apply-buttons-row .btn-apply:hover {
+    background: #3d3d3d;
+    color: #fc9300;
+    border-color: #fc9300;
+    filter: brightness(1.12);
+    box-shadow: 0 0 8px rgba(252, 147, 0, 0.25);
+}
+
+.apply-buttons-row .btn-apply:active,
+.btn-apply-main:active {
+    background: #2a2a2a;
+    filter: brightness(0.95);
+}
+
+/* Scrollbar Styling */
+.quick-animator-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.quick-animator-scroll::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+.quick-animator-scroll::-webkit-scrollbar-thumb {
+    background: #fc9300;
+    border-radius: 3px;
+}
+
+.quick-animator-scroll::-webkit-scrollbar-thumb:hover {
+    background: #ffa31a;
+}
+
+/* Preset Manager Scroll */
+.preset-manager {
+    max-height: calc(100vh - 250px);
+    overflow-y: auto;
+}
+
+.preset-manager::-webkit-scrollbar {
+    width: 6px;
+}
+
+.preset-manager::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+.preset-manager::-webkit-scrollbar-thumb {
+    background: #fc9300;
+    border-radius: 3px;
+}
+
+.preset-manager::-webkit-scrollbar-thumb:hover {
+    background: #ffa31a;
+}
+
+/* Fixed Apply Buttons for Preset Manager Tab */
+.apply-buttons-fixed {
+    position: fixed;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    background: #1e1e1e;
+    border-top: 2px solid #3a3a3a;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    z-index: 1000;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.4);
+    border-radius: 4px 4px 0 0;
+}
+
+/* ============================================================================
+   SCROLL ÚNICO Y SIMPLIFICADO - Una sola barra de scroll
+   ============================================================================ */
+
+/* Contenedor principal con UN SOLO SCROLL (flex — ver responsive.css) */
+.quick-animator-scroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Categorías sin límite de altura - se expanden completamente */
+.category-content {
+    max-height: none;
+    overflow: visible;
+}
+
+/* Grid de efectos SIN scroll individual - se expande naturalmente */
+.effects-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    /* Removido: max-height y overflow - ahora se expande completamente */
+}
+
+/* Removido: Scrollbar de .effects-grid - ya no tiene scroll individual */
+
+/* Animación suave al expandir/colapsar */
+.category-content:not(.collapsed) {
+    animation: expandCategory 0.3s ease-out;
+}
+
+@keyframes expandCategory {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+
+    to {
+        opacity: 1;
+        max-height: 5000px;
+        /* Aumentado para permitir expansión completa */
+    }
+}
+
+/* Ajuste para categorías colapsadas */
+.category-content.collapsed {
+    max-height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    opacity: 0;
+}
+
+/* Removido: Indicadores visuales de scroll - ya no son necesarios */

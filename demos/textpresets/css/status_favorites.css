@@ -1,0 +1,15 @@
+/* Status Counter at Top - Compact Style */
+.status-container-top {
+    background: #1a1a1a;
+    border-bottom: 1px solid #333;
+    padding: 6px 12px;
+    margin-bottom: 8px;
+}
+
+.status-message {
+    text-align: center;
+    font-size: 11px;
+    color: #fc9300;
+    font-weight: 500;
+    line-height: 1.2;
+}
