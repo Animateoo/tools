@@ -4,9 +4,13 @@
 <meta charset="utf-8">
 <title>Root Pro</title>
 <link rel="stylesheet" href="css/style.css">
-<style>html,body{overflow:hidden;height:100%}</style>
+<style>html,body{overflow:hidden;height:100%;background:#262626;font:11px Tahoma,'Segoe UI',sans-serif}</style>
 </head>
 <body>
+<div class="shell" style="display:flex;flex-direction:column;height:100%">
+  <div class="titlebar" style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:#323232;color:#e0e0e0;font-size:12px;border-bottom:1px solid #1a1a1a">
+    <span>Root Pro</span><button type="button" style="background:none;border:none;color:#ccc;font-size:14px;cursor:pointer" aria-label="Menú">☰</button>
+  </div>
 <div id="panel-root" class="panel-root">
   <div class="toolbar">
     <div class="badges">
@@ -41,5 +45,15 @@
     </div>
   </div>
 </div>
+</div>
+<script>
+document.querySelectorAll('.icon-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.icon-btn').forEach(function(b){b.classList.remove('pressed');});
+    btn.classList.add('pressed');
+    setTimeout(function(){btn.classList.remove('pressed');},180);
+  });
+});
+</script>
 </body>
 </html>

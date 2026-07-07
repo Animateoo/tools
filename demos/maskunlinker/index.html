@@ -4,36 +4,36 @@
 <meta charset="UTF-8">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:rgb(31,31,31);overflow:hidden}
-.wrap{display:flex;align-items:flex-start;justify-content:flex-start;width:100%;height:100%;padding:10px}
-.row{display:flex;flex-direction:row;align-items:flex-start;gap:6px}
-.btn{width:42px;height:42px;flex:0 0 42px;border:none;background:transparent;cursor:pointer;padding:0;display:block;position:relative}
+html,body{height:100%;background:#262626;font:11px Tahoma,'Segoe UI',sans-serif;color:#ccc;overflow:hidden}
+.shell{display:flex;flex-direction:column;height:100%}
+.titlebar{display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:#323232;color:#e0e0e0;font-size:12px;border-bottom:1px solid #1a1a1a;flex-shrink:0}
+.titlebar button{background:none;border:none;color:#ccc;font-size:14px;cursor:pointer}
+.win{padding:10px;flex:1;background:#1f1f1f}
+.row{display:flex;gap:6px}
+.btn{width:42px;height:42px;flex:0 0 42px;border:none;background:transparent;cursor:pointer;padding:0;transition:transform .12s ease}
+.btn:active,.btn.active{transform:scale(0.94)}
 .btn canvas{display:block;width:42px;height:42px}
 </style>
 </head>
 <body>
-<div class="wrap"><div class="row" id="row"></div></div>
+<div class="shell">
+  <div class="titlebar"><span>Mask Unlinker</span><button type="button" aria-label="Menú">☰</button></div>
+  <div class="win"><div class="row" id="row"></div></div>
+</div>
 <script>
 function renderIcon(ctx,w,h,type,hover){
   var bg=hover?36:20;
   ctx.fillStyle='rgb('+bg+','+bg+','+bg+')';
   ctx.fillRect(0,0,w,h);
-  ctx.strokeStyle='rgb(13,13,13)';
-  ctx.lineWidth=1;
-  ctx.strokeRect(0.5,0.5,w-1,h-1);
-  var cx=w/2,cy=h/2;
-  var fill=hover?'rgb(255,255,255)':'rgb(191,191,191)';
-  ctx.fillStyle=fill;
-  ctx.strokeStyle=fill;
-  ctx.lineWidth=1.5;
+  ctx.strokeStyle='rgb(13,13,13)';ctx.lineWidth=1;ctx.strokeRect(0.5,0.5,w-1,h-1);
+  var cx=w/2,cy=h/2,fill=hover?'rgb(255,255,255)':'rgb(191,191,191)';
+  ctx.fillStyle=fill;ctx.strokeStyle=fill;ctx.lineWidth=1.5;
   function dot(x,y){ctx.fillRect(x-1.5,y-1.5,3,3);}
   if(type==='unlink'){
-    ctx.fillRect(cx-9,cy-2,9,9);
-    ctx.strokeRect(cx+1,cy-9,9,9);
+    ctx.fillRect(cx-9,cy-2,9,9);ctx.strokeRect(cx+1,cy-9,9,9);
     [[cx+1,cy-9],[cx+10,cy-9],[cx+1,cy],[cx+10,cy]].forEach(function(n){dot(n[0],n[1]);});
   }else if(type==='relink'){
-    ctx.fillRect(cx-5,cy-5,10,10);
-    ctx.strokeRect(cx-8,cy-8,16,16);
+    ctx.fillRect(cx-5,cy-5,10,10);ctx.strokeRect(cx-8,cy-8,16,16);
     [[cx-8,cy-8],[cx+8,cy-8],[cx-8,cy+8],[cx+8,cy+8]].forEach(function(n){dot(n[0],n[1]);});
   }else if(type==='mask2shape'){
     ctx.strokeRect(cx-13,cy-5,8,8);
@@ -48,8 +48,7 @@ function renderIcon(ctx,w,h,type,hover){
     ctx.strokeRect(cx+5,cy-5,8,8);
     [[cx+5,cy-5],[cx+13,cy-5],[cx+5,cy+3],[cx+13,cy+3]].forEach(function(n){dot(n[0],n[1]);});
   }else if(type==='separate'){
-    ctx.strokeRect(cx-12,cy-5,8,10);
-    ctx.strokeRect(cx+4,cy-5,8,10);
+    ctx.strokeRect(cx-12,cy-5,8,10);ctx.strokeRect(cx+4,cy-5,8,10);
     [[cx-12,cy-5],[cx-4,cy-5],[cx-12,cy+5],[cx-4,cy+5],[cx+4,cy-5],[cx+12,cy-5],[cx+4,cy+5],[cx+12,cy+5]].forEach(function(n){dot(n[0],n[1]);});
     ctx.beginPath();ctx.moveTo(cx-2,cy-1);ctx.lineTo(cx-5,cy-1);ctx.lineTo(cx-3,cy-3);ctx.stroke();
     ctx.beginPath();ctx.moveTo(cx-5,cy-1);ctx.lineTo(cx-3,cy+1);ctx.stroke();
@@ -58,18 +57,20 @@ function renderIcon(ctx,w,h,type,hover){
   }
 }
 var tools=['unlink','relink','mask2shape','shape2mask','separate'];
+var labels={unlink:'Unlink mask',relink:'Relink mask',mask2shape:'Mask → Shape',shape2mask:'Shape → Mask',separate:'Separate masks'};
 var row=document.getElementById('row');
 tools.forEach(function(type){
-  var btn=document.createElement('button');
-  btn.className='btn';
-  btn.type='button';
-  var c=document.createElement('canvas');
-  c.width=42;c.height=42;
-  btn.appendChild(c);
+  var btn=document.createElement('button');btn.className='btn';btn.type='button';btn.title=labels[type];btn.dataset.tool=type;
+  var c=document.createElement('canvas');c.width=42;c.height=42;btn.appendChild(c);
   var ctx=c.getContext('2d');
-  renderIcon(ctx,42,42,type,false);
-  btn.onmouseenter=function(){renderIcon(ctx,42,42,type,true);};
-  btn.onmouseleave=function(){renderIcon(ctx,42,42,type,false);};
+  function paint(hov){renderIcon(ctx,42,42,type,hov||btn.classList.contains('active'));}
+  paint(false);
+  btn.onmouseenter=function(){if(!btn.classList.contains('active'))paint(true);};
+  btn.onmouseleave=function(){if(!btn.classList.contains('active'))paint(false);};
+  btn.onclick=function(){
+    row.querySelectorAll('.btn').forEach(function(b){b.classList.remove('active');renderIcon(b.querySelector('canvas').getContext('2d'),42,42,b.dataset.tool,false);});
+    btn.classList.add('active');paint(true);
+  };
   row.appendChild(btn);
 });
 </script>

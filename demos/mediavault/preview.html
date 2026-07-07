@@ -67,6 +67,16 @@ html,body{height:100%;overflow:hidden}
     <span>Arrastrar → timeline · Doble clic → timeline · Ctrl+B → biblioteca · Esc → cerrar preview</span>
   </footer>
 </div>
+<div id="mvModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;padding:14px">
+  <div style="background:#1e1e1e;border:1px solid #444;border-radius:8px;width:min(300px,94vw);box-shadow:0 16px 40px rgba(0,0,0,.55)">
+    <div id="mvModalTitle" style="padding:10px 14px;font:bold 12px Segoe UI;color:#fff;border-bottom:1px solid #333"></div>
+    <div id="mvModalBody" style="padding:14px;font:11px Segoe UI;color:#bbb"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;padding:10px 14px;border-top:1px solid #333">
+      <button type="button" id="mvModalCancel" style="padding:6px 12px;background:#333;border:1px solid #555;color:#ddd;border-radius:4px;cursor:pointer">Cancelar</button>
+      <button type="button" id="mvModalOk" style="padding:6px 14px;background:#e84545;border:none;color:#fff;border-radius:4px;cursor:pointer;font-weight:600">Vincular</button>
+    </div>
+  </div>
+</div>
 <script>
 var names=['Bells 1 Downward','Bells 1 Upward 01','Bells 1 Upward 02','Bells 2 Downward','Bells 2 Upward 01','Bells 2 Upward 02','Bells 3 Downward','Bells 3 Upward'];
 var grid=document.getElementById('grid');
@@ -126,6 +136,47 @@ names.forEach(function(name,i){
 });
 window.addEventListener('resize',function(){
   document.querySelectorAll('.card-wave').forEach(function(c,i){drawBarWave(c,i*2.3+1.1);});
+});
+var mvModal=document.getElementById('mvModal'),mvTitle=document.getElementById('mvModalTitle'),mvBody=document.getElementById('mvModalBody'),crumb=document.querySelector('.breadcrumb'),statusCount=document.querySelector('.statusbar span');
+function mvOpen(title,body,ok,onOk){
+  mvTitle.textContent=title;mvBody.innerHTML=body;
+  document.getElementById('mvModalOk').textContent=ok||'Aceptar';
+  mvModal.style.display='flex';
+  document.getElementById('mvModalOk').onclick=function(){if(onOk)onOk();mvModal.style.display='none';};
+}
+document.getElementById('mvModalCancel').onclick=function(){mvModal.style.display='none';};
+mvModal.onclick=function(e){if(e.target===mvModal)mvModal.style.display='none';};
+document.querySelector('.btn-accent').onclick=function(){
+  mvOpen('Vincular carpeta de medios','<p style="margin-bottom:8px">Ruta de la biblioteca local:</p><input id="mvPath" value="D:\\Media\\Sounds FX" style="width:100%;padding:8px;background:#141414;border:1px solid #444;color:#fff;font:11px monospace">','Vincular',function(){
+    crumb.textContent='Sounds FX / Essential S…';
+    statusCount.textContent='20 archivos · vinculado';
+  });
+};
+document.querySelectorAll('.mv-tree-row').forEach(function(row){
+  row.style.cursor='pointer';
+  row.onclick=function(){
+    document.querySelectorAll('.mv-tree-row').forEach(function(r){r.classList.remove('active');});
+    row.classList.add('active');
+    var label=row.textContent.replace(/[▾▸]/g,'').trim();
+    if(label.indexOf('Essential')>-1)crumb.textContent='Sounds FX / Essential S…';
+    else if(label==='AUDIOS')crumb.textContent='AUDIOS';
+    else crumb.textContent='Sounds FX / '+label;
+  };
+});
+document.querySelectorAll('.size-btn').forEach(function(btn){
+  btn.onclick=function(){
+    document.querySelectorAll('.size-btn').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+  };
+});
+document.querySelectorAll('.view-btn').forEach(function(btn){
+  btn.onclick=function(){
+    document.querySelectorAll('.view-btn').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+  };
+});
+document.querySelectorAll('.fav-btn').forEach(function(btn){
+  btn.onclick=function(e){e.stopPropagation();btn.textContent=btn.textContent==='☆'?'★':'☆';};
 });
 </script>
 </body>

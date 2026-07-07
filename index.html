@@ -15,6 +15,11 @@
 </head>
 
 <body>
+    <div class="bg-blobs" aria-hidden="true">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+    <div class="scroll-glow" id="scrollGlow" aria-hidden="true"></div>
     <div class="noise" aria-hidden="true"></div>
 
     <header class="site-header">
@@ -29,16 +34,17 @@
 
     <main>
         <!-- HERO -->
-        <section class="hero hero-solo">
-            <div class="container hero-solo-inner">
+        <section class="hero hero-float" id="hero">
+            <div class="hero-glow" aria-hidden="true"></div>
+            <div class="hero-floaters" id="heroFloaters" aria-hidden="true"></div>
+            <div class="container hero-float-inner">
                 <span class="eyebrow">After Effects · Premiere · Ai · Ps</span>
-                <h1>Herramientas para motion designers que valoran su tiempo</h1>
+                <h1>Herramientas para <em>motion designers</em> que valoran su tiempo</h1>
                 <p>Acelera tu flujo con paneles integrados y scripts listos para producción. Sin plantillas, sin
                     buscar archivos — solo crear.</p>
                 <div class="hero-cta">
-                    <a href="https://github.com/Animateoo" class="btn btn-ghost btn-lg" target="_blank"
-                        rel="noopener">Explorar repos</a>
-                    <a href="https://www.behance.net/animateoo" class="btn btn-primary btn-lg" target="_blank"
+                    <a href="#playground" class="btn btn-primary btn-lg">Probar tools</a>
+                    <a href="https://www.behance.net/animateoo" class="btn btn-ghost btn-lg" target="_blank"
                         rel="noopener">Portfolio</a>
                 </div>
                 <div class="hero-stats">
@@ -49,173 +55,113 @@
             </div>
         </section>
 
-        <!-- DEMOS — scroll, una sección por tool -->
-        <section class="demos-scroll" id="playground">
+        <!-- SHOWCASE — lista izquierda + panel grande (estilo badedits) -->
+        <section class="demos-showcase" id="playground">
             <div class="container">
-                <div class="section-head">
-                    <h2>Prueba cada tool</h2>
-                    <p>Interfaz real de tus paneles. Scroll para verlas todas — agregar una nueva es solo añadir un bloque.</p>
+                <div class="showcase-shell">
+                    <header class="showcase-head">
+                        <h2>Paneles reales, en tu navegador.</h2>
+                        <p>No son capturas: es la interfaz de cada tool corriendo en vivo. Elige una, navega pestañas, arrastra curvas y abre ventanas — igual que en After Effects.</p>
+                    </header>
+
+                    <div class="showcase-stage">
+                        <nav class="showcase-nav" id="showcaseNav" aria-label="Elegir tool"></nav>
+
+                        <div class="showcase-preview">
+                            <div class="showcase-preview-top">
+                                <div>
+                                    <span class="showcase-preview-tag" id="showcaseTag">Extensión · AE</span>
+                                    <div class="showcase-preview-title" id="showcaseTitle">GraphEditor</div>
+                                </div>
+                                <a class="showcase-repo" id="showcaseRepo" href="https://github.com/Animateoo/GraphEditorAE" target="_blank" rel="noopener">Ver repo →</a>
+                            </div>
+                            <div class="showcase-canvas" id="showcaseCanvas">
+                                <!-- AE: GraphEditor en timeline (derecha) -->
+                                <div class="fake-ui fake-ui--ae fake-ui--timeline" id="fakeTimeline" hidden>
+                                    <div class="fake-ae-top fake-ae-top--short">
+                                        <div class="fake-ae-col" id="tlProjectCol"></div>
+                                        <div class="fake-ae-viewer"><div class="ae-viewer-shape ae-viewer-shape--1"></div><div class="ae-viewer-shape ae-viewer-shape--2"></div></div>
+                                        <div class="fake-ae-stack" id="tlStackFiller"></div>
+                                    </div>
+                                    <div class="fake-ae-timeline-wrap">
+                                        <div class="fake-ae-tl-labels" id="tlLabels"></div>
+                                        <div class="fake-ae-tl-tracks">
+                                            <div class="tl-bars" id="tlTracks"></div>
+                                            <div class="ae-tl-playhead"></div>
+                                        </div>
+                                        <div class="fake-ae-slot fake-ae-slot--timeline" id="slotTimeline"></div>
+                                    </div>
+                                </div>
+                                <!-- AE: extensiones centrales (TextPresets, vaults) -->
+                                <div class="fake-ui fake-ui--ae fake-ui--workspace" id="fakeWorkspace" hidden>
+                                    <div class="fake-ae-top fake-ae-top--extension">
+                                        <div class="fake-ae-col" id="wsProjectCol"></div>
+                                        <div class="fake-ae-ext-col">
+                                            <div class="fake-ae-tabrow"><span class="fake-ae-tab fake-ae-tab--on"></span><span class="fake-ae-tab"></span><span class="fake-ae-tab"></span></div>
+                                            <div class="fake-ae-slot fake-ae-slot--main" id="slotWorkspace"></div>
+                                        </div>
+                                        <div class="fake-ae-viewer fake-ae-viewer--side"><div class="ae-viewer-shape ae-viewer-shape--1"></div></div>
+                                    </div>
+                                    <div class="fake-ae-timeline-wrap fake-ae-timeline-wrap--full">
+                                        <div class="fake-ae-tl-labels" id="wsLabels"></div>
+                                        <div class="fake-ae-tl-tracks">
+                                            <div class="tl-bars" id="wsTracks"></div>
+                                            <div class="ae-tl-playhead"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- AE: ScriptUI stack derecha -->
+                                <div class="fake-ui fake-ui--ae fake-ui--scriptui" id="fakeScriptui" hidden>
+                                    <div class="fake-ae-top">
+                                        <div class="fake-ae-col" id="suProjectCol"></div>
+                                        <div class="fake-ae-viewer"><div class="ae-viewer-shape ae-viewer-shape--1"></div><div class="ae-viewer-shape ae-viewer-shape--2"></div></div>
+                                        <div class="fake-ae-stack fake-ae-stack--dock">
+                                            <div class="fake-ae-dock-fillers" id="suDockTop"></div>
+                                            <div class="fake-ae-slot fake-ae-slot--dock" id="slotScriptui"></div>
+                                            <div class="fake-ae-dock-fillers" id="suDockBottom"></div>
+                                        </div>
+                                    </div>
+                                    <div class="fake-ae-timeline-mini">
+                                        <div class="tl-bars" id="suTracks"></div>
+                                        <div class="ae-tl-playhead"></div>
+                                    </div>
+                                </div>
+                                <!-- Illustrator: Shuttle -->
+                                <div class="fake-ui fake-ui--ai" id="fakeCreative" hidden>
+                                    <div class="ai-menubar"><span></span><span></span><span></span></div>
+                                    <div class="ai-optbar"></div>
+                                    <div class="ai-body">
+                                        <div class="ai-toolbar">
+                                            <div class="ai-tool ai-tool--on"></div><div class="ai-tool"></div><div class="ai-tool"></div><div class="ai-tool"></div><div class="ai-tool"></div>
+                                        </div>
+                                        <div class="ai-canvas-area">
+                                            <div class="ai-artboard">
+                                                <div class="ai-art-shape ai-art-shape--1"></div>
+                                                <div class="ai-art-shape ai-art-shape--2"></div>
+                                            </div>
+                                        </div>
+                                        <div class="ai-panels">
+                                            <div class="ai-panel ai-panel--layers">
+                                                <div class="ai-panel-bar"></div>
+                                                <div id="aiLayers"></div>
+                                            </div>
+                                            <div class="ai-panel ai-panel--plugin">
+                                                <div class="fake-ae-slot fake-ae-slot--cc" id="slotCreative"></div>
+                                            </div>
+                                            <div class="ai-panel ai-panel--layers">
+                                                <div class="ai-panel-bar"></div>
+                                                <div id="aiLayersBottom"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="showcase-frame" id="showcaseFrame">
+                                    <iframe id="showcaseIframe" title="Demo interactiva" src="demos/grapheditor/index.html"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <article class="demo-block" id="demo-grapheditor">
-                    <div class="demo-block-layout">
-                        <div class="demo-block-info">
-                            <header class="demo-block-head">
-                                <span class="demo-block-tag">Extensión · AE</span>
-                                <h3>GraphEditor</h3>
-                            </header>
-                            <p class="demo-block-desc">Control visual de curvas CURVE / VALUE con easing profesional y botón APLICAR directo al timeline.</p>
-                            <a href="https://github.com/Animateoo/GraphEditorAE" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
-                        </div>
-                        <div class="demo-block-frame" style="--demo-h:440px;--demo-bg:#161616">
-                            <iframe src="demos/grapheditor/index.html" title="GraphEditor" loading="lazy"></iframe>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="demo-block" id="demo-textpresets">
-                    <div class="demo-block-layout">
-                        <div class="demo-block-info">
-                            <header class="demo-block-head">
-                                <span class="demo-block-tag">Extensión · AE</span>
-                                <h3>TextPresets</h3>
-                            </header>
-                            <p class="demo-block-desc">Presets .ffx organizados, favoritos y aplicación masiva con un clic.</p>
-                            <a href="https://github.com/Animateoo/TextsPresetsAE" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
-                        </div>
-                        <div class="demo-block-frame" style="--demo-h:460px;--demo-bg:#191919">
-                            <iframe src="demos/textpresets/preview.html" title="TextPresets" loading="lazy"></iframe>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="demo-block" id="demo-compvault">
-                    <div class="demo-block-layout">
-                        <div class="demo-block-info">
-                            <header class="demo-block-head">
-                                <span class="demo-block-tag">Extensión · AE</span>
-                                <h3>CompVault</h3>
-                            </header>
-                            <p class="demo-block-desc">Biblioteca local de comps, capas y presets. Vista lista o cuadrícula con categorías.</p>
-                            <a href="https://github.com/Animateoo" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
-                        </div>
-                        <div class="demo-block-frame demo-block-frame--vault" style="--demo-h:320px;--demo-bg:#1c1c1c">
-                            <iframe src="demos/compvault/preview.html" title="CompVault" loading="lazy"></iframe>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="demo-block" id="demo-mediavault">
-                    <div class="demo-block-layout">
-                        <div class="demo-block-info">
-                            <header class="demo-block-head">
-                                <span class="demo-block-tag">Extensión · AE + Pr</span>
-                                <h3>MediaVault</h3>
-                            </header>
-                            <p class="demo-block-desc">Biblioteca de audios y footage con waveforms, árbol de carpetas y arrastre al timeline.</p>
-                            <a href="https://github.com/Animateoo/MediaVault" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
-                        </div>
-                        <div class="demo-block-frame demo-block-frame--vault" style="--demo-h:420px;--demo-bg:#1c1c1c">
-                            <iframe src="demos/mediavault/preview.html" title="MediaVault" loading="lazy"></iframe>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="demo-block" id="demo-rootpro">
-                    <div class="demo-block-layout">
-                        <div class="demo-block-info">
-                            <header class="demo-block-head">
-                                <span class="demo-block-tag">Extensión · AE</span>
-                                <h3>Root Pro</h3>
-                            </header>
-                            <p class="demo-block-desc">Organiza footage en (Footage), collect nativo, busca missing files y badge de assets OK.</p>
-                            <a href="https://github.com/Animateoo" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
-                        </div>
-                        <div class="demo-block-frame demo-block-frame--wide-bar" style="--demo-h:52px;--demo-bg:#232323">
-                            <iframe src="demos/rootpro/preview.html" title="Root Pro" loading="lazy"></iframe>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="demo-block" id="demo-maskunlinker">
-                    <div class="demo-block-layout">
-                        <div class="demo-block-info">
-                            <header class="demo-block-head">
-                                <span class="demo-block-tag">ScriptUI · AE</span>
-                                <h3>Mask Unlinker</h3>
-                            </header>
-                            <p class="demo-block-desc">Unlink, relink, mask ↔ shape y separar máscaras en un panel compacto.</p>
-                            <a href="https://github.com/Animateoo/Mask-Unliker" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
-                        </div>
-                        <div class="demo-block-frame demo-block-frame--bar" style="--demo-h:62px;--demo-bg:#1f1f1f">
-                            <iframe src="demos/maskunlinker/index.html" title="Mask Unlinker" loading="lazy"></iframe>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="demo-block" id="demo-aurapro">
-                    <div class="demo-block-layout">
-                        <div class="demo-block-info">
-                            <header class="demo-block-head">
-                                <span class="demo-block-tag">ScriptUI · AE</span>
-                                <h3>Aura Pro</h3>
-                            </header>
-                            <p class="demo-block-desc">Gestor de paletas con sync en tiempo real, import/export JSON y picker nativo de AE.</p>
-                            <a href="https://github.com/Animateoo/Aura-Pro" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
-                        </div>
-                        <div class="demo-block-frame" style="--demo-h:168px;--demo-bg:#262626">
-                            <iframe src="demos/aurapro/index.html" title="Aura Pro" loading="lazy"></iframe>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="demo-block" id="demo-audify">
-                    <div class="demo-block-layout">
-                        <div class="demo-block-info">
-                            <header class="demo-block-head">
-                                <span class="demo-block-tag">ScriptUI · AE</span>
-                                <h3>Audify</h3>
-                            </header>
-                            <p class="demo-block-desc">Fade in/out, volumen en dB, reverse, high-low pass, compressor y ducking automático.</p>
-                            <a href="https://github.com/Animateoo/Audify-After-Effect" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
-                        </div>
-                        <div class="demo-block-frame" style="--demo-h:268px;--demo-bg:#141414">
-                            <iframe src="demos/audify/index.html" title="Audify" loading="lazy"></iframe>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="demo-block" id="demo-cachepro">
-                    <div class="demo-block-layout">
-                        <div class="demo-block-info">
-                            <header class="demo-block-head">
-                                <span class="demo-block-tag">ScriptUI · AE</span>
-                                <h3>Cache Pro</h3>
-                            </header>
-                            <p class="demo-block-desc">Snap, purge, caché de imagen, borrar footage y guardar versión — iconos del script real.</p>
-                            <a href="https://github.com/Animateoo/Cache-Pro" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
-                        </div>
-                        <div class="demo-block-frame demo-block-frame--bar" style="--demo-h:58px;--demo-bg:#1f1f21">
-                            <iframe src="demos/cachepro/index.html" title="Cache Pro" loading="lazy"></iframe>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="demo-block" id="demo-shuttle">
-                    <div class="demo-block-layout">
-                        <div class="demo-block-info">
-                            <header class="demo-block-head">
-                                <span class="demo-block-tag">Extensión · Ai + Ps</span>
-                                <h3>Shuttle</h3>
-                            </header>
-                            <p class="demo-block-desc">Push & Pull entre Illustrator y Photoshop sin exportar archivos intermedios.</p>
-                            <a href="https://github.com/Animateoo" class="demo-repo" target="_blank" rel="noopener">Ver repo →</a>
-                        </div>
-                        <div class="demo-block-frame demo-block-frame--bar" style="--demo-h:52px;--demo-bg:#212121">
-                            <iframe src="demos/shuttle/preview.html" title="Shuttle" loading="lazy"></iframe>
-                        </div>
-                    </div>
-                </article>
             </div>
         </section>
 
@@ -257,7 +203,7 @@
                         <span class="step-num">02</span>
                         <h3>Instala</h3>
                         <p><strong>CEP:</strong> arrastra el .zxp con ZXP Installer.<br>
-                            <strong>ScriptUI:</strong> copia el .jsx en <code>Scripts/ScriptUI Panels/</code>.
+                            <strong>ScriptUI:</strong> copia el .jsx en la carpeta <code>ScriptUI&nbsp;Panels</code> de Scripts.
                         </p>
                     </div>
                     <div class="install-step">

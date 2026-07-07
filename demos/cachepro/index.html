@@ -4,15 +4,59 @@
 <meta charset="UTF-8">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:rgb(31,31,33);overflow:hidden}
-.row{display:flex;flex-direction:row;align-items:stretch;gap:4px;padding:6px;height:100%;width:100%}
-.btn{flex:1 1 0;min-width:0;min-height:46px;border:none;cursor:pointer;padding:0;display:block}
+html,body{height:100%;background:#262626;font:11px Tahoma,'Segoe UI',sans-serif;color:#ccc;overflow:hidden}
+.shell{display:flex;flex-direction:column;height:100%}
+.titlebar{display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:#323232;color:#e0e0e0;font-size:12px;border-bottom:1px solid #1a1a1a;flex-shrink:0}
+.titlebar button{background:none;border:none;color:#ccc;font-size:14px;cursor:pointer}
+.row{display:flex;flex-direction:row;align-items:stretch;gap:4px;padding:6px;flex:1;background:#1f1f21}
+.btn{flex:1 1 0;min-width:0;min-height:46px;border:none;cursor:pointer;padding:0;display:block;transition:transform .12s ease, filter .12s ease}
+.btn:active{transform:scale(0.96);filter:brightness(1.12)}
+.btn.pressed{transform:scale(0.94);filter:brightness(1.2)}
+.toast{position:fixed;bottom:8px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(0,0,0,.88);color:#f6d32d;font:bold 10px Tahoma;padding:5px 10px;border-radius:4px;border:1px solid rgba(246,211,45,.35);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:9;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .btn canvas{display:block;width:100%;height:100%}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:12px}
+.modal-backdrop.open{display:flex}
+.ae-native{max-width:340px;width:100%;background:#2b2b2b;border:1px solid #111;box-shadow:0 12px 40px rgba(0,0,0,.65);border-radius:6px;overflow:hidden}
+.ae-native-title{background:#f0ebe3;color:#222;padding:7px 10px;font:12px 'Segoe UI',Tahoma,sans-serif;border-bottom:1px solid #c8c0b8;display:flex;justify-content:space-between;align-items:center}
+.ae-native-title button{background:none;border:none;color:#666;font-size:14px;cursor:pointer;line-height:1;padding:0 2px}
+.ae-native-body{padding:14px 14px 10px;color:#d8d8d8;font:12px 'Segoe UI',Tahoma,sans-serif;line-height:1.45}
+.ae-native-check{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;color:#aaa}
+.ae-native-check input{margin:0;accent-color:#1473e6}
+.ae-native-foot{display:flex;justify-content:flex-end;gap:6px;padding:10px 12px 12px}
+.ae-native-foot button{min-width:72px;height:26px;border:1px solid #555;border-radius:3px;font:12px 'Segoe UI',Tahoma;cursor:pointer}
+.ae-native-foot .cancel{background:#3a3a3a;color:#eee}
+.ae-native-foot .ok{background:#1473e6;color:#fff;border-color:#0d5bbf}
 </style>
 </head>
 <body>
-<div class="row" id="row"></div>
+<div class="shell">
+  <div class="titlebar"><span>Cache Pro</span><button type="button" aria-label="Menú">☰</button></div>
+  <div class="row" id="row"></div>
+</div>
+<div class="modal-backdrop" id="purgeModal">
+  <div class="ae-native" role="dialog" aria-modal="true">
+    <div class="ae-native-title"><span>Clear Disk Cache</span><button type="button" id="purgeClose" aria-label="Cerrar">×</button></div>
+    <div class="ae-native-body">
+      Are you sure you want to delete all files (1,6 GB) from your disk cache?
+      <label class="ae-native-check"><input type="checkbox" id="purgeAll" checked> Clear disk cache for all versions</label>
+    </div>
+    <div class="ae-native-foot">
+      <button type="button" class="ok" id="purgeOk">OK</button>
+      <button type="button" class="cancel" id="purgeCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
 <script>
+var labels={SNAP:'Snap al CTI',PURGE:'Purge RAM',FILM:'Caché de imagen',TRASH:'Borrar footage',SAVE:'Guardar versión'};
+var toastEl=document.getElementById('toast'),toastTimer;
+function showToast(msg){
+  toastEl.textContent=msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){toastEl.classList.remove('show');},1400);
+}
 var theme={
   color1:[36,31,107],color2:[82,46,133],color3:[140,56,122],color4:[166,51,82],color5:[235,133,20],
   text:[240,240,245]
@@ -81,17 +125,37 @@ function drawBtn(canvas,id,hover){
 var row=document.getElementById('row');
 order.forEach(function(id){
   var btn=document.createElement('button');
-  btn.className='btn';btn.type='button';
+  btn.className='btn';btn.type='button';btn.title=labels[id];
   var c=document.createElement('canvas');
   btn.appendChild(c);
   btn.onmouseenter=function(){drawBtn(c,id,true);};
   btn.onmouseleave=function(){drawBtn(c,id,false);};
+  btn.onclick=function(){
+    btn.classList.add('pressed');
+    setTimeout(function(){btn.classList.remove('pressed');},140);
+    if(id==='PURGE'){
+      document.getElementById('purgeModal').classList.add('open');
+      return;
+    }
+    showToast(labels[id]+' (demo)');
+  };
   row.appendChild(btn);
   requestAnimationFrame(function(){drawBtn(c,id,false);});
 });
 window.addEventListener('resize',function(){
   row.querySelectorAll('canvas').forEach(function(c,i){drawBtn(c,order[i],false);});
 });
+(function(){
+  var modal=document.getElementById('purgeModal');
+  function close(){modal.classList.remove('open');}
+  document.getElementById('purgeCancel').onclick=close;
+  document.getElementById('purgeClose').onclick=close;
+  modal.onclick=function(e){if(e.target===modal)close();};
+  document.getElementById('purgeOk').onclick=function(){
+    close();
+    showToast('Disk cache cleared (demo)');
+  };
+})();
 </script>
 </body>
 </html>

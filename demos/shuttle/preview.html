@@ -6,6 +6,8 @@
   <link rel="stylesheet" href="css/shuttle.css"/>
 </head>
 <body>
+  <div class="shell">
+    <div class="titlebar"><span>Shuttle</span><button type="button" aria-label="Menú">☰</button></div>
   <div id="panel" class="panel">
     <div id="ai-panel" class="app-panel">
       <a class="func" title="Push to Photoshop"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></g></svg></a>
@@ -13,6 +15,7 @@
       <a class="func" title="Switch to Photoshop"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="3"/><text x="12" y="16" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" stroke="none" fill="currentColor">Ps</text></g></svg></a>
       <a class="func debug-btn" title="Diagnóstico"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 7h-6a3 3 0 0 0-3 3v5a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3v-5a3 3 0 0 0-3-3z"/><path d="M9 13H6M15 13h3M9 10h.01M15 10h.01M12 20v-2M12 7V5"/></g></svg></a>
     </div>
+  </div>
   </div>
   <script>
     document.querySelectorAll('.func').forEach(function(el){el.onclick=function(e){e.preventDefault();document.querySelectorAll('.func').forEach(function(x){x.classList.remove('active');});el.classList.add('active');};});

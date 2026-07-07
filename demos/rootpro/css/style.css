@@ -15,6 +15,7 @@ body {
     flex-direction: column;
     height: 100%;
     width: 100%;
+    min-width: 400px;
     position: relative;
     overflow: hidden;
 }
@@ -25,16 +26,20 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: #555; }
 
 .toolbar {
-    background-color: transparent; /* Sin rectángulo de fondo gris */
+    background-color: transparent;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 12px;
-    border-bottom: none; /* Sin divisiones grotescas */
+    padding: 6px 8px;
+    border-bottom: none;
     z-index: 10;
+    flex-shrink: 0;
+    min-width: 0;
 }
 
-.badges { display: flex; gap: 8px; }
+.actions { display: flex; gap: 1px; align-items: center; flex-wrap: nowrap; flex-shrink: 0; }
+
+.badges { display: flex; gap: 8px; flex-shrink: 0; }
 
 .badge {
     display: flex; align-items: center; gap: 3px;
@@ -62,8 +67,6 @@ body {
 /* Ocultar dinámicamente si el span está en 0 (puedes usar :has() en CSS moderno, pero lo haremos con JS si es necesario) 
    Para el diseño limpio, asumo que si el badge es necesario se muestra elegante. */
 
-.actions { display: flex; gap: 2px; align-items: center; } /* Muy juntos, sin separar */
-
 .icon-btn {
     background: transparent;
     border: none; /* Completamente sin borde */
@@ -76,6 +79,7 @@ body {
 }
 .icon-btn:hover { color: #ffffff; background-color: rgba(255,255,255,0.08); }
 .icon-btn.active { color: #fff; background-color: rgba(255,255,255,0.12); }
+.icon-btn.pressed { color: #fff; background-color: rgba(246,211,45,0.22); transform: scale(0.94); }
 
 .icon-btn svg {
     stroke-width: 1.5; /* Stroke más fino y elegante */

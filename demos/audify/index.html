@@ -4,14 +4,20 @@
 <meta charset="UTF-8">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:#141414;overflow:hidden;font:11px 'Segoe UI',Tahoma,sans-serif}
-.wrap{display:flex;flex-direction:column;padding:14px;gap:8px;width:100%}
+html,body{height:100%;background:#262626;font:11px Tahoma,'Segoe UI',sans-serif;color:#ccc;overflow:hidden}
+.shell{display:flex;flex-direction:column;height:100%}
+.titlebar{display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:#323232;color:#e0e0e0;font-size:12px;border-bottom:1px solid #1a1a1a;flex-shrink:0}
+.titlebar button{background:none;border:none;color:#ccc;font-size:14px;cursor:pointer}
+.wrap{display:flex;flex-direction:column;padding:10px;gap:8px;flex:1;background:#141414}
 .hdr{height:20px;background:#F59B00;color:#000;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .row{display:flex;gap:6px;flex-shrink:0;width:100%}
-.cell{flex:1;min-width:0;height:36px;border:none;background:#222;cursor:pointer;padding:0;display:block;overflow:hidden}
+.cell{flex:1;min-width:0;height:36px;border:none;background:#222;cursor:pointer;padding:0;display:block;overflow:hidden;transition:transform .12s ease}
+.cell:active{transform:scale(0.97)}
 .cell canvas{display:block;width:100%!important;height:36px!important}
-.cell-txt{flex:1;height:36px;border:none;background:#222;color:#F59B00;font:bold 13px 'Segoe UI',Tahoma;cursor:pointer}
+.cell-txt{flex:1;height:36px;border:none;background:#222;color:#F59B00;font:bold 13px 'Segoe UI',Tahoma;cursor:pointer;transition:transform .12s ease,background .12s,color .12s}
 .cell-txt:hover{background:#333;color:#fff}
+.cell-txt:active{transform:scale(0.97)}
+.cell-txt.active{background:#F59B00;color:#000}
 .db-row{display:flex;gap:6px;align-items:stretch;flex-shrink:0;width:100%}
 .db-in{flex:1 1 auto;min-width:0;height:36px;border:1px solid #333;background:#222;color:#ccc;font:bold 16px 'Segoe UI';text-align:center;padding:0 6px}
 .db-lbl{display:flex;align-items:center;flex:0 0 auto;color:#F59B00;font:bold 14px 'Segoe UI';padding:0 2px}
@@ -19,7 +25,9 @@ html,body{background:#141414;overflow:hidden;font:11px 'Segoe UI',Tahoma,sans-se
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="shell">
+  <div class="titlebar"><span>Audify</span><button type="button" aria-label="Menú">☰</button></div>
+  <div class="wrap">
   <div class="hdr">Audio Controls</div>
   <div class="row" id="r1"></div>
   <div class="db-row">
@@ -33,6 +41,7 @@ html,body{background:#141414;overflow:hidden;font:11px 'Segoe UI',Tahoma,sans-se
   <div class="row">
     <button class="cell-txt" type="button">Detect</button>
     <button class="cell-txt" type="button">Ducking</button>
+  </div>
   </div>
 </div>
 <script>
@@ -89,20 +98,33 @@ var VECTORS={
 };
 function mountCell(el,id){
   var c=document.createElement('canvas');el.appendChild(c);
+  el.title=id;
   function draw(hov){
     var bw=Math.max(28,el.clientWidth||36),bh=36;
     c.width=bw;c.height=bh;
     var ctx=c.getContext('2d');
-    ctx.fillStyle=hov?PAL.hover:PAL.bg;ctx.fillRect(0,0,bw,bh);
-    VECTORS[id](ctx,bw,bh,hov?PAL.iconHov:PAL.hi);
+    ctx.fillStyle=(hov||el.classList.contains('active'))?PAL.hover:PAL.bg;ctx.fillRect(0,0,bw,bh);
+    VECTORS[id](ctx,bw,bh,(hov||el.classList.contains('active'))?PAL.iconHov:PAL.hi);
   }
-  el.onmouseenter=function(){draw(true);};el.onmouseleave=function(){draw(false);};
+  el.onmouseenter=function(){draw(true);};
+  el.onmouseleave=function(){if(!el.classList.contains('active'))draw(false);};
+  el.onclick=function(){
+    el.closest('.row').querySelectorAll('.cell').forEach(function(x){x.classList.remove('active');});
+    el.classList.add('active');
+    draw(true);
+  };
   requestAnimationFrame(function(){draw(false);});
-  window.addEventListener('resize',function(){draw(false);});
+  window.addEventListener('resize',function(){draw(el.classList.contains('active'));});
 }
 ['IN','OUT','INOUT'].forEach(function(id){var d=document.createElement('div');d.className='cell';document.getElementById('r1').appendChild(d);mountCell(d,id);});
 ['REV','HIGHLOW','COMPRESSOR'].forEach(function(id){var d=document.createElement('div');d.className='cell';document.getElementById('r3').appendChild(d);mountCell(d,id);});
 document.querySelectorAll('.cell[data-id]').forEach(function(el){mountCell(el,el.dataset.id);});
+document.querySelectorAll('.cell-txt').forEach(function(btn){
+  btn.onclick=function(){
+    document.querySelectorAll('.cell-txt').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+  };
+});
 </script>
 </body>
 </html>

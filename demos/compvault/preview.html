@@ -144,6 +144,48 @@
 
   </div>
 
+  <div id="cvModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;padding:14px">
+    <div style="background:#1e1e1e;border:1px solid #444;border-radius:8px;width:min(300px,94vw)">
+      <div style="padding:10px 14px;font:bold 12px Segoe UI;color:#fff;border-bottom:1px solid #333">Vincular carpeta</div>
+      <div style="padding:14px;font:11px Segoe UI;color:#bbb"><input id="cvPath" value="D:\\Comps\\Archivos de Ediciones" style="width:100%;padding:8px;background:#141414;border:1px solid #444;color:#fff;font:11px monospace"></div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;padding:10px 14px;border-top:1px solid #333">
+        <button type="button" id="cvCancel" style="padding:6px 12px;background:#333;border:1px solid #555;color:#ddd;border-radius:4px;cursor:pointer">Cancelar</button>
+        <button type="button" id="cvOk" style="padding:6px 14px;background:#e84545;border:none;color:#fff;border-radius:4px;cursor:pointer;font-weight:600">Vincular</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var cvModal=document.getElementById('cvModal'),statusEl=document.querySelector('.statusbar span');
+    function cvOpen(){cvModal.style.display='flex';}
+    function cvClose(){cvModal.style.display='none';}
+    document.querySelector('.btn-accent').onclick=cvOpen;
+    document.getElementById('cvCancel').onclick=cvClose;
+    cvModal.onclick=function(e){if(e.target===cvModal)cvClose();};
+    document.getElementById('cvOk').onclick=function(){
+      cvClose();
+      statusEl.textContent='Biblioteca vinculada · 0 elementos';
+      document.querySelector('.empty-hint').textContent='Arrastra comps o pulsa Guardar para añadir';
+    };
+    document.querySelectorAll('.category-tab').forEach(function(tab){
+      tab.onclick=function(){
+        document.querySelectorAll('.category-tab').forEach(function(t){t.classList.remove('active');});
+        tab.classList.add('active');
+      };
+    });
+    document.querySelectorAll('.view-btn,.tool-btn').forEach(function(btn){
+      btn.onclick=function(){
+        if(btn.classList.contains('view-btn')){
+          document.querySelectorAll('.view-btn').forEach(function(b){b.classList.remove('active');});
+          btn.classList.add('active');
+        } else {
+          btn.style.opacity='0.6';
+          setTimeout(function(){btn.style.opacity='';},150);
+        }
+      };
+    });
+  </script>
+
 </body>
 
 </html>
