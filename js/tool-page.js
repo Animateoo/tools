@@ -22,9 +22,11 @@
     function resolveToolId() {
         if (window.TOOL_SLUG) return window.TOOL_SLUG;
         var parts = location.pathname.replace(/\\/g, '/').split('/').filter(Boolean);
-        var idx = parts.indexOf('tools');
-        if (idx >= 0 && parts[idx + 1]) return parts[idx + 1];
-        return null;
+        if (!parts.length) return null;
+        var last = parts[parts.length - 1];
+        if (last === 'index.html' && parts.length > 1) last = parts[parts.length - 2];
+        if (last === 'tools') return null;
+        return last;
     }
 
     function fillTimeline(shell, count) {

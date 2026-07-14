@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animateo | Tools for Motion Masters</title>
+    <meta name="description"
+        content="Herramientas para After Effects, Premiere Pro, Illustrator y Photoshop. Extensiones y scripts que aceleran tu flujo creativo.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="bg-blobs" aria-hidden="true">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+    <div class="scroll-glow" id="scrollGlow" aria-hidden="true"></div>
+    <div class="noise" aria-hidden="true"></div>
+
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="logo" href="tools/">Animateo</a>
+            <div class="header-actions">
+                <a href="tools/" class="btn btn-ghost">Tools</a>
+                <a href="https://github.com/Animateoo" class="btn btn-ghost" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://www.behance.net/animateoo" class="btn btn-primary" target="_blank" rel="noopener">Portfolio</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO -->
+        <section class="hero hero-float" id="hero">
+            <div class="hero-glow" aria-hidden="true"></div>
+            <div class="hero-floaters" id="heroFloaters" aria-hidden="true"></div>
+            <div class="container hero-float-inner">
+                <span class="eyebrow">After Effects · Premiere · Ai · Ps</span>
+                <h1>Herramientas para <em>motion designers</em> que valoran su tiempo</h1>
+                <p>Acelera tu flujo con paneles integrados y scripts listos para producción. Sin plantillas, sin
+                    buscar archivos — solo crear.</p>
+                <div class="hero-cta">
+                    <a href="tools/" class="btn btn-primary btn-lg">Ver tools</a>
+                    <a href="https://www.behance.net/animateoo" class="btn btn-ghost btn-lg" target="_blank"
+                        rel="noopener">Portfolio</a>
+                </div>
+                <div class="hero-stats">
+                    <div><strong>10</strong><span>tools activas</span></div>
+                    <div><strong>CEP + JSX</strong><span>integradas</span></div>
+                    <div><strong>Win + Mac</strong><span>soportados</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SHOWCASE — lista izquierda + panel grande (estilo badedits) -->
+        <section class="demos-showcase" id="playground">
+            <div class="container">
+                <div class="showcase-shell">
+                    <header class="showcase-head">
+                        <h2>Paneles reales, en tu navegador.</h2>
+                        <p>No son capturas: es la interfaz de cada tool corriendo en vivo. Elige una, navega pestañas, arrastra curvas y abre ventanas — igual que en After Effects.</p>
+                    </header>
+
+                    <div class="showcase-stage">
+                        <nav class="showcase-nav" id="showcaseNav" aria-label="Elegir tool"></nav>
+
+                        <div class="showcase-preview">
+                            <div class="showcase-preview-top">
+                                <div>
+                                    <span class="showcase-preview-tag" id="showcaseTag">Extensión · AE</span>
+                                    <div class="showcase-preview-title" id="showcaseTitle">GraphEditor</div>
+                                </div>
+                                <a class="showcase-repo" id="showcaseRepo" href="https://github.com/Animateoo/GraphEditorAE" target="_blank" rel="noopener">Ver repo →</a>
+                            </div>
+                            <div class="showcase-canvas" id="showcaseCanvas">
+                                <!-- AE: GraphEditor en timeline (derecha) -->
+                                <div class="fake-ui fake-ui--ae fake-ui--timeline" id="fakeTimeline" hidden>
+                                    <div class="fake-ae-top fake-ae-top--short">
+                                        <div class="fake-ae-col" id="tlProjectCol"></div>
+                                        <div class="fake-ae-viewer"><div class="ae-viewer-shape ae-viewer-shape--1"></div><div class="ae-viewer-shape ae-viewer-shape--2"></div></div>
+                                        <div class="fake-ae-stack" id="tlStackFiller"></div>
+                                    </div>
+                                    <div class="fake-ae-timeline-wrap">
+                                        <div class="fake-ae-tl-labels" id="tlLabels"></div>
+                                        <div class="fake-ae-tl-tracks">
+                                            <div class="tl-bars" id="tlTracks"></div>
+                                            <div class="ae-tl-playhead"></div>
+                                        </div>
+                                        <div class="fake-ae-slot fake-ae-slot--timeline" id="slotTimeline"></div>
+                                    </div>
+                                </div>
+                                <!-- AE: extensiones centrales (TextPresets, vaults) -->
+                                <div class="fake-ui fake-ui--ae fake-ui--workspace" id="fakeWorkspace" hidden>
+                                    <div class="fake-ae-top fake-ae-top--extension">
+                                        <div class="fake-ae-col" id="wsProjectCol"></div>
+                                        <div class="fake-ae-ext-col">
+                                            <div class="fake-ae-tabrow"><span class="fake-ae-tab fake-ae-tab--on"></span><span class="fake-ae-tab"></span><span class="fake-ae-tab"></span></div>
+                                            <div class="fake-ae-slot fake-ae-slot--main" id="slotWorkspace"></div>
+                                        </div>
+                                        <div class="fake-ae-viewer fake-ae-viewer--side"><div class="ae-viewer-shape ae-viewer-shape--1"></div></div>
+                                    </div>
+                                    <div class="fake-ae-timeline-wrap fake-ae-timeline-wrap--full">
+                                        <div class="fake-ae-tl-labels" id="wsLabels"></div>
+                                        <div class="fake-ae-tl-tracks">
+                                            <div class="tl-bars" id="wsTracks"></div>
+                                            <div class="ae-tl-playhead"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- AE: ScriptUI stack derecha -->
+                                <div class="fake-ui fake-ui--ae fake-ui--scriptui" id="fakeScriptui" hidden>
+                                    <div class="fake-ae-top">
+                                        <div class="fake-ae-col" id="suProjectCol"></div>
+                                        <div class="fake-ae-viewer"><div class="ae-viewer-shape ae-viewer-shape--1"></div><div class="ae-viewer-shape ae-viewer-shape--2"></div></div>
+                                        <div class="fake-ae-stack fake-ae-stack--dock">
+                                            <div class="fake-ae-dock-fillers" id="suDockTop"></div>
+                                            <div class="fake-ae-slot fake-ae-slot--dock" id="slotScriptui"></div>
+                                            <div class="fake-ae-dock-fillers" id="suDockBottom"></div>
+                                        </div>
+                                    </div>
+                                    <div class="fake-ae-timeline-mini">
+                                        <div class="tl-bars" id="suTracks"></div>
+                                        <div class="ae-tl-playhead"></div>
+                                    </div>
+                                </div>
+                                <!-- Illustrator: Shuttle -->
+                                <div class="fake-ui fake-ui--ai" id="fakeCreative" hidden>
+                                    <div class="ai-menubar"><span></span><span></span><span></span></div>
+                                    <div class="ai-optbar"></div>
+                                    <div class="ai-body">
+                                        <div class="ai-toolbar">
+                                            <div class="ai-tool ai-tool--on"></div><div class="ai-tool"></div><div class="ai-tool"></div><div class="ai-tool"></div><div class="ai-tool"></div>
+                                        </div>
+                                        <div class="ai-canvas-area">
+                                            <div class="ai-artboard">
+                                                <div class="ai-art-shape ai-art-shape--1"></div>
+                                                <div class="ai-art-shape ai-art-shape--2"></div>
+                                            </div>
+                                        </div>
+                                        <div class="ai-panels">
+                                            <div class="ai-panel ai-panel--layers">
+                                                <div class="ai-panel-bar"></div>
+                                                <div id="aiLayers"></div>
+                                            </div>
+                                            <div class="ai-panel ai-panel--plugin">
+                                                <div class="fake-ae-slot fake-ae-slot--cc" id="slotCreative"></div>
+                                            </div>
+                                            <div class="ai-panel ai-panel--layers">
+                                                <div class="ai-panel-bar"></div>
+                                                <div id="aiLayersBottom"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="showcase-frame" id="showcaseFrame">
+                                    <iframe id="showcaseIframe" title="Demo interactiva" src="demos/grapheditor/index.html"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TRUST STRIP -->
+        <section class="trust">
+            <div class="container trust-grid">
+                <div class="trust-item">
+                    <span class="trust-icon">⚡</span>
+                    <h3>Ahorra tiempo</h3>
+                    <p>Scripts que eliminan lo repetitivo para que te enfoques en lo creativo.</p>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">🧩</span>
+                    <h3>Integradas</h3>
+                    <p>Paneles nativos dentro de AE, Pr, Illustrator y Photoshop.</p>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">🛡️</span>
+                    <h3>Probadas en producción</h3>
+                    <p>Cada tool se usa en proyectos reales antes de publicarse.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- INSTALL -->
+        <section class="install-section" id="install">
+            <div class="container">
+                <div class="section-head">
+                    <h2>Cómo instalar</h2>
+                    <p>Extensiones CEP (.zxp) o scripts ScriptUI (.jsx).</p>
+                </div>
+                <div class="install-grid">
+                    <div class="install-step">
+                        <span class="step-num">01</span>
+                        <h3>Descarga</h3>
+                        <p>Entra al repo de la tool y descarga el release (.zxp o .jsx).</p>
+                    </div>
+                    <div class="install-step">
+                        <span class="step-num">02</span>
+                        <h3>Instala</h3>
+                        <p><strong>CEP:</strong> arrastra el .zxp con ZXP Installer.<br>
+                            <strong>ScriptUI:</strong> copia el .jsx en la carpeta <code>ScriptUI&nbsp;Panels</code> de Scripts.
+                        </p>
+                    </div>
+                    <div class="install-step">
+                        <span class="step-num">03</span>
+                        <h3>Abre el panel</h3>
+                        <p><strong>AE/Pr:</strong> Window → Extensions → [Tool]<br>
+                            <strong>Scripts:</strong> Window → [Tool]
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>&copy; 2026 Animateo Tools. Hecho con amor para la comunidad.</p>
+            <div class="footer-links">
+                <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener">Behance</a>
+                <a href="https://x.com/animateofx" target="_blank" rel="noopener">X</a>
+                <a href="https://github.com/Animateoo" target="_blank" rel="noopener">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

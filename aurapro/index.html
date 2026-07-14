@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -8,15 +8,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="../../css/tools-pages.css">
-    <script>window.TOOL_SLUG = 'shuttle';</script>
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <script>
+        try {
+            var savedTheme = localStorage.getItem('animateo-theme');
+            if (savedTheme === 'light' || savedTheme === 'dark') {
+                document.documentElement.dataset.theme = savedTheme;
+            }
+        } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="../css/tools-pages.css">
+    <script>window.TOOL_SLUG = 'aurapro';</script>
 </head>
 <body class="tools-body">
     <header class="tools-header">
         <div class="tools-container tools-header-inner">
-            <a class="tools-logo" href="../../">Animateo</a>
+            <a class="tools-logo" href="../">Animateo</a>
             <nav class="tools-nav">
+                <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar a modo claro" title="Cambiar tema">
+                    <span aria-hidden="true">?</span>
+                </button>
                 <a href="../">Tools</a>
                 <a href="https://github.com/Animateoo" target="_blank" rel="noopener">GitHub</a>
                 <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener">Portfolio</a>
@@ -60,7 +71,8 @@
             </div>
         </div>
     </footer>
-    <script src="../../js/tools-data.js"></script>
-    <script src="../../js/tool-page.js"></script>
+    <script src="../js/tools-data.js"></script>
+    <script src="../js/tool-page.js"></script>
+    <script src="../js/theme-toggle.js"></script>
 </body>
 </html>
