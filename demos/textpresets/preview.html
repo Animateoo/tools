@@ -4,14 +4,15 @@
   <meta charset="UTF-8">
   <title>TextPresets</title>
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/badfx-theme.css">
+  <link rel="stylesheet" href="css/animateo-theme.css">
   <link rel="stylesheet" href="css/scroll.css">
   <link rel="stylesheet" href="css/text-tools.css">
   <link rel="stylesheet" href="css/favorites.css">
+  <link rel="stylesheet" href="css/status_favorites.css">
   <link rel="stylesheet" href="css/responsive.css">
   <style>html,body{overflow:hidden;height:100%}</style>
 </head>
-<body class="badfx-theme">
+<body class="animateo-theme">
   <div class="container">
     <div class="header">
       <h1>TextPresets</h1>
@@ -43,7 +44,7 @@
             <button class="btn-compact" title="Keys"><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#fc9300"><path d="M12 2L2 12l10 10 10-10L12 2z"/></svg></button>
             <button class="btn-compact btn-text-exploder" title="Tx"><span class="btn-compact-tx">Tx</span></button>
           </div>
-          <div class="apply-buttons-row"><button class="btn-apply btn-apply-main" id="apply">✓ APLICAR</button></div>
+          <div class="apply-buttons-row"><button class="btn-apply btn-apply-main" id="apply">APLICAR</button></div>
         </div>
       </div>
     </div>
@@ -77,7 +78,7 @@
       btn.onclick=function(e){if(e.target.closest('.favorite-star'))return;document.querySelectorAll('.effect-btn').forEach(function(x){x.classList.remove('selected','selected-entrance','selected-exit');});btn.classList.add('selected-entrance');};
       g.appendChild(btn);
     });
-    document.getElementById('apply').onclick=function(){var t=this;t.textContent='✓ Aplicado';setTimeout(function(){t.textContent='✓ APLICAR';},900);};
+    document.getElementById('apply').onclick=function(){var t=this;t.textContent='Aplicado';setTimeout(function(){t.textContent='APLICAR';},900);};
     var tpModal=document.getElementById('tpModal'),tpTitle=document.getElementById('tpModalTitle'),tpBody=document.getElementById('tpModalBody'),status=document.querySelector('.status-message');
     function tpOpen(title,html,okText,onOk){
       tpTitle.textContent=title;tpBody.innerHTML=html;

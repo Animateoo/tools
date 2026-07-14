@@ -53,42 +53,11 @@ body {
     overflow: hidden;
 }
 
-.panel-shell {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    min-height: 0;
-}
-
-.panel-titlebar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 10px;
-    background: #1a1a1a;
-    border-bottom: 1px solid var(--border-color);
-    font-size: 11px;
-    font-weight: 600;
-    color: #ccc;
-    flex-shrink: 0;
-}
-
-.panel-menu {
-    background: none;
-    border: none;
-    color: #aaa;
-    font-size: 14px;
-    cursor: pointer;
-    padding: 0 2px;
-    line-height: 1;
-}
-
 /* --- LAYOUT PRINCIPAL --- */
 .main-layout {
     display: flex;
     width: 100%;
-    flex: 1;
-    min-height: 0;
+    height: 100%;
     overflow: hidden;
     padding: 4px;
     box-sizing: border-box;
@@ -263,6 +232,20 @@ body {
     opacity: 0.35;
     pointer-events: none;
     cursor: default;
+}
+
+/* Toggle "fx EXPR / ◆ KEYS" — hereda el look de .mode-selector, cambia sólo el acento */
+.apply-method-row .mode-btn {
+    letter-spacing: 0.04em;
+    text-transform: none;
+}
+
+.apply-method-row .mode-btn[data-method="expr"].active {
+    color: #4aa3ff;
+}
+
+.apply-method-row .mode-btn[data-method="keys"].active {
+    color: #ffcc55;
 }
 
 /* --- Barra superior: Graph / Elastic / Bounce / Step / Custom --- */
@@ -513,10 +496,10 @@ body {
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    justify-content: stretch;
-    min-height: 30px;
-    gap: 8px;
-    padding: 4px 2px;
+    justify-content: space-between;
+    min-height: 26px;
+    gap: 5px;
+    padding: 3px 0;
     flex-wrap: nowrap;
 }
 
@@ -524,9 +507,9 @@ body {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 5px;
+    gap: 3px;
     box-sizing: border-box;
-    padding: 4px 7px;
+    padding: 3px 5px;
     border-radius: 6px;
     background: rgba(0, 0, 0, 0.28);
     border: 1px solid #2e2e2e;
@@ -535,36 +518,34 @@ body {
 .tools-box--keys {
     flex: 1 1 auto;
     min-width: 0;
+    max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     scrollbar-width: thin;
-    justify-content: flex-start;
+    justify-content: space-around;
 }
 
 .tools-box--actions {
-    flex: 0 0 auto;
-    justify-content: center;
+    flex: 1 1 auto;
+    justify-content: space-around;
 }
 
 .tools-box--keys > .kf-btn--sm {
     flex: 0 0 auto;
-    width: 22px;
-    height: 22px;
-    min-width: 22px;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
     padding: 0;
 }
 
 .tools-box--keys > .kf-btn--sm img,
 .tools-box--keys > .kf-btn--sm svg {
-    width: 12px;
-    height: 12px;
+    width: 11px;
+    height: 11px;
 }
 
 .tools-box--keys > .kf-tools-sep {
-    flex: 0 0 1px;
-    margin: 0 1px;
-    height: 14px;
-    align-self: center;
+    display: none;
 }
 
 .tools-box--keys::-webkit-scrollbar {
@@ -578,16 +559,16 @@ body {
 
 .icon-btn--toolbar {
     flex: 0 0 auto;
-    width: 22px;
-    height: 22px;
-    min-width: 22px;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
     padding: 0;
     border-radius: 3px;
 }
 
 .icon-btn--toolbar svg {
-    width: 13px;
-    height: 13px;
+    width: 12px;
+    height: 12px;
 }
 
 .kf-btn {
@@ -1073,26 +1054,49 @@ body {
 /* --- Ultra-compact (panel muy pequeño) --- */
 @media (max-width: 280px) {
     .tools-row {
-        gap: 6px;
-        padding: 3px 2px;
+        gap: 4px;
+        padding: 3px 0;
     }
     .tools-box {
-        padding: 3px 5px;
+        padding: 2px 4px;
+        gap: 2px;
         border-radius: 5px;
-    }
-    .tools-box--keys {
-        gap: 4px;
     }
     .tools-box--keys > .kf-btn--sm,
     .icon-btn--toolbar {
-        width: 20px;
-        height: 20px;
-        min-width: 20px;
+        width: 19px;
+        height: 19px;
+        min-width: 19px;
     }
     .tools-box--keys > .kf-btn--sm img,
     .tools-box--keys > .kf-btn--sm svg,
     .icon-btn--toolbar svg {
         width: 11px;
         height: 11px;
+    }
+}
+
+/* --- Extra-compact (panel angosto tipo Premiere 2 columnas) --- */
+@media (max-width: 220px) {
+    .tools-row {
+        gap: 3px;
+        padding: 2px 0;
+    }
+    .tools-box {
+        padding: 2px 3px;
+        gap: 1px;
+    }
+    .tools-box--keys > .kf-btn--sm,
+    .icon-btn--toolbar {
+        width: 17px;
+        height: 17px;
+        min-width: 17px;
+        border-radius: 2px;
+    }
+    .tools-box--keys > .kf-btn--sm img,
+    .tools-box--keys > .kf-btn--sm svg,
+    .icon-btn--toolbar svg {
+        width: 10px;
+        height: 10px;
     }
 }

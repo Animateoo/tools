@@ -6,8 +6,6 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#262626;font:11px Tahoma,'Segoe UI',sans-serif;color:#ccc;overflow:hidden}
 .shell{display:flex;flex-direction:column;height:100%}
-.titlebar{display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:#323232;color:#e0e0e0;font-size:12px;border-bottom:1px solid #1a1a1a;flex-shrink:0}
-.titlebar button{background:none;border:none;color:#ccc;font-size:14px;cursor:pointer}
 .row{display:flex;flex-direction:row;align-items:stretch;gap:4px;padding:6px;flex:1;background:#1f1f21}
 .btn{flex:1 1 0;min-width:0;min-height:46px;border:none;cursor:pointer;padding:0;display:block;transition:transform .12s ease, filter .12s ease}
 .btn:active{transform:scale(0.96);filter:brightness(1.12)}
@@ -31,7 +29,6 @@ html,body{height:100%;background:#262626;font:11px Tahoma,'Segoe UI',sans-serif;
 </head>
 <body>
 <div class="shell">
-  <div class="titlebar"><span>Cache Pro</span><button type="button" aria-label="Menú">☰</button></div>
   <div class="row" id="row"></div>
 </div>
 <div class="modal-backdrop" id="purgeModal">
@@ -49,7 +46,13 @@ html,body{height:100%;background:#262626;font:11px Tahoma,'Segoe UI',sans-serif;
 </div>
 <div class="toast" id="toast"></div>
 <script>
-var labels={SNAP:'Snap al CTI',PURGE:'Purge RAM',FILM:'Caché de imagen',TRASH:'Borrar footage',SAVE:'Guardar versión'};
+var labels={
+  SNAP:'Captura frame en CTI → (Footage)/Images',
+  PURGE:'Memoria y caché en disco (All Memory & Disk Cache)',
+  FILM:'Purge solo caché de imagen',
+  TRASH:'Borrar footage no usado del proyecto',
+  SAVE:'Guardar copia versionada del .aep'
+};
 var toastEl=document.getElementById('toast'),toastTimer;
 function showToast(msg){
   toastEl.textContent=msg;
@@ -137,7 +140,7 @@ order.forEach(function(id){
       document.getElementById('purgeModal').classList.add('open');
       return;
     }
-    showToast(labels[id]+' (demo)');
+    showToast(labels[id]+' — acción simulada en demo');
   };
   row.appendChild(btn);
   requestAnimationFrame(function(){drawBtn(c,id,false);});
@@ -153,7 +156,7 @@ window.addEventListener('resize',function(){
   modal.onclick=function(e){if(e.target===modal)close();};
   document.getElementById('purgeOk').onclick=function(){
     close();
-    showToast('Disk cache cleared (demo)');
+    showToast('Disk cache cleared — en AE ejecuta All Memory & Disk Cache');
   };
 })();
 </script>

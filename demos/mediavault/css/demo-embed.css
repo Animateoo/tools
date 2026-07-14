@@ -1,0 +1,19 @@
+html, body, .app {
+  height: 100%;
+  min-height: 0;
+}
+
+.app {
+  height: 100%;
+}
+
+/* El panel real usa scroll virtual (block + posición absoluta), no CSS grid */
+.asset-grid.mv-demo-grid {
+  display: block !important;
+  position: relative;
+}
+
+.asset-list.is-hidden,
+.asset-grid.is-hidden {
+  display: none !important;
+}

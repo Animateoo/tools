@@ -1,3 +1,12 @@
+﻿/*
+Â© Mateo Crespo (Animateo)
+
+Puedes usar este plugin libremente.
+No puedes venderlo, redistribuirlo ni publicar versiones modificadas.
+
+Â¿Encontraste una mejora o correcciÃ³n?
+Por favor, compÃ¡rtela con el autor.
+*/
 /* --- GraphEditor main.js (Integrated Version) --- */
 (function () {
     'use strict';
@@ -44,6 +53,11 @@
 
     const reverseBtn = document.getElementById('reverseBtn');
     const guideBtn = document.getElementById('guideBtn');
+    const randomizeBtn = document.getElementById('randomizeBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const applyMethodRow = document.getElementById('applyMethodRow');
+    const btnApplyExpr = document.getElementById('btnApplyExpr');
+    const btnApplyKeys = document.getElementById('btnApplyKeys');
 
     // Referencias SVG
     const baseLineL = document.getElementById('graphBaseLeft');
@@ -87,6 +101,12 @@
 
     /** graph | elastic | bounce | step (solo AE / panel CEP) */
     let curveFamily = 'graph';
+    /** 'expr' | 'keys' — sólo relevante cuando curveFamily !== 'graph' */
+    let applyMethod = 'expr';
+    try {
+        var stored = localStorage.getItem('ge_applyMethod');
+        if (stored === 'expr' || stored === 'keys') applyMethod = stored;
+    } catch (eLS0) { }
     let specialElastic = { amp: 0.55, decay: 0.48 };
     // Bounce: peak = amplitud (vertical), damp = cantidad de rebotes (horizontal)
     let specialBounce = { peak: 0.55, damp: 0.45 };
@@ -180,13 +200,45 @@
         return (rawElastic(t) - y0) / Math.max(1e-6, y1 - y0);
     }
 
-    // Bounce: montaña rusa horizontal — picos y valles suaves repartidos en todo el tiempo
+    // Bounce estilo Penner/neucurve — pelota que cae y rebota en el techo:
+    //   • Un tramo de subida (rise): parábola 0 → 1 con tangente horizontal al final.
+    //   • N tramos de rebote: cada uno es una parábola invertida entre dos picos (y=1)
+    //     con valle a la mitad de profundidad k^seg.
+    //   • Total: N valles visibles (= "N rebotes" en la lectura clásica del usuario).
+    //
+    // Parámetros:
+    //   bounces (2..7) — cuántos valles visibles (rebotes) tendrá la curva.
+    //   amp     (0..1) — cuán "duros" son los rebotes (valles más profundos).
+    //
+    // Continuidad: los picos son puntos de impacto (slope discontinuo) — así se ve
+    // el clásico "bounce" de After Effects / BOUNCr / neucurve.
     function easeOutBounceControlled(u, bounces, amp) {
         const t = clamp01(u);
         if (t <= 0) return 0;
         if (t >= 1) return 1;
-        const kf = buildBounceKeyframes(bounces, amp);
-        return clamp01(interpolateBounceKeyframes(kf, t));
+
+        const N = Math.max(1, Math.min(7, Math.round(bounces)));
+        const segs = N + 1;                     // 1 subida + N rebotes
+        const a = clamp01(amp);
+        // amp=0 → k≈0.9 (rebotes suaves, valles poco profundos)
+        // amp=1 → k≈0.20 (rebotes duros, valles muy profundos)
+        const k = 0.90 - a * 0.70;
+
+        // Índice del segmento actual (0 = subida, 1..N = rebotes).
+        const seg = Math.min(Math.floor(t * segs), segs - 1);
+
+        if (seg === 0) {
+            // Subida: parábola 0 → 1 con derivada 0 en el pico → llega "suave" al techo.
+            const u2 = t * segs;                // ∈ [0, 1]
+            const rem = 1 - u2;
+            return 1 - rem * rem;
+        }
+
+        // Rebote: pico en los extremos del segmento (y=1) y valle en el medio.
+        // La profundidad del valle disminuye geométricamente por k^seg (energía perdida).
+        const uu = (t - seg / segs) * segs;     // ∈ [0, 1]
+        const nt = 2 * uu - 1;                  // ∈ [-1, 1]
+        return 1 - Math.pow(k, seg) * (1 - nt * nt);
     }
 
     // Damped spring that starts at 0 and ends at 1 (normalized by f(1))
@@ -237,7 +289,9 @@
         if (curveFamily === 'bounce') {
             const amp = clamp01(specialBounce.peak);
             const freq = clamp01(specialBounce.damp);
-            // Limit a bit so it stays readable and matches reference "mountains"
+            // 1..7 rebotes distribuidos por el rango del slider — la primera franja
+            // (freq muy chico) da 1 sólo rebote (curva más simple), la última da 7.
+            // Así "2 rebotes" queda a mano en el 2º tramo del arrastre.
             const bounces = Math.max(1, Math.min(7, Math.round(1 + freq * 6)));
             return easeOutBounceControlled(uu, bounces, amp);
         }
@@ -376,7 +430,10 @@
             viewMaxY = Math.max(1, maxY + padTop);
             viewMaxY = viewMaxY * 1.12;
         } else if (curveFamily === 'bounce') {
-            viewMaxY = 1;
+            // Los peaks del bounce llegan a y=1 (target del keyframe). Le damos
+            // margen visual arriba para que la curva no toque el borde superior
+            // del gráfico — el rebote real sigue matemáticamente en 0..1.
+            viewMaxY = 1.18;
         } else {
             viewMaxY = 1;
         }
@@ -391,20 +448,23 @@
             return SVG_HEIGHT - HANDLE_PADDING - (norm * usableSize);
         };
 
-        // Grid fijo 0..1; solo la curva usa auto-encuadre vertical
+        // Grid fijo 0..1; solo la curva usa auto-encuadre vertical.
+        // Extendemos las líneas MUY fuera del viewBox (gx/gy de -20 a +20) para
+        // que el fondo cuadriculado se vea entero cuando el SVG queda centrado
+        // en un panel ancho (overflow: visible).
         let dGrid = '';
-        const FAR_PIXEL = 3000;
+        const FAR_PIXEL = 6000;
         const gridStep = 0.125;
         const mapY01 = function (v01) {
-            return SVG_HEIGHT - HANDLE_PADDING - (clamp01(v01) * usableSize);
+            return SVG_HEIGHT - HANDLE_PADDING - (v01 * usableSize);
         };
         let gx;
-        for (gx = 0; gx <= 1.0001; gx += gridStep) {
+        for (gx = -20; gx <= 20.0001; gx += gridStep) {
             const xPos = mapX(gx);
             dGrid += 'M ' + xPos + ',' + (-FAR_PIXEL) + ' L ' + xPos + ',' + FAR_PIXEL + ' ';
         }
         let gy;
-        for (gy = 0; gy <= 1.0001; gy += gridStep) {
+        for (gy = -20; gy <= 20.0001; gy += gridStep) {
             const yPos = mapY01(gy);
             dGrid += 'M ' + (-FAR_PIXEL) + ',' + yPos + ' L ' + FAR_PIXEL + ',' + yPos + ' ';
         }
@@ -444,7 +504,9 @@
             yH = sampleSpecialYAtU(uH);
         } else {
             uH = bounceUFromDamp(specialBounce.damp);
-            yH = sampleSpecialYAtU(uH);
+            // Dot fijo a la mitad vertical del gráfico — actúa como slider horizontal
+            // limpio y no se sacude al re-dibujar la curva mientras arrastrás.
+            yH = viewMaxY * 0.5;
         }
 
         pxH = mapX(uH);
@@ -466,6 +528,11 @@
         if (modeSelectorRow) {
             modeSelectorRow.style.display = (curveFamily === 'graph') ? '' : 'none';
             modeSelectorRow.classList.toggle('mode-locked-value', false);
+        }
+        if (applyMethodRow) {
+            applyMethodRow.style.display = (curveFamily === 'graph') ? 'none' : '';
+            if (btnApplyExpr) btnApplyExpr.classList.toggle('active', applyMethod === 'expr');
+            if (btnApplyKeys) btnApplyKeys.classList.toggle('active', applyMethod === 'keys');
         }
 
         if (curveFamily !== 'graph') {
@@ -536,17 +603,18 @@
         let endX = mapX(1); dFill += ` L ${endX},${floorY} Z`;
         graphCurve.setAttribute('d', dCurve); graphFill.setAttribute('d', dFill);
 
-        // Grid (solo fondo cuadriculado, igual para todos los modos)
+        // Grid (fondo cuadriculado — verticales y horizontales muy fuera del viewBox
+        // para cubrir todo el contenedor cuando el SVG queda centrado en un panel ancho).
         let dGrid = '';
-        const FAR_PIXEL = 3000;
+        const FAR_PIXEL = 6000;
         const gridStep = 0.125;
         let gx;
-        for (gx = 0; gx <= 1.0001; gx += gridStep) {
+        for (gx = -20; gx <= 20.0001; gx += gridStep) {
             const xPos = HANDLE_PADDING + gx * usableSize;
             dGrid += `M ${xPos},${-FAR_PIXEL} L ${xPos},${FAR_PIXEL} `;
         }
         let gy;
-        for (gy = 0; gy <= 1.0001; gy += gridStep) {
+        for (gy = -20; gy <= 20.0001; gy += gridStep) {
             const yPos = HANDLE_PADDING + gy * usableSize;
             dGrid += `M ${-FAR_PIXEL},${yPos} L ${FAR_PIXEL},${yPos} `;
         }
@@ -677,10 +745,19 @@
         updateGraphVisuals();
     }
 
+    /** Normaliza el resultado de evalScript: JSX puede devolver el string literal "undefined"
+     *  o cadena vacía cuando la función no tiene return; en ambos casos queremos fallback. */
+    function _cleanEvalResult(result) {
+        if (result === undefined || result === null) return '';
+        const s = String(result).trim();
+        if (s === '' || s === 'undefined' || s === 'null') return '';
+        return s;
+    }
+
     // --- KEYFRAME TYPES ---
     function setType(type) {
         csInterface.evalScript(`_GRAPHEDITOR.setKeyframeType('${type}')`, function (result) {
-            applyBtn.innerText = result || "OK";
+            applyBtn.innerText = _cleanEvalResult(result) || "OK";
             setTimeout(() => applyBtn.innerText = "APLICAR", 1500);
         });
     }
@@ -691,7 +768,7 @@
         const vOut = (graphMode === 'value') ? handleLeftY : 0;
         const vIn = (graphMode === 'value') ? (handleRightY - 1) : 0;
         csInterface.evalScript('_GRAPHEDITOR.applyInfluence(' + sliderOut.value + ',' + sliderIn.value + ',' + vOut + ',' + vIn + ',\'' + graphMode + '\')', function (result) {
-            applyBtn.innerText = result || "APLICADO";
+            applyBtn.innerText = _cleanEvalResult(result) || "APLICADO";
             setTimeout(function () { applyBtn.innerText = "APLICAR"; }, 1800);
         });
     }
@@ -787,29 +864,34 @@
             const vOut = (graphMode === 'value') ? handleLeftY : 0;
             const vIn = (graphMode === 'value') ? (handleRightY - 1) : 0;
             csInterface.evalScript(`_GRAPHEDITOR.applyInfluence(${sliderOut.value}, ${sliderIn.value}, ${vOut}, ${vIn}, '${graphMode}')`, function (result) {
-                applyBtn.innerText = result || "APLICADO";
+                applyBtn.innerText = _cleanEvalResult(result) || "APLICADO";
                 setTimeout(() => applyBtn.innerText = "APLICAR", 2000);
             });
         } else {
             const raw = sampleSpecialCurvePoints();
             let pts = buildBakePointsFromSamples(raw);
             pts = normalizeBakeEndpoints(pts, curveFamily);
-            pts = downsampleBakePoints(pts, BAKE_MAX_INTERIOR, curveFamily);
+            // Sólo downsampleamos cuando vamos a hornear keyframes reales (KEYS). En EXPR,
+            // la expresión se evalúa por frame y se beneficia de más puntos → fluidez BOUNCr.
+            if (applyMethod === 'keys') {
+                pts = downsampleBakePoints(pts, BAKE_MAX_INTERIOR, curveFamily);
+            }
             const payload = { type: curveFamily, points: pts };
             if (curveFamily === 'elastic') payload.params = { amp: specialElastic.amp, decay: specialElastic.decay };
             if (curveFamily === 'bounce') payload.params = { peak: specialBounce.peak, damp: specialBounce.damp };
             if (curveFamily === 'step') payload.params = { steps: specialStep.steps };
-            // custom removed
             const inner = JSON.stringify(payload);
-            const cmd = '_GRAPHEDITOR.applyExpressionSegment(' + JSON.stringify(inner) + ')';
+            const fn = (applyMethod === 'keys') ? '_GRAPHEDITOR.applyBakedSegment' : '_GRAPHEDITOR.applyExpressionSegment';
+            const cmd = fn + '(' + JSON.stringify(inner) + ')';
             csInterface.evalScript(cmd, function (result) {
-                const r = (result || '').toString();
+                const r = _cleanEvalResult(result);
                 if (r.indexOf('OK:') === 0) {
                     const n = parseInt(r.slice(3), 10);
                     applyBtn.innerText = (isNaN(n) || n < 1) ? "NO APLICÓ" : "APLICADO";
+                } else if (r === '') {
+                    applyBtn.innerText = "APLICADO";
                 } else {
-                    applyBtn.innerText = r || "ERROR";
-                    // hint rápido para cuando el host JSX no se recargó
+                    applyBtn.innerText = r;
                     if (r.indexOf('EvalScript') !== -1 || r.indexOf('ERR:') === 0) {
                         setTimeout(() => { applyBtn.innerText = "RECARGA PANEL"; }, 1200);
                     }
@@ -876,6 +958,9 @@
             // Auto-switch tab to detected family
             setFamilyUI(fam);
 
+            // Se detectó una expresión GraphEditor → sincronizamos el toggle a "fx EXPR"
+            setApplyMethod('expr');
+
             if (fam === 'elastic' && data.params) {
                 specialElastic = { amp: data.params.amp, decay: data.params.decay };
             } else if (fam === 'bounce' && data.params) {
@@ -903,6 +988,16 @@
         updateGraphVisuals();
     });
 
+    function setApplyMethod(m) {
+        if (m !== 'expr' && m !== 'keys') return;
+        applyMethod = m;
+        if (btnApplyExpr) btnApplyExpr.classList.toggle('active', m === 'expr');
+        if (btnApplyKeys) btnApplyKeys.classList.toggle('active', m === 'keys');
+        try { localStorage.setItem('ge_applyMethod', m); } catch (eLS1) { }
+    }
+    if (btnApplyExpr) btnApplyExpr.addEventListener('click', () => setApplyMethod('expr'));
+    if (btnApplyKeys) btnApplyKeys.addEventListener('click', () => setApplyMethod('keys'));
+
     // New buttons
     if (reverseBtn) {
         reverseBtn.addEventListener('click', () => {
@@ -925,6 +1020,60 @@
     if (guideBtn) {
         guideBtn.addEventListener('click', () => {
             setGuideVisibility(!isGuideEnabled);
+        });
+    }
+
+    // Aleatorio: mezcla los valores de la curva activa. Útil para descubrir
+    // combinaciones interesantes sin arrastrar sliders manualmente.
+    function randomizeCurrentCurve() {
+        const rnd = (min, max) => min + Math.random() * (max - min);
+        if (curveFamily === 'graph') {
+            if (sliderOut) { sliderOut.value = rnd(8, 92); }
+            if (sliderIn) { sliderIn.value = rnd(8, 92); }
+            if (graphMode === 'value') {
+                handleLeftY = rnd(-0.35, 0.35);
+                handleRightY = 1 + rnd(-0.35, 0.35);
+            }
+        } else if (curveFamily === 'elastic') {
+            specialElastic.amp = rnd(0.15, 0.85);
+            specialElastic.decay = rnd(0.15, 0.85);
+        } else if (curveFamily === 'bounce') {
+            specialBounce.peak = rnd(0.25, 0.85);
+            specialBounce.damp = rnd(0.10, 0.90);
+        } else if (curveFamily === 'step') {
+            specialStep.steps = Math.max(2, Math.min(16, Math.round(rnd(2, 12))));
+        }
+        updateGraphVisuals();
+    }
+
+    // Reset: vuelve a los valores por defecto de la curva activa.
+    function resetCurrentCurve() {
+        if (curveFamily === 'graph') {
+            if (sliderOut) { sliderOut.value = 33.3; }
+            if (sliderIn) { sliderIn.value = 33.3; }
+            handleLeftY = 0;
+            handleRightY = 1;
+        } else if (curveFamily === 'elastic') {
+            specialElastic.amp = 0.55;
+            specialElastic.decay = 0.48;
+        } else if (curveFamily === 'bounce') {
+            specialBounce.peak = 0.55;
+            specialBounce.damp = 0.45;
+        } else if (curveFamily === 'step') {
+            specialStep.steps = 5;
+        }
+        updateGraphVisuals();
+    }
+
+    if (randomizeBtn) {
+        randomizeBtn.addEventListener('click', () => {
+            randomizeCurrentCurve();
+        });
+    }
+
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            resetCurrentCurve();
         });
     }
 

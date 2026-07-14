@@ -6,8 +6,6 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#262626;font:11px Tahoma,'Segoe UI',sans-serif;color:#ccc;overflow:hidden}
 .shell{display:flex;flex-direction:column;height:100%}
-.titlebar{display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:#323232;color:#e0e0e0;font-size:12px;border-bottom:1px solid #1a1a1a;flex-shrink:0}
-.titlebar button{background:none;border:none;color:#ccc;font-size:14px;cursor:pointer}
 .wrap{display:flex;flex-direction:column;padding:10px;gap:8px;flex:1;background:#141414}
 .hdr{height:20px;background:#F59B00;color:#000;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .row{display:flex;gap:6px;flex-shrink:0;width:100%}
@@ -22,11 +20,12 @@ html,body{height:100%;background:#262626;font:11px Tahoma,'Segoe UI',sans-serif;
 .db-in{flex:1 1 auto;min-width:0;height:36px;border:1px solid #333;background:#222;color:#ccc;font:bold 16px 'Segoe UI';text-align:center;padding:0 6px}
 .db-lbl{display:flex;align-items:center;flex:0 0 auto;color:#F59B00;font:bold 14px 'Segoe UI';padding:0 2px}
 .db-btn{flex:1 1 0;min-width:36px;height:36px}
+.toast{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.88);color:#F59B00;font:bold 10px Tahoma;padding:4px 10px;border-radius:3px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9;white-space:nowrap;max-width:92vw;text-align:center}
+.toast.show{opacity:1}
 </style>
 </head>
 <body>
 <div class="shell">
-  <div class="titlebar"><span>Audify</span><button type="button" aria-label="Menú">☰</button></div>
   <div class="wrap">
   <div class="hdr">Audio Controls</div>
   <div class="row" id="r1"></div>
@@ -44,7 +43,22 @@ html,body{height:100%;background:#262626;font:11px Tahoma,'Segoe UI',sans-serif;
   </div>
   </div>
 </div>
+<div class="toast" id="toast"></div>
 <script>
+var toastEl=document.getElementById('toast'),toastTimer;
+function showToast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){toastEl.classList.remove('show');},1500);}
+var ACTION_MSG={
+  IN:'Fade In 1s desde −48 dB al nivel base',
+  OUT:'Fade Out 1s hasta −48 dB en outPoint',
+  INOUT:'Fade In + Out preservando expresiones de ducking',
+  'VOL+':'Sube Audio Levels +dB del campo',
+  'VOL-':'Baja Audio Levels −dB del campo',
+  REV:'Time-Reverse Layer + marker en inPoint',
+  HIGHLOW:'Añade efecto ADBE Aud High-Low Pass',
+  COMPRESSOR:'Añade efecto ADBE Aud Compressor',
+  Detect:'Marca capas con efecto DETECT_TAG (voz)',
+  Ducking:'Audio-to-Keyframes + expresión ducking en música'
+};
 var PAL={bg:'#222222',hover:'#333333',hi:'#F59B00',iconHov:'#FFFFFF'};
 var VECTORS={
   IN:function(ctx,bw,bh,col){
@@ -109,8 +123,7 @@ function mountCell(el,id){
   el.onmouseenter=function(){draw(true);};
   el.onmouseleave=function(){if(!el.classList.contains('active'))draw(false);};
   el.onclick=function(){
-    el.closest('.row').querySelectorAll('.cell').forEach(function(x){x.classList.remove('active');});
-    el.classList.add('active');
+    showToast(ACTION_MSG[id]||id);
     draw(true);
   };
   requestAnimationFrame(function(){draw(false);});
@@ -121,8 +134,7 @@ function mountCell(el,id){
 document.querySelectorAll('.cell[data-id]').forEach(function(el){mountCell(el,el.dataset.id);});
 document.querySelectorAll('.cell-txt').forEach(function(btn){
   btn.onclick=function(){
-    document.querySelectorAll('.cell-txt').forEach(function(b){b.classList.remove('active');});
-    btn.classList.add('active');
+    showToast(ACTION_MSG[btn.textContent]||btn.textContent);
   };
 });
 </script>

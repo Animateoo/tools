@@ -1,4 +1,4 @@
-/* CompVault — tema alineado con MediaVault (BadFX + acento rojo) */
+/* CompVault — tema alineado con MediaVault (Animateoo + acento naranja) */
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
@@ -16,9 +16,10 @@
   --icon-muted: #505050;
   --icon-default: #717171;
   --icon-hover: #a0a0a0;
-  --accent: #e84545;
-  --accent-hover: #ff5c5c;
-  --accent-dim: rgba(232, 69, 69, 0.12);
+  --accent: #F7941D;
+  --accent-hover: #FFA733;
+  --accent-dim: rgba(247, 148, 29, 0.14);
+  --accent-on: #111111;
   --success: #4ade80;
   --radius: 3px;
   --radius-sm: 3px;
@@ -135,7 +136,7 @@ html, body {
 .header-actions .btn-accent .cv-icon {
   width: 12px;
   height: 12px;
-  color: #fff;
+  color: var(--accent-on);
   stroke-width: 1.35;
 }
 
@@ -154,7 +155,7 @@ html, body {
   background: var(--accent);
   border: none;
   border-radius: var(--radius-sm);
-  color: #fff;
+  color: var(--accent-on);
   font-size: 10px;
   font-weight: 600;
   cursor: pointer;
@@ -286,7 +287,7 @@ html, body {
 }
 
 .cv-tree-row.active:hover {
-  background: rgba(232, 69, 69, 0.16);
+  background: rgba(247, 148, 29, 0.16);
   color: var(--accent-hover);
 }
 
@@ -407,7 +408,7 @@ html, body {
 .btn-accent .cv-icon,
 .preview-icon-btn-accent .cv-icon,
 .view-btn.active .cv-icon {
-  color: #fff;
+  color: var(--accent-on);
 }
 
 .tool-btn:hover .cv-icon,
@@ -633,8 +634,8 @@ html, body {
 
 .category-tab.active {
   color: var(--accent);
-  border-color: rgba(224, 64, 64, 0.45);
-  background: rgba(224, 64, 64, 0.08);
+  border-color: rgba(247, 148, 29, 0.45);
+  background: var(--accent-dim);
 }
 
 .save-category-row {
@@ -705,7 +706,7 @@ html, body {
 
 .size-btn:first-child { border-left: none; }
 .size-btn:hover { background: var(--bg-hover); color: var(--text); }
-.size-btn.active { background: var(--accent); color: #fff; }
+.size-btn.active { background: var(--accent); color: var(--accent-on); }
 
 .view-btn {
   width: 32px;
@@ -726,7 +727,7 @@ html, body {
 .view-btn:hover { background: var(--bg-hover); color: var(--text); }
 .view-btn.active {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-on);
 }
 
 .grid-scroll {
@@ -1025,12 +1026,12 @@ html, body {
 
 .preview-icon-btn-accent {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-on);
 }
 
 .preview-icon-btn-accent:hover {
   background: var(--accent-hover);
-  color: #fff;
+  color: var(--accent-on);
 }
 
 /* Statusbar */
@@ -1194,7 +1195,7 @@ html, body {
   background: var(--accent);
   border: none;
   border-radius: var(--radius-sm);
-  color: #fff;
+  color: var(--accent-on);
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
@@ -1236,8 +1237,8 @@ html, body {
 
 .ctx-menu button:hover { background: var(--bg-hover); color: var(--text-bright); }
 
-.ctx-menu button.ctx-danger { color: #f07070; }
-.ctx-menu button.ctx-danger:hover { background: rgba(232, 69, 69, 0.15); color: #ff8585; }
+.ctx-menu button.ctx-danger { color: #E08618; }
+.ctx-menu button.ctx-danger:hover { background: rgba(247, 148, 29, 0.15); color: #FFA733; }
 
 .ctx-menu-sep {
   height: 1px;
@@ -1338,11 +1339,11 @@ html, body {
 }
 
 .btn-accent.btn-danger {
-  background: #b83232;
+  background: #D97E15;
 }
 
 .btn-accent.btn-danger:hover {
-  background: #d63c3c;
+  background: #E08618;
 }
 
 .settings-hint {

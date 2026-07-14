@@ -6,21 +6,27 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#262626;font:11px Tahoma,'Segoe UI',sans-serif;color:#ccc;overflow:hidden}
 .shell{display:flex;flex-direction:column;height:100%}
-.titlebar{display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:#323232;color:#e0e0e0;font-size:12px;border-bottom:1px solid #1a1a1a;flex-shrink:0}
-.titlebar button{background:none;border:none;color:#ccc;font-size:14px;cursor:pointer}
-.win{padding:10px;flex:1;background:#1f1f1f}
+.win{padding:10px;flex:1;background:#1e1e1e}
 .row{display:flex;gap:6px}
 .btn{width:42px;height:42px;flex:0 0 42px;border:none;background:transparent;cursor:pointer;padding:0;transition:transform .12s ease}
 .btn:active,.btn.active{transform:scale(0.94)}
 .btn canvas{display:block;width:42px;height:42px}
+.toast{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.88);color:#f6d32d;font:bold 10px Tahoma;padding:4px 10px;border-radius:3px;border:1px solid rgba(246,211,45,.3);opacity:0;pointer-events:none;transition:opacity .2s;z-index:9;white-space:nowrap;max-width:92vw;text-align:center}
+.toast.show{opacity:1}
 </style>
 </head>
 <body>
 <div class="shell">
-  <div class="titlebar"><span>Mask Unlinker</span><button type="button" aria-label="Menú">☰</button></div>
   <div class="win"><div class="row" id="row"></div></div>
 </div>
+<div class="toast" id="toast"></div>
 <script>
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t=setTimeout(function(){t.classList.remove('show');},1600);
+}
 function renderIcon(ctx,w,h,type,hover){
   var bg=hover?36:20;
   ctx.fillStyle='rgb('+bg+','+bg+','+bg+')';
@@ -57,6 +63,13 @@ function renderIcon(ctx,w,h,type,hover){
   }
 }
 var tools=['unlink','relink','mask2shape','shape2mask','separate'];
+var actions={
+  unlink:'Unlink: expresión //MaskUnlinker en paths de máscara seleccionados',
+  relink:'Relink: hornea valor y desactiva expresión de la máscara',
+  mask2shape:'Mask→Shape: crea capa shape desde máscara con fill gris',
+  shape2mask:'Shape→Mask: convierte paths shape en máscaras en capa destino',
+  separate:'Separate: duplica capa por cada máscara y elimina original'
+};
 var labels={unlink:'Unlink mask',relink:'Relink mask',mask2shape:'Mask → Shape',shape2mask:'Shape → Mask',separate:'Separate masks'};
 var row=document.getElementById('row');
 tools.forEach(function(type){
@@ -67,9 +80,14 @@ tools.forEach(function(type){
   paint(false);
   btn.onmouseenter=function(){if(!btn.classList.contains('active'))paint(true);};
   btn.onmouseleave=function(){if(!btn.classList.contains('active'))paint(false);};
-  btn.onclick=function(){
-    row.querySelectorAll('.btn').forEach(function(b){b.classList.remove('active');renderIcon(b.querySelector('canvas').getContext('2d'),42,42,b.dataset.tool,false);});
+  btn.onmousedown=function(e){
+    e.preventDefault();
+    row.querySelectorAll('.btn').forEach(function(b){
+      b.classList.remove('active');
+      renderIcon(b.querySelector('canvas').getContext('2d'),42,42,b.dataset.tool,false);
+    });
     btn.classList.add('active');paint(true);
+    showToast(actions[type]);
   };
   row.appendChild(btn);
 });

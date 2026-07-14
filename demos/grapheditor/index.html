@@ -5,22 +5,17 @@
     <meta charset="utf-8">
     <title>GraphEditor</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="demo-embed.css">
 </head>
 
 <body>
-
-    <div class="panel-shell">
-        <header class="panel-titlebar">
-            <span>GraphEditor</span>
-            <button type="button" class="panel-menu" aria-label="Menú">☰</button>
-        </header>
 
     <div class="main-layout layout-vertical" id="mainLayout">
 
         <div class="primary-column curve-family-graph" id="primaryColumn">
 
-            <div class="curve-type-bar" id="curveTypeBar" title="Tipo de curva (solo After Effects)">
-                <button type="button" class="curve-type-btn active" data-curve="graph" id="curveTypeGraph" title="Graph (CURVE / VALUE)">
+            <div class="curve-type-bar" id="curveTypeBar" title="Tipo de curva">
+                <button type="button" class="curve-type-btn active" data-curve="graph" id="curveTypeGraph" title="Graph">
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 18V6M3 12h4l4-6 4 9 4-3h4"/></svg>
                 </button>
                 <button type="button" class="curve-type-btn" data-curve="elastic" title="Elastic">
@@ -37,6 +32,11 @@
             <div class="mode-selector" id="modeSelectorRow">
                 <button class="mode-btn active" id="btnModeVelocity">CURVE</button>
                 <button class="mode-btn" id="btnModeValue">VALUE</button>
+            </div>
+
+            <div class="mode-selector apply-method-row" id="applyMethodRow" style="display:none;" title="Método">
+                <button class="mode-btn active" id="btnApplyExpr" data-method="expr" title="Expresión">fx EXPR</button>
+                <button class="mode-btn" id="btnApplyKeys" data-method="keys" title="Keyframes">◆ KEYS</button>
             </div>
 
             <div class="graph-container" id="graphContainer">
@@ -84,34 +84,43 @@
                         <div class="kf-btn kf-btn--sm" data-type="linear" title="Linear">
                             <img src="icons/linear.svg" draggable="false">
                         </div>
-                        <div class="kf-btn kf-btn--sm" data-type="bezier" title="Auto Bezier">
+                        <div class="kf-btn kf-btn--sm" data-type="bezier" title="Bezier">
                             <img src="icons/bezier.svg" draggable="false">
                         </div>
-                        <div class="kf-btn kf-btn--sm" data-type="hold" title="Toggle Hold">
+                        <div class="kf-btn kf-btn--sm" data-type="hold" title="Hold">
                             <img src="icons/hold.svg" draggable="false">
                         </div>
 
-                        <div class="separator-vertical kf-tools-sep" aria-hidden="true"></div>
-
-                        <div class="kf-btn kf-btn--sm preset-trigger" data-out="33.3" data-in="33.3" title="Easy Ease (influencia temporal)">
+                        <div class="kf-btn kf-btn--sm preset-trigger" data-out="33.3" data-in="33.3" title="Easy Ease">
                             <img src="icons/easyease.svg" draggable="false">
                         </div>
                     </div>
                     <div class="tools-box tools-box--actions">
-                        <button type="button" class="icon-btn icon-btn--toolbar" id="reverseBtn" title="Reverse (intercambiar influencias)">
+                        <button type="button" class="icon-btn icon-btn--toolbar" id="reverseBtn" title="Reverse">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <polyline points="15 3 21 3 21 9"></polyline>
-                                <polyline points="9 21 3 21 3 15"></polyline>
-                                <path d="M21 3l-7 7"></path>
-                                <path d="M3 21l7-7"></path>
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="17 1 21 5 17 9"></polyline>
+                                <line x1="3" y1="5" x2="21" y2="5"></line>
+                                <polyline points="7 15 3 19 7 23"></polyline>
+                                <line x1="21" y1="19" x2="3" y2="19"></line>
                             </svg>
                         </button>
-                        <button type="button" class="icon-btn icon-btn--toolbar" id="guideBtn" title="CTI: línea en el tiempo actual (sincroniza con el playhead de AE)">
+                        <button type="button" class="icon-btn icon-btn--toolbar" id="randomizeBtn" title="Aleatorio">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <line x1="12" y1="3" x2="12" y2="21"></line>
-                                <circle cx="12" cy="5" r="1.8"></circle>
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2.5" ry="2.5"></rect>
+                                <circle cx="8" cy="8" r="1.3" fill="currentColor"></circle>
+                                <circle cx="16" cy="16" r="1.3" fill="currentColor"></circle>
+                                <circle cx="16" cy="8" r="1.3" fill="currentColor"></circle>
+                                <circle cx="8" cy="16" r="1.3" fill="currentColor"></circle>
+                                <circle cx="12" cy="12" r="1.3" fill="currentColor"></circle>
+                            </svg>
+                        </button>
+                        <button type="button" class="icon-btn icon-btn--toolbar" id="resetBtn" title="Reset">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 4 3 10 9 10"></polyline>
+                                <path d="M3.5 10a9 9 0 1 1 2.6 6.9"></path>
                             </svg>
                         </button>
                     </div>
@@ -119,7 +128,7 @@
             </div>
 
             <div class="action-buttons-container">
-                <button id="copyBtn" class="copy-btn" title="Copiar curva desde AE">
+                <button id="copyBtn" class="copy-btn" title="Traer de AE">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="7 10 12 15 17 10"></polyline>
@@ -132,9 +141,7 @@
 
     </div>
 
-    </div><!-- /.panel-shell -->
-
-    <script src="../shared/CSInterface.js"></script>
+    <script src="CSInterface.js"></script>
     <script src="main.js"></script>
 </body>
 

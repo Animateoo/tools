@@ -4,11 +4,9 @@
 <meta charset="UTF-8">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:#262626;font:11px Tahoma,'Segoe UI',sans-serif;color:#ccc;overflow:hidden}
-.shell{display:flex;flex-direction:column;width:100%;position:relative}
-.titlebar{display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:#323232;color:#e0e0e0;font-size:12px;border-bottom:1px solid #1a1a1a}
-.titlebar button{background:none;border:none;color:#ccc;font-size:14px;cursor:pointer;padding:2px 4px}
-.win{display:flex;flex-direction:column;padding:6px;gap:4px;background:#262626}
+html,body{height:100%;background:#262626;font:11px Tahoma,'Segoe UI',sans-serif;color:#ccc;overflow:hidden}
+.shell{display:flex;flex-direction:column;width:100%;height:100%;position:relative;background:#262626}
+.win{display:flex;flex-direction:column;padding:6px;gap:4px;flex:1;min-height:0}
 .topbar{display:flex;align-items:center;gap:3px}
 .hex-group{display:flex;align-items:center;gap:2px;min-width:0}
 .chip{width:24px;height:22px;border:1px solid #737373;background:#262626;cursor:pointer;position:relative;flex-shrink:0}
@@ -63,8 +61,8 @@ html,body{background:#262626;font:11px Tahoma,'Segoe UI',sans-serif;color:#ccc;o
 </style>
 </head>
 <body>
+<input type="file" id="importFile" accept=".json,application/json" style="display:none">
 <div class="shell">
-  <div class="titlebar"><span>Aura Pro</span><button type="button" id="menuBtn" aria-label="Menú">☰</button></div>
   <div class="win">
     <div class="topbar">
       <div class="hex-group">
@@ -81,12 +79,8 @@ html,body{background:#262626;font:11px Tahoma,'Segoe UI',sans-serif;color:#ccc;o
       <button class="btn btn-lg" type="button" id="swapBtn" title="Swap colores">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M11 5.5H3.5M5.5 3.5L3.5 5.5L5.5 7.5"/><path d="M5 10.5h7.5M10.5 12.5L12.5 10.5L10.5 8.5"/></svg>
       </button>
-      <button class="btn btn-lg" type="button" id="importBtn" title="Importar JSON">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2.5 5.5h3.5l1-1.5h4.5a1 1 0 0 1 1 1v7H2.5V5.5z"/></svg>
-      </button>
-      <button class="btn btn-lg" type="button" id="exportBtn" title="Exportar JSON">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 3.5h5l2.5 2.5V13H4V3.5z"/><path d="M9 3.5v2.5h2.5"/></svg>
-      </button>
+      <button class="btn btn-lg" type="button" id="importBtn" title="Importar paleta(s) (.json)">📁</button>
+      <button class="btn btn-lg" type="button" id="exportBtn" title="Exportar todas las paletas (.json)">💾</button>
     </div>
     <div class="label" id="palLabel">DIDI PRÉSTAMOS (7)</div>
     <div class="swatch-grid" id="swatches"></div>
@@ -126,7 +120,44 @@ var chipFill=document.getElementById('chipFill'),hex=document.getElementById('he
 var backdrop=document.getElementById('modalBackdrop'),modalTitle=document.getElementById('modalTitle'),modalBody=document.getElementById('modalBody'),modalOk=document.getElementById('modalOk'),modalCancel=document.getElementById('modalCancel'),toastEl=document.getElementById('toast');
 var strokeFill=true,modalAction=null,toastTimer;
 
+var SCRIPT_NAME='Aura Pro';
 function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){toastEl.classList.remove('show');},1500);}
+function showAuraMessage(title,message){
+  openModal(title||SCRIPT_NAME,'<p class="modal-hint">'+message+'</p>','OK',closeModal);
+  modalCancel.style.display='none';
+  modalOk.onclick=function(){closeModal();modalCancel.style.display='';};
+}
+function showAuraChoiceDialog(title,message,labelA,labelB,onDone){
+  openModal(title||SCRIPT_NAME,'<p class="modal-hint">'+message+'</p>','',null);
+  modalOk.textContent=labelB||'B';modalOk.className='ok choice';
+  var extra=document.createElement('button');extra.type='button';extra.className='choice choice-extra';extra.textContent=labelA||'A';
+  extra.style.cssText='min-width:58px;height:22px;border:1px solid #555;background:#454545;color:#ddd;font:11px Tahoma;cursor:pointer;padding:0 8px';
+  var foot=document.querySelector('.modal-foot');foot.insertBefore(extra,modalCancel);
+  extra.onclick=function(){closeModal();if(onDone)onDone(0);};
+  modalOk.onclick=function(){closeModal();if(onDone)onDone(1);};
+  modalCancel.onclick=function(){closeModal();if(onDone)onDone(null);};
+}
+function getExportData(){
+  var names=Object.keys(palettes);
+  return{
+    activePaletteIndex:Math.max(0,names.indexOf(currentPal())),
+    palettes:names.map(function(name){return{name:name,colors:palettes[name].slice()};})
+  };
+}
+function processImport(data,mode){
+  try{
+    if(!data)throw new Error('Archivo vacío o no válido.');
+    if(data.palettes&&Array.isArray(data.palettes)){
+      if(mode===0){palettes={};data.palettes.forEach(function(p){palettes[p.name]=p.colors.slice();});}
+      else if(mode===1){data.palettes.forEach(function(p){palettes[p.name]=p.colors.slice();});}
+      else return;
+    }else if(data.name&&Array.isArray(data.colors)){
+      palettes[data.name]=data.colors.slice();
+    }else{showAuraMessage(SCRIPT_NAME,'Formato .json no válido.');return;}
+    syncDropdown();render(currentPal());
+    showAuraMessage(SCRIPT_NAME,'Importación completada.');
+  }catch(e){showAuraMessage(SCRIPT_NAME,'Error procesando archivo .json:\n'+e);}
+}
 function setChip(c){chipFill.style.background=c;}
 function currentPal(){return dd.value;}
 function syncDropdown(selectName){
@@ -146,7 +177,7 @@ function render(name){
     if(i%COLS===0){row=document.createElement('div');row.className='swatch-row';sw.appendChild(row);}
     c=colors[i];
     s=document.createElement('div');s.className='swatch';s.style.background=c;
-    s.onclick=function(col){return function(){hex.value=col;setChip(col);};}(c);
+    s.onclick=function(col){return function(){hex.value=col;setChip(col);toast('Aplica '+col+' a capas seleccionadas (fill/stroke)');};}(c);
     row.appendChild(s);
   }
 }
@@ -163,7 +194,11 @@ function closeModal(){
   backdrop.classList.remove('open');
   modalAction=null;
   modalOk.className='ok';
+  modalOk.textContent='Aceptar';
+  modalCancel.textContent='Cancelar';
+  modalCancel.style.display='';
   modalOk.onclick=function(){if(modalAction)modalAction();};
+  modalCancel.onclick=function(){closeModal();};
   document.querySelectorAll('.modal-foot .choice-extra').forEach(function(b){b.remove();});
   var m=document.querySelector('.modal');if(m)m.classList.remove('modal--wide');
 }
@@ -172,31 +207,32 @@ backdrop.onclick=function(e){if(e.target===backdrop)closeModal();};
 modalOk.onclick=function(){if(modalAction)modalAction();};
 
 document.getElementById('newPalBtn').onclick=function(){
-  openModal('Nueva paleta','<label>Nombre de la biblioteca</label><input id="mInput" placeholder="Mi marca / cliente">','Crear',function(){
+  openModal(SCRIPT_NAME,'<label>Nombre nueva paleta:</label><input id="mInput" value="Paleta '+(Object.keys(palettes).length+1)+'">','Aceptar',function(){
     var name=(document.getElementById('mInput').value||'').trim();
-    if(!name){toast('Escribe un nombre');return;}
-    if(palettes[name]){toast('Ya existe');return;}
-    palettes[name]=['#FFFFFF','#000000','#F6D32D'];
-    syncDropdown(name);render(name);closeModal();toast('Paleta creada');
+    if(!name||!/[^\s]/.test(name)){closeModal();return;}
+    palettes[name]=[];
+    syncDropdown(name);render(name);closeModal();
   });
 };
 document.getElementById('renamePalBtn').onclick=function(){
   var cur=currentPal();
-  openModal('Renombrar paleta','<label>Nuevo nombre</label><input id="mInput" value="'+cur.replace(/"/g,'&quot;')+'">','Guardar',function(){
+  openModal(SCRIPT_NAME,'<label>Renombrar paleta:</label><input id="mInput" value="'+cur.replace(/"/g,'&quot;')+'">','Aceptar',function(){
     var name=(document.getElementById('mInput').value||'').trim();
     if(!name||name===cur){closeModal();return;}
     if(palettes[name]){toast('Nombre en uso');return;}
     palettes[name]=palettes[cur];delete palettes[cur];
-    syncDropdown(name);render(name);closeModal();toast('Renombrada');
+    syncDropdown(name);render(name);closeModal();
   });
 };
 document.getElementById('delPalBtn').onclick=function(){
-  if(Object.keys(palettes).length<2){toast('Mínimo 1 paleta');return;}
+  if(Object.keys(palettes).length<1)return;
   var cur=currentPal();
-  openModal('Eliminar paleta','<p class="modal-hint">¿Eliminar <strong>'+cur+'</strong>? Esta acción no se puede deshacer en AE.</p>','Eliminar',function(){
+  openModal(SCRIPT_NAME,'<p class="modal-hint">¿Eliminar la paleta actual?</p>','Sí',function(){
     delete palettes[cur];
-    syncDropdown();render(currentPal());closeModal();toast('Paleta eliminada');
+    syncDropdown();render(currentPal());closeModal();
   });
+  modalOk.textContent='Sí';
+  modalCancel.textContent='No';
 };
 document.getElementById('addColorBtn').onclick=function(){
   openModal('Añadir color','<label>HEX</label><input id="mInput" value="'+hex.value+'">','Añadir',function(){
@@ -207,65 +243,52 @@ document.getElementById('addColorBtn').onclick=function(){
     hex.value=c.toUpperCase();setChip(c);render(currentPal());closeModal();toast('Color añadido');
   });
 };
+document.getElementById('importFile').onchange=function(){
+  var fileInput=document.getElementById('importFile');
+  if(!fileInput.files||!fileInput.files[0])return;
+  var reader=new FileReader();
+  reader.onload=function(){
+    try{
+      var data=JSON.parse(reader.result);
+      if(data.palettes&&Array.isArray(data.palettes)){
+        showAuraChoiceDialog(SCRIPT_NAME,'¿Cómo importar las paletas del archivo?','Reemplazar todas','Añadir al final',function(choice){
+          if(choice===null)return;
+          processImport(data,choice);
+        });
+      }else{
+        processImport(data,1);
+      }
+    }catch(e){showAuraMessage(SCRIPT_NAME,'Error leyendo archivo:\n'+e);}
+    fileInput.value='';
+  };
+  reader.readAsText(fileInput.files[0]);
+};
 document.getElementById('importBtn').onclick=function(){
-  openModal('Importar paletas','<label>Archivo .json</label><div class="file-row"><input type="file" id="mFile" accept=".json,application/json"><button type="button" class="file-btn" id="mFileBtn">Seleccionar archivo .json…</button></div><p class="modal-hint">Mismo flujo que en AE: abre un .json exportado por Aura Pro.</p>','Importar',function(){
-    var fileInput=document.getElementById('mFile');
-    if(!fileInput.files||!fileInput.files[0]){toast('Elige un archivo');return;}
-    var reader=new FileReader();
-    reader.onload=function(){
-      try{
-        var data=JSON.parse(reader.result);
-        function applyImport(mode){
-          if(data.palettes&&Array.isArray(data.palettes)){
-            if(mode===0){palettes={};data.palettes.forEach(function(p){palettes[p.name]=p.colors.slice();});}
-            else{data.palettes.forEach(function(p){palettes[p.name]=p.colors.slice();});}
-          }else if(data.name&&Array.isArray(data.colors)){
-            palettes[data.name]=data.colors.slice();
-          }else{toast('Formato .json no válido');return;}
-          syncDropdown();render(currentPal());closeModal();toast('Importación completada');
-        }
-        if(data.palettes&&Array.isArray(data.palettes)){
-          closeModal();
-          openModal('Importar paletas','<p class="modal-hint">¿Cómo importar las paletas del archivo?</p>','',null);
-          modalOk.textContent='Añadir al final';modalOk.className='ok choice';
-          var extra=document.createElement('button');extra.type='button';extra.className='choice choice-extra';extra.textContent='Reemplazar todas';
-          extra.style.cssText='min-width:58px;height:22px;border:1px solid #555;background:#454545;color:#ddd;font:11px Tahoma;cursor:pointer;padding:0 8px';
-          var foot=document.querySelector('.modal-foot');foot.insertBefore(extra,modalCancel);
-          extra.onclick=function(){applyImport(0);};
-          modalOk.onclick=function(){applyImport(1);};
-        }else{applyImport(1);}
-      }catch(e){toast('JSON inválido');}
-    };
-    reader.readAsText(fileInput.files[0]);
-  });
-  setTimeout(function(){
-    var fi=document.getElementById('mFile'),fb=document.getElementById('mFileBtn');
-    if(fb&&fi){fb.onclick=function(){fi.click();};fi.onchange=function(){if(fi.files[0])fb.textContent=fi.files[0].name;};}
-  },40);
+  document.getElementById('importFile').click();
 };
 document.getElementById('exportBtn').onclick=function(){
-  var exportData={
-    activePaletteIndex:Object.keys(palettes).indexOf(currentPal()),
-    palettes:Object.keys(palettes).map(function(name){return{name:name,colors:palettes[name].slice()};})
-  };
-  openModal('Exportar paletas','<textarea id="mInput" readonly></textarea><p class="modal-hint">Copia este JSON o descárgalo — igual que el export de Aura Pro (.json).</p>','Copiar',function(){});
-  document.querySelector('.modal').classList.add('modal--wide');
-  document.getElementById('mInput').value=JSON.stringify(exportData,null,4);
-  modalOk.textContent='Copiar';
-  modalAction=function(){
-    var t=document.getElementById('mInput');t.select();
-    try{navigator.clipboard.writeText(t.value);}catch(e){document.execCommand('copy');}
-    var blob=new Blob([t.value],{type:'application/json'});
-    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='aura-paletas.json';a.click();
-    closeModal();toast('JSON copiado');
-  };
+  var exportData=getExportData();
+  var json=JSON.stringify(exportData,null,4);
+  openModal('Exportar todas las paletas','<label>Archivo JSON:</label><input id="mInput" value="aura-paletas.json">','Guardar',function(){
+    var fn=(document.getElementById('mInput').value||'aura-paletas.json').trim();
+    if(!fn)fn='aura-paletas.json';
+    if(!/\.json$/i.test(fn))fn+='.json';
+    var blob=new Blob([json],{type:'application/json'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=fn;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    closeModal();
+    showAuraMessage(SCRIPT_NAME,'Paletas exportadas con éxito.');
+  });
+  modalCancel.textContent='Cancelar';
 };
 document.getElementById('swapBtn').onclick=function(){
-  var p=palettes[currentPal()];
-  if(p.length>1){var t=p[0];p[0]=p[p.length-1];p[p.length-1]=t;render(currentPal());toast('Swap');}
+  toast('Swap Fill ↔ Stroke en capas text/shape seleccionadas');
 };
-document.getElementById('menuBtn').onclick=function(){
-  openModal('Aura Pro','<p class="modal-hint">Demo web — en After Effects este menú abre preferencias, sync y ayuda.</p>','Entendido',closeModal);
+document.getElementById('chip').onclick=function(){
+  toast('Abre color picker nativo de AE (Shift = sample fill de capa)');
 };
 
 syncDropdown('DiDi Préstamos');render('DiDi Préstamos');setChip('#FFFFFF');

@@ -227,7 +227,7 @@
 }
 
 .quick-animator-scroll::-webkit-scrollbar-thumb:hover {
-    background: #ffa31a;
+    background: #e88600;
 }
 
 /* Preset Manager Scroll */
@@ -250,7 +250,7 @@
 }
 
 .preset-manager::-webkit-scrollbar-thumb:hover {
-    background: #ffa31a;
+    background: #e88600;
 }
 
 /* Fixed Apply Buttons for Preset Manager Tab */

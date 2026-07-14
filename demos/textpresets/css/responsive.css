@@ -97,7 +97,7 @@ body {
 }
 
 .btn-text-exploder:hover {
-    color: #ffa31a !important;
+    color: #fc9300 !important;
     border-color: rgba(252, 147, 0, 0.45) !important;
     background: rgba(252, 147, 0, 0.1) !important;
 }

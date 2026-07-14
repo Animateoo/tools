@@ -1,59 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<meta charset="utf-8">
-<title>Root Pro</title>
-<link rel="stylesheet" href="css/style.css">
-<style>html,body{overflow:hidden;height:100%;background:#262626;font:11px Tahoma,'Segoe UI',sans-serif}</style>
+    <meta charset="utf-8">
+    <meta http-equiv="refresh" content="0; url=../assetpack/preview.html">
+    <title>AssetPack</title>
 </head>
 <body>
-<div class="shell" style="display:flex;flex-direction:column;height:100%">
-  <div class="titlebar" style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:#323232;color:#e0e0e0;font-size:12px;border-bottom:1px solid #1a1a1a">
-    <span>Root Pro</span><button type="button" style="background:none;border:none;color:#ccc;font-size:14px;cursor:pointer" aria-label="Menú">☰</button>
-  </div>
-<div id="panel-root" class="panel-root">
-  <div class="toolbar">
-    <div class="badges">
-      <div class="badge badge-green" title="Assets OK">
-        <svg viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-        <span>0</span>
-      </div>
-    </div>
-    <div class="actions">
-      <button class="icon-btn" title="Organiza todo en (Footage)">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><polyline points="9 14 12 17 15 14"></polyline></svg>
-      </button>
-      <button class="icon-btn" title="Collect nativo de AE + ZIP">
-        <svg viewBox="0 0 20 20" width="18" height="18" fill="currentColor"><path d="M17.66,1.16h-8.99c-.32,0-.58-.26-.58-.58s.26-.58.58-.58h8.99c.32,0,.58.26.58.58s-.26.58-.58.58Z"/><path d="M11.35,9.64c-.12,0-.25-.04-.35-.12-.25-.2-.3-.56-.11-.81l1.34-1.74c.2-.25.56-.3.81-.11s.3.56.11.81l-1.34,1.74c-.11.15-.29.23-.46.23Z"/><path d="M14.03,9.64c-.17,0-.35-.08-.46-.23l-1.34-1.74c-.2-.25-.15-.62.11-.81.25-.2.62-.15.81.11l1.34,1.74c.2.25.15.62-.11.81-.11.08-.23.12-.35.12Z"/><path d="M9.25,8.13h-1.77c-.62,0-1.13-.51-1.13-1.13V1.09c0-.6.49-1.09,1.09-1.09h1.81v8.13ZM7.5,6.97h.59V1.16h-.59v5.81Z"/><path d="M8.67,5.9h-1.75c-.32,0-.58-.26-.58-.58s.26-.58.58-.58h1.75c.32,0,.58.26.58.58s-.26.58-.58.58Z"/><path d="M19.41,5.9h-1.75c-.32,0-.58-.26-.58-.58s.26-.58.58-.58h1.75c.32,0,.58.26.58.58s-.26.58-.58.58Z"/><path d="M8.67,3.33h-1.75c-.32,0-.58-.26-.58-.58s.26-.58.58-.58h1.75c.32,0,.58.26.58.58s-.26.58-.58.58Z"/><path d="M19.41,3.33h-1.75c-.32,0-.58-.26-.58-.58s.26-.58.58-.58h1.75c.32,0,.58.26.58.58s-.26.58-.58.58Z"/><path d="M11.5,5.72c-1.06,0-1.93-.87-1.93-1.93s.87-1.93,1.93-1.93,1.93.87,1.93,1.93c0,.32-.26.58-.58.58s-.58-.26-.58-.58c0-.42-.34-.77-.77-.77s-.77.34-.77.77.34.77.77.77c.32,0,.58.26.58.58s-.26.58-.58.58Z"/><path d="M15.7,8.01c-.32,0-.58-.26-.58-.58v-1.44h-1.44c-.32,0-.58-.26-.58-.58s.26-.58.58-.58h2.6v2.6c0,.32-.26.58-.58.58Z"/><path d="M19.41,8.69h-1.75c-.32,0-.58-.26-.58-.58s.26-.58.58-.58h1.75c.32,0,.58.26.58.58s-.26.58-.58.58Z"/><path d="M19.41,11.34h-1.75c-.32,0-.58-.26-.58-.58s.26-.58.58-.58h1.75c.32,0,.58.26.58.58s-.26.58-.58.58Z"/><path d="M13.94,19.94H1.62c-.89,0-1.62-.73-1.62-1.62v-8.28c0-.89.73-1.62,1.62-1.62h3.83c.48,0,.93.21,1.24.58l1.19,1.41c.09.1.22.16.35.16h5.72c.89,0,1.62.73,1.62,1.62v6.12c0,.89-.73,1.62-1.62,1.62ZM4.22,18.77h9.72c.25,0,.46-.21.46-.46v-6.12c0-.25-.21-.46-.46-.46h-5.72c-.48,0-.93-.21-1.24-.58l-1.19-1.41c-.09-.1-.22-.16-.35-.16H1.62c-.25,0-.46.21-.46.46v8.28c0,.25.21.46.46.46h2.6Z"/><path d="M18.96,13.68h-1.89V0h1.81c.6,0,1.09.49,1.09,1.09v11.57c0,.56-.46,1.02-1.02,1.02ZM18.24,12.52h.59V1.16h-.59v11.36Z"/><path d="M8.23,11.73H.58c-.32,0-.58-.26-.58-.58s.26-.58.58-.58h7.65c.32,0,.58.26.58.58s-.26.58-.58.58Z"/></svg>
-      </button>
-      <button class="icon-btn" title="Capas del timeline → ZIP">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"></path><path d="M1 3h22v5H1z"></path><path d="M10 12h4"></path></svg>
-      </button>
-      <button class="icon-btn" title="Busca y recupera perdidos">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><circle cx="14" cy="13" r="3"></circle><line x1="16.5" y1="15.5" x2="19" y2="18"></line></svg>
-      </button>
-      <button class="icon-btn" title="Lista en Root">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-      </button>
-      <span style="border-left:1px solid #333;height:16px;margin:0 4px"></span>
-      <button class="icon-btn" title="Ruta root y opciones">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-      </button>
-      <button class="icon-btn" title="Consola de actividad">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M5 9H3"></path><path d="M21 9h-2"></path><path d="M5 15H3"></path><path d="M21 15h-2"></path><path d="M7.74 15.63l-1.42 1.42"></path><path d="M16.26 15.63l1.42 1.42"></path><path d="M7.74 8.37l-1.42-1.42"></path><path d="M16.26 8.37l1.42-1.42"></path><path d="M7 12a5 5 0 0 1 10 0v3a5 5 0 0 1-10 0v-3z"></path><path d="M7 12a5 5 0 0 1 10 0"></path></svg>
-      </button>
-    </div>
-  </div>
-</div>
-</div>
-<script>
-document.querySelectorAll('.icon-btn').forEach(function(btn){
-  btn.addEventListener('click',function(){
-    document.querySelectorAll('.icon-btn').forEach(function(b){b.classList.remove('pressed');});
-    btn.classList.add('pressed');
-    setTimeout(function(){btn.classList.remove('pressed');},180);
-  });
-});
-</script>
+    <p>Redirigiendo a <a href="../assetpack/preview.html">AssetPack</a>…</p>
 </body>
 </html>

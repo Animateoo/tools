@@ -288,7 +288,7 @@ body {
 .effect-btn.selected-entrance:hover,
 .effect-btn.selected-exit:hover {
     background: rgba(252, 147, 0, 0.18);
-    border-color: #ffa31a;
+    border-color: #fc9300;
     filter: brightness(1.05);
 }
 
@@ -673,7 +673,7 @@ body {
 }
 
 .speed-control input[type=range]:hover::-webkit-slider-thumb {
-    background: #ffa31a;
+    background: #e88600;
     transform: scale(1.1);
 }
 
@@ -790,11 +790,11 @@ body {
 }
 
 .btn-both {
-    background: linear-gradient(135deg, #fc9300 0%, #e68600 100%);
+    background: linear-gradient(135deg, #fc9300 0%, #e88600 100%);
 }
 
 .btn-both:hover {
-    background: linear-gradient(135deg, #ffa31a 0%, #fc9300 100%);
+    background: linear-gradient(135deg, #fc9300 0%, #e88600 100%);
 }
 
 /* Utilities */
@@ -1132,7 +1132,7 @@ body {
 }
 
 .tab-btn.active {
-    background: linear-gradient(135deg, #fc9300 0%, #ff6b00 100%);
+    background: linear-gradient(135deg, #fc9300 0%, #e88600 100%);
     color: white;
     box-shadow: 0 2px 8px rgba(252, 147, 0, 0.3);
 }
@@ -1166,9 +1166,9 @@ body {
 }
 
 .favorites-toggle-btn.active {
-    background: linear-gradient(135deg, #fc9300 0%, #ff6b00 100%);
+    background: linear-gradient(135deg, #fc9300 0%, #e88600 100%);
     color: white;
-    border-color: #ff6b00;
+    border-color: #e88600;
 }
 
 .favorites-toggle-btn.active svg {
@@ -1366,12 +1366,15 @@ body {
 }
 
 .btn-destructive {
-    background: linear-gradient(180deg, #a53 0%, #822 100%) !important;
-    border: 1px solid #963 !important;
+    background: #fc9300 !important;
+    border: 1px solid #fc9300 !important;
+    color: #111 !important;
 }
 
 .btn-destructive:hover {
-    filter: brightness(1.08);
+    background: #e88600 !important;
+    border-color: #e88600 !important;
+    filter: none;
 }
 
 /* Menú ⋮ presets — estilo panel oscuro (coherente con controles AE) */

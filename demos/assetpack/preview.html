@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>AssetPack</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/demo-embed.css">
+</head>
+<body>
+    <div id="panel-root" class="pack-shell">
+        <div id="pack-layout" class="pack-bar layout-horizontal">
+            <div class="pack-stats" id="pack-stats">
+                <span class="stat-item stat-ok" id="badge-ok-container" title="En carpeta del proyecto">
+                    <span class="stat-dot"></span><span id="badge-ok">12</span>
+                </span>
+                <span class="stat-item stat-warn" id="badge-warn-container" title="Fuera del proyecto">
+                    <span class="stat-dot"></span><span id="badge-warn">2</span>
+                </span>
+                <span class="stat-item stat-err" id="badge-err-container" title="Perdidos">
+                    <span class="stat-dot"></span><span id="badge-err">1</span>
+                </span>
+            </div>
+
+            <span class="pack-vrule" aria-hidden="true"></span>
+
+            <div class="pack-actions actions" id="pack-main-tools">
+                <button class="tool-btn" id="btn-root-all" title="Organiza todo en (Footage)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><polyline points="9 14 12 17 15 14"/></svg>
+                </button>
+                <button class="tool-btn" id="btn-batch-export" title="Collect nativo de AE + ZIP">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><path d="M12 11v6"/><path d="M9 14l3 3 3-3"/></svg>
+                </button>
+                <button class="tool-btn" id="btn-collect" title="Capas del timeline → ZIP">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+                </button>
+                <button class="tool-btn" id="btn-find" title="1 clic recupera · Shift+clic = elegir carpeta">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><circle cx="11" cy="13" r="3"/><line x1="16" y1="18" x2="18.5" y2="20.5"/></svg>
+                </button>
+            </div>
+
+            <span class="pack-vrule" aria-hidden="true"></span>
+
+            <div class="pack-utils">
+                <button class="tool-btn" id="btn-toggle-path" title="Ruta y opciones">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </button>
+                <button class="tool-btn" id="btn-toggle-console" title="Consola">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 8h10M7 12h6"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <div id="config-bar" class="pack-config is-hidden">
+            <span class="pack-config-label">ROOT</span>
+            <input type="text" id="root-path-input" value="D:\Proyectos\Mi_AE\(Footage)" spellcheck="false">
+            <label class="prefs-check" title="Guardar copia .aep revinculada tras Root All">
+                <input type="checkbox" id="pref-save-relinked" checked>
+                <span>.aep</span>
+            </label>
+            <button class="tool-btn tool-btn--accent" id="btn-select-folder" title="Elegir carpeta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+            </button>
+        </div>
+
+        <div id="transfer-progress" class="transfer-progress is-hidden">
+            <div class="transfer-progress-head">
+                <span id="transfer-progress-label">Procesando…</span>
+                <button type="button" class="transfer-cancel" id="btn-cancel-transfer" title="Cancelar">✕</button>
+            </div>
+            <div class="transfer-progress-track">
+                <div id="transfer-progress-bar" class="transfer-progress-bar"></div>
+            </div>
+        </div>
+
+        <div class="main-content is-hidden" id="log-wrapper">
+            <div id="logs" class="logs">
+                <div class="log-info">AssetPack listo.</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/preview-demo.js"></script>
+</body>
+</html>
