@@ -7,10 +7,10 @@ var ANIMATEO_TOOLS = [
         shortDesc: 'Edita curvas de animación y aplícalas a tus keyframes en After Effects o Premiere.',
         longDesc: 'Abres el panel, mueves la curva, y se aplica a tus keyframes. Sin menús ni vueltas.',
         tldr: 'El graph editor de AE, pero sin ganas de llorar.',
-        repo: 'https://github.com/Animateoo/GraphEditorAE',
+        repo: 'https://github.com/Animateoo/GraphEditor',
         repos: [
-            { label: 'Descargar After Effects', url: 'https://github.com/Animateoo/GraphEditorAE', demo: '../demos/grapheditor/index.html', w: 300, h: 480 },
-            { label: 'Descargar Premiere Pro', url: 'https://github.com/Animateoo/GraphEditorAE', demo: '../demos/grapheditor/index.html?app=PPRO', w: 300, h: 480 }
+            { label: 'Descargar After Effects', url: 'https://github.com/Animateoo/GraphEditor', demo: '../demos/grapheditor/index.html', w: 300, h: 480 },
+            { label: 'Descargar Premiere Pro', url: 'https://github.com/Animateoo/GraphEditor', demo: '../demos/grapheditor/index.html?app=PPRO', w: 300, h: 480 }
         ],
         src: '../demos/grapheditor/index.html',
         w: 300,
