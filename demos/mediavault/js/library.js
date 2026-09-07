@@ -1,3 +1,12 @@
+/*
+Â© Mateo Crespo (Animateo)
+
+Puedes usar este plugin libremente.
+No puedes venderlo, redistribuirlo ni publicar versiones modificadas.
+
+Â¿Encontraste una mejora o correcciÃ³n?
+Por favor, compÃ¡rtela con el autor.
+*/
 /**
  * MediaVault by Animateoo — filesystem scanner, settings, file catalog
  */
@@ -311,7 +320,7 @@ const MediaVaultLibrary = (function () {
 
         (files || []).forEach(function (f) {
             indexFileForSearch(f);
-            if (f.relPath.indexOf("/") === -1) map.__root__.push(f);
+            map.__root__.push(f);
 
             const parts = f.relPath.split("/");
             parts.pop();
@@ -355,6 +364,197 @@ const MediaVaultLibrary = (function () {
                 files: result.files
             });
         });
+
+        writeCache(cache);
+        return cache;
+    }
+
+    /* ---- Async scanning for large libraries (non-blocking) ---- */
+
+    const BATCH_SIZE = 50;
+
+    function yieldToUI() {
+        return new Promise(function (resolve) { setTimeout(resolve, 0); });
+    }
+
+    function readdirAsync(dirPath) {
+        return new Promise(function (resolve, reject) {
+            fs.readdir(dirPath, { withFileTypes: true }, function (err, entries) {
+                if (err) return reject(err);
+                resolve(entries);
+            });
+        });
+    }
+
+    function statAsync(filePath) {
+        return new Promise(function (resolve, reject) {
+            fs.stat(filePath, function (err, stat) {
+                if (err) return reject(err);
+                resolve(stat);
+            });
+        });
+    }
+
+    async function scanFolderAsync(rootPath, options, onProgress) {
+        const opts = options || {};
+        const recursive = opts.recursive !== false;
+        const showHidden = !!opts.showHidden;
+        const excludePaths = opts.excludePaths || [];
+        const nodes = [];
+        const files = [];
+        let statCount = 0;
+
+        async function walkChildren(dirPath, relParts) {
+            const childNodes = [];
+            let entries;
+            try {
+                entries = await readdirAsync(dirPath);
+            } catch (e) {
+                return childNodes;
+            }
+            entries.sort(function (a, b) {
+                return a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
+            });
+
+            for (const entry of entries) {
+                if (!showHidden && entry.name.startsWith(".")) continue;
+                const abs = path.join(dirPath, entry.name);
+                const rel = relParts.concat(entry.name).join("/");
+
+                if (entry.isDirectory()) {
+                    if (isExcludedRel(rel, excludePaths)) continue;
+                    const node = {
+                        id: rel,
+                        name: entry.name,
+                        path: abs,
+                        type: "folder",
+                        children: recursive
+                            ? await walkChildren(abs, relParts.concat(entry.name))
+                            : []
+                    };
+                    childNodes.push(node);
+                } else if (entry.isFile() && isSupportedFile(entry.name)) {
+                    const ext = getExt(entry.name);
+                    let stat;
+                    try {
+                        stat = await statAsync(abs);
+                    } catch (e2) {
+                        continue;
+                    }
+                    files.push({
+                        id: rel,
+                        name: entry.name,
+                        path: abs,
+                        relPath: rel,
+                        ext: ext,
+                        type: getFileType(ext),
+                        size: stat.size,
+                        modified: stat.mtimeMs
+                    });
+
+                    statCount++;
+                    if (statCount % BATCH_SIZE === 0) {
+                        if (onProgress) onProgress(statCount);
+                        await yieldToUI();
+                    }
+                }
+            }
+            return childNodes;
+        }
+
+        let entries;
+        try {
+            entries = await readdirAsync(rootPath);
+        } catch (e) {
+            return { root: rootPath, tree: [], files: [] };
+        }
+        entries.sort(function (a, b) {
+            return a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
+        });
+
+        for (const entry of entries) {
+            if (!showHidden && entry.name.startsWith(".")) continue;
+            const abs = path.join(rootPath, entry.name);
+            const rel = entry.name;
+
+            if (entry.isDirectory()) {
+                if (isExcludedRel(rel, excludePaths)) continue;
+                const node = {
+                    id: rel,
+                    name: entry.name,
+                    path: abs,
+                    type: "folder",
+                    children: recursive
+                        ? await walkChildren(abs, [entry.name])
+                        : []
+                };
+                nodes.push(node);
+            } else if (entry.isFile() && isSupportedFile(entry.name)) {
+                const ext = getExt(entry.name);
+                let stat;
+                try {
+                    stat = await statAsync(abs);
+                } catch (e2) {
+                    continue;
+                }
+                files.push({
+                    id: rel,
+                    name: entry.name,
+                    path: abs,
+                    relPath: rel,
+                    ext: ext,
+                    type: getFileType(ext),
+                    size: stat.size,
+                    modified: stat.mtimeMs
+                });
+                statCount++;
+                if (statCount % BATCH_SIZE === 0) {
+                    if (onProgress) onProgress(statCount);
+                    await yieldToUI();
+                }
+            }
+        }
+
+        if (onProgress) onProgress(statCount);
+
+        files.sort(function (a, b) {
+            return a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
+        });
+
+        return {
+            root: rootPath,
+            tree: nodes.filter(function (n) { return n.type === "folder"; }),
+            files: files
+        };
+    }
+
+    async function scanAllLibrariesAsync(settings, onProgress) {
+        const cache = { libraries: {}, scannedAt: Date.now() };
+        const folders = settings.folders || [];
+        let totalFiles = 0;
+
+        for (let i = 0; i < folders.length; i++) {
+            const lib = folders[i];
+            if (!lib.path || !fs.existsSync(lib.path)) continue;
+            const id = lib.id || libraryId(lib.path);
+            const excludePaths =
+                (settings.hiddenFolders && settings.hiddenFolders[id]) || [];
+            const result = await scanFolderAsync(lib.path, {
+                recursive: settings.scanSubfolders !== false,
+                showHidden: !!settings.showHidden,
+                excludePaths: excludePaths
+            }, function (count) {
+                totalFiles = count;
+                if (onProgress) onProgress(lib.name || path.basename(lib.path), count);
+            });
+            cache.libraries[id] = prepareLibrarySearchIndex({
+                id: id,
+                name: lib.name || path.basename(lib.path),
+                path: lib.path,
+                tree: result.tree,
+                files: result.files
+            });
+        }
 
         writeCache(cache);
         return cache;
@@ -431,6 +631,7 @@ const MediaVaultLibrary = (function () {
         prepareLibrarySearchIndex,
         buildFolderFileMap,
         scanAllLibraries,
+        scanAllLibrariesAsync,
         scanFolder,
         getExt,
         getFileType,

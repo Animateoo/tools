@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guides | Animateo Tools</title>
+    <meta name="description" content="Manual claro de Animateo Tools: instalación CEP/ScriptUI, demos en vivo y flujo de cada panel.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../css/tools-pages.css">
+    <link rel="stylesheet" href="../css/v3-rebrand.css">
+</head>
+<body class="tools-body home-contrast guides-page">
+    <div class="home-dark">
+        <header class="tools-header home-header">
+            <div class="tools-container tools-header-inner">
+                <a class="tools-logo" href="../">Animateo</a>
+                <nav class="tools-nav">
+                    <a href="../#catalog">Tools</a>
+                    <a href="./" class="is-active">Guides</a>
+                    <a href="https://github.com/Animateoo" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener">Portfolio</a>
+                </nav>
+            </div>
+        </header>
+
+        <section class="guides-hero">
+            <div class="tools-container">
+                <span class="lucky-kicker lucky-kicker--on-dark">Guía rápida</span>
+                <h1>Qué hace cada tool y cómo se usa</h1>
+                <p>
+                    Elige un panel abajo. Sin tecnicismos, sin rodeos — solo qué botón hace qué cosa.
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <div class="home-light">
+        <section class="guides-workspace tools-container">
+            <div class="guides-picker-wrap">
+                <div class="guides-picker-head">
+                    <h2>Elige el panel</h2>
+                    <label class="guides-filter">
+                        <input id="guideSearch" type="search" placeholder="Filtrar tools…">
+                    </label>
+                </div>
+                <div class="guides-picker" id="guidePicker" role="tablist" aria-label="Tools del manual"></div>
+            </div>
+
+            <article class="guides-detail" id="guideDetail" aria-live="polite"></article>
+        </section>
+
+        <section class="guides-basics tools-container">
+            <header class="lucky-section-head lucky-section-head--left">
+                <span class="lucky-kicker">Base común</span>
+                <h2>Antes de cualquier tool</h2>
+                <p>Estas reglas valen para toda la suite. Léelas una vez y aplica el capítulo de cada panel.</p>
+            </header>
+
+            <div class="guides-basics-grid">
+                <article class="guides-basic-card">
+                    <span>01</span>
+                    <h3>CEP (.zxp)</h3>
+                    <p>GraphEditor, TextPresets, CompVault, MediaVault, AssetPack, Shuttle. Instala con ZXP Installer, reinicia la app y abre <strong>Window → Extensions</strong>.</p>
+                </article>
+                <article class="guides-basic-card">
+                    <span>02</span>
+                    <h3>ScriptUI (.jsx)</h3>
+                    <p>Mask Unlinker, Aura Pro, Audify, Cache Pro. Copia el .jsx a <code>Scripts/ScriptUI Panels</code> y ábrelo en <strong>Window → [Tool]</strong>.</p>
+                </article>
+                <article class="guides-basic-card">
+                    <span>03</span>
+                    <h3>Demo en el sitio</h3>
+                    <p>En cada página hay un panel en vivo. Sirve para conocer la UI; las acciones que tocan el proyecto de AE/Pr quedan en modo demo.</p>
+                </article>
+                <article class="guides-basic-card">
+                    <span>04</span>
+                    <h3>Hosts</h3>
+                    <p>AE y Pr usan CEP. Ai/Ps también (Shuttle). Comprueba la versión 2022+ y que el panel aparezca tras reiniciar.</p>
+                </article>
+            </div>
+        </section>
+    </div>
+
+    <footer class="tools-footer home-footer">
+        <div class="tools-container home-footer-grid">
+            <div>
+                <a class="tools-logo" href="../">Animateo</a>
+                <p>Manual de tools para motion y edición.</p>
+            </div>
+            <div>
+                <h3>Quick links</h3>
+                <div class="home-footer-links">
+                    <a href="../">Home</a>
+                    <a href="../#catalog">Tools</a>
+                    <a href="./">Guides</a>
+                </div>
+            </div>
+        </div>
+        <div class="tools-container home-footer-copy">
+            <p>&copy; 2026 Animateo Tools. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/tools-data.js"></script>
+    <script src="../js/guides.js"></script>
+</body>
+</html>

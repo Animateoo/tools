@@ -7,72 +7,77 @@
     <meta name="description" content="">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-    <script>
-        try {
-            var savedTheme = localStorage.getItem('animateo-theme');
-            if (savedTheme === 'light' || savedTheme === 'dark') {
-                document.documentElement.dataset.theme = savedTheme;
-            }
-        } catch (e) {}
-    </script>
     <link rel="stylesheet" href="../css/tools-pages.css">
+    <link rel="stylesheet" href="../css/v3-rebrand.css">
     <script>window.TOOL_SLUG = 'grapheditor';</script>
 </head>
-<body class="tools-body">
-    <header class="tools-header">
-        <div class="tools-container tools-header-inner">
-            <a class="tools-logo" href="../">Animateo</a>
-            <nav class="tools-nav">
-                <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar a modo claro" title="Cambiar tema">
-                    <span aria-hidden="true">?</span>
-                </button>
-                <a href="../">Tools</a>
-                <a href="https://github.com/Animateoo" target="_blank" rel="noopener">GitHub</a>
-                <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener">Portfolio</a>
-            </nav>
-        </div>
-    </header>
-    <main class="tool-detail-main">
-        <div class="tools-container">
-            <a class="tool-back" href="../">&#8592; Todas las tools</a>
-            <section class="tool-detail-hero">
+<body class="tools-body home-contrast tool-page">
+    <div class="home-dark">
+        <header class="tools-header home-header">
+            <div class="tools-container tools-header-inner">
+                <a class="tools-logo" href="../">Animateo</a>
+                <nav class="tools-nav">
+                    <a href="../">Tools</a>
+                    <a href="../guides/">Guides</a>
+                    <a href="https://github.com/Animateoo" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener">Portfolio</a>
+                </nav>
+            </div>
+        </header>
+
+        <section class="tool-hero-compact tools-container">
+            <a class="tool-back" href="../">← Todas las tools</a>
+            <div class="tool-hero-compact-row">
                 <div>
                     <span class="tool-detail-tag" id="toolTag"></span>
                     <h1 id="toolTitle"></h1>
-                    <p class="tool-detail-desc" id="toolDesc"></p>
-                    <div class="tool-detail-actions" id="toolActions"></div>
                 </div>
-                <ul class="tool-feature-list" id="toolFeatures"></ul>
-            </section>
-            <div class="tool-repo-switch" id="repoSwitch"></div><section class="tryit-section">
-                <h2 class="tryit-heading">Pru&eacute;balo</h2>
-                <div id="tryitMount"></div>
-            </section>
-            <section class="tool-faq">
-                <h2>Preguntas frecuentes</h2>
-                <div class="faq-list" id="faqList"></div>
-            </section>
-            <section class="tool-cta">
-                <h2 id="ctaTitle"></h2>
-                <p id="ctaDesc"></p>
-                <a class="tool-btn tool-btn--primary" id="ctaDownload" target="_blank" rel="noopener">Descargar</a>
-            </section>
-        </div>
-    </main>
-    <footer class="tools-footer">
-        <div class="tools-container tools-footer-inner">
-            <p>&copy; 2026 Animateo Tools</p>
-            <div class="tools-footer-links">
-                <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener">Behance</a>
-                <a href="https://x.com/animateofx" target="_blank" rel="noopener">X</a>
-                <a href="https://github.com/Animateoo" target="_blank" rel="noopener">GitHub</a>
+                <div class="tool-repo-switch" id="repoSwitch"></div>
             </div>
+        </section>
+    </div>
+
+    <div class="home-light">
+        <main class="tool-detail-main">
+            <div class="tools-container">
+                <h2 class="tool-playground-label">Pruébalo</h2>
+                <section class="tool-playground" aria-label="Demo e información">
+                    <div id="tryitMount"></div>
+                    <aside class="tool-info-card" id="toolInfoCard">
+                        <span class="tool-info-index" id="toolIndex"></span>
+                        <h2 id="toolInfoTitle"></h2>
+                        <p class="tool-info-sub" id="toolInfoSub"></p>
+                        <p class="tool-info-desc" id="toolDesc"></p>
+                        <ul class="tool-info-features" id="toolFeatures"></ul>
+                        <div class="tool-detail-actions" id="toolActions"></div>
+                        <a class="btn-3d btn-3d--ghost tool-info-guides" href="../guides/">Abrir Guides →</a>
+                    </aside>
+                </section>
+
+                <section class="tool-faq">
+                    <h2>Preguntas frecuentes</h2>
+                    <div class="faq-list" id="faqList"></div>
+                </section>
+
+                <section class="tool-cta">
+                    <h2 id="ctaTitle"></h2>
+                    <p id="ctaDesc"></p>
+                    <a class="btn-3d btn-3d--primary" id="ctaDownload" target="_blank" rel="noopener">Descargar</a>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <footer class="tools-footer home-footer">
+        <div class="tools-container home-footer-copy">
+            <p>&copy; 2026 Animateo Tools. All rights reserved.</p>
         </div>
     </footer>
+
     <script src="../js/tools-data.js"></script>
     <script src="../js/tool-page.js"></script>
-    <script src="../js/theme-toggle.js"></script>
 </body>
 </html>

@@ -1,8 +1,8 @@
-/* ============================================================================
+﻿/* ============================================================================
    FIXED CONTROLS PANEL - Compact & Always Visible
    ============================================================================ */
 
-/* Scrollable Content Area — altura la controla responsive.css (flex) */
+/* Scrollable Content Area â€” altura la controla responsive.css (flex) */
 .quick-animator-scroll {
     overflow-y: auto;
     overflow-x: hidden;
@@ -14,9 +14,9 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(26, 26, 26, 0.95);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid #fc9300;
+    background: #1c1c1c;
+    backdrop-filter: none;
+    border-top: 1px solid #282828;
     padding: 2px;
     z-index: 1000;
     box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.5);
@@ -117,13 +117,13 @@
 
 .btn-compact:hover {
     background: #444;
-    border-color: #fc9300;
-    color: #fc9300;
+    border-color: #F7941D;
+    color: #F7941D;
     filter: brightness(1.1);
 }
 
 .btn-compact:hover svg {
-    fill: #fc9300;
+    fill: #F7941D;
 }
 
 .btn-compact:active {
@@ -187,21 +187,21 @@
 }
 
 .btn-apply-main {
-    border-bottom: 2px solid #fc9300 !important;
+    border-bottom: 2px solid #F7941D !important;
 }
 
 .btn-apply-main:hover {
     background: #3d3d3d;
-    color: #fc9300;
-    border-color: #fc9300;
+    color: #F7941D;
+    border-color: #F7941D;
     filter: brightness(1.12);
     box-shadow: 0 0 8px rgba(252, 147, 0, 0.25);
 }
 
 .apply-buttons-row .btn-apply:hover {
     background: #3d3d3d;
-    color: #fc9300;
-    border-color: #fc9300;
+    color: #F7941D;
+    border-color: #F7941D;
     filter: brightness(1.12);
     box-shadow: 0 0 8px rgba(252, 147, 0, 0.25);
 }
@@ -222,7 +222,7 @@
 }
 
 .quick-animator-scroll::-webkit-scrollbar-thumb {
-    background: #fc9300;
+    background: #F7941D;
     border-radius: 3px;
 }
 
@@ -245,7 +245,7 @@
 }
 
 .preset-manager::-webkit-scrollbar-thumb {
-    background: #fc9300;
+    background: #F7941D;
     border-radius: 3px;
 }
 
@@ -271,16 +271,16 @@
 }
 
 /* ============================================================================
-   SCROLL ÚNICO Y SIMPLIFICADO - Una sola barra de scroll
+   SCROLL ÃšNICO Y SIMPLIFICADO - Una sola barra de scroll
    ============================================================================ */
 
-/* Contenedor principal con UN SOLO SCROLL (flex — ver responsive.css) */
+/* Contenedor principal con UN SOLO SCROLL (flex â€” ver responsive.css) */
 .quick-animator-scroll {
     overflow-y: auto;
     overflow-x: hidden;
 }
 
-/* Categorías sin límite de altura - se expanden completamente */
+/* CategorÃ­as sin lÃ­mite de altura - se expanden completamente */
 .category-content {
     max-height: none;
     overflow: visible;
@@ -296,7 +296,7 @@
 
 /* Removido: Scrollbar de .effects-grid - ya no tiene scroll individual */
 
-/* Animación suave al expandir/colapsar */
+/* AnimaciÃ³n suave al expandir/colapsar */
 .category-content:not(.collapsed) {
     animation: expandCategory 0.3s ease-out;
 }
@@ -310,11 +310,11 @@
     to {
         opacity: 1;
         max-height: 5000px;
-        /* Aumentado para permitir expansión completa */
+        /* Aumentado para permitir expansiÃ³n completa */
     }
 }
 
-/* Ajuste para categorías colapsadas */
+/* Ajuste para categorÃ­as colapsadas */
 .category-content.collapsed {
     max-height: 0 !important;
     overflow: hidden !important;

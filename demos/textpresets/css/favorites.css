@@ -47,13 +47,13 @@
 
 .favorite-star:hover {
     background: transparent !important;
-    color: #fc9300 !important;
+    color: #F7941D !important;
     opacity: 1 !important;
     filter: brightness(1.12);
 }
 
 .favorite-star.favorited {
-    color: #fc9300 !important;
+    color: #F7941D !important;
     background: transparent !important;
     opacity: 1 !important;
 }

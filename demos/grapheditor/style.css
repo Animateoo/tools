@@ -7,7 +7,7 @@
     --accent-primary: #F0A800;
     /* Amarillo/Naranja principal */
     --accent-secondary: #FF8C00;
-    /* Naranja más vivo */
+    /* Naranja mÃ¡s vivo */
     --accent-red: #FF4B4B;
     --border-color: #303030;
     --gutter-size: 8px;
@@ -106,7 +106,7 @@ body {
     min-height: 0;
 }
 
-/* --- COLUMNA 1 (GRÁFICA) --- */
+/* --- COLUMNA 1 (GRÃFICA) --- */
 .primary-column {
     display: flex;
     flex-direction: column;
@@ -119,12 +119,12 @@ body {
     padding: 4px;
 }
 
-/* Usuario arrastra el gutter: altura fija (inline) mientras presets están abiertos */
+/* Usuario arrastra el gutter: altura fija (inline) mientras presets estÃ¡n abiertos */
 .main-layout.has-fixed-split .primary-column {
     flex: 0 0 auto;
 }
 
-/* Presets colapsados: la gráfica ocupa todo el espacio vertical disponible */
+/* Presets colapsados: la grÃ¡fica ocupa todo el espacio vertical disponible */
 .main-layout.presets-collapsed .primary-column {
     flex: 1 1 auto !important;
     min-height: 160px;
@@ -186,6 +186,9 @@ body {
 
 .graph-container {
     z-index: 10;
+    border: 1px solid var(--border-color);
+    border-top: none;
+    box-sizing: border-box;
 }
 
 /* --- MODO SELECTOR --- */
@@ -194,8 +197,6 @@ body {
     background: #1a1a1a;
     border: 1px solid var(--border-color);
     border-bottom: none;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
     width: 100%;
     box-sizing: border-box;
     flex-shrink: 0;
@@ -234,7 +235,7 @@ body {
     cursor: default;
 }
 
-/* Toggle "fx EXPR / ◆ KEYS" — hereda el look de .mode-selector, cambia sólo el acento */
+/* Toggle "fx EXPR / â—† KEYS" â€” hereda el look de .mode-selector, cambia sÃ³lo el acento */
 .apply-method-row .mode-btn {
     letter-spacing: 0.04em;
     text-transform: none;
@@ -299,7 +300,7 @@ body {
     pointer-events: none;
 }
 
-/* --- GRÁFICA --- */
+/* --- GRÃFICA --- */
 .graph-container {
     background-color: #0d0d0d;
     border: 1px solid var(--border-color);
@@ -333,10 +334,18 @@ body {
 
 /* SVG Styles */
 .graph-grid-line {
-    stroke: #2a2a2a;
+    stroke: #333;
     stroke-width: 1;
     vector-effect: non-scaling-stroke;
+    fill: none;
 }
+.graph-grid-major {
+    stroke: rgba(255, 255, 255, 0.55);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    fill: none;
+}
+
 
 .graph-base-left,
 .graph-base-right {
@@ -388,6 +397,16 @@ body {
 }
 .primary-column.curve-family-step .graph-handle-point {
     fill: #b07cff;
+}
+
+.primary-column.curve-family-wave .graph-curve {
+    stroke: #00e5ff;
+}
+.primary-column.curve-family-wave .graph-fill {
+    fill: rgba(0, 229, 255, 0.10);
+}
+.primary-column.curve-family-wave .graph-handle-point {
+    fill: #00e5ff;
 }
 
 .primary-column.curve-family-custom .graph-curve {
@@ -451,9 +470,16 @@ body {
     color: rgba(230, 255, 236, 0.95);
 }
 
+.primary-column.curve-family-wave .special-bar {
+    border-color: rgba(0, 229, 255, 0.25);
+}
+.primary-column.curve-family-wave .special-bar-text {
+    color: rgba(220, 250, 255, 0.95);
+}
+
 .graph-handle-point {
     fill: #ffcc00;
-    /* Amarillo mÃ¡s vibrante */
+    /* Amarillo mÃƒÂ¡s vibrante */
     cursor: move !important;
     transform-box: fill-box;
     transform-origin: center;
@@ -466,6 +492,40 @@ body {
 
 .graph-handle-point:active {
     cursor: grabbing;
+}
+
+/* Hollow handle (for Amp in Elastic, Sharp in Wave) */
+.graph-handle-hollow {
+    fill: transparent !important;
+    stroke-width: 2.2;
+    vector-effect: non-scaling-stroke;
+}
+.primary-column.curve-family-elastic .graph-handle-hollow { stroke: #4aa3ff; }
+.primary-column.curve-family-bounce .graph-handle-hollow { stroke: #5fdc74; }
+.primary-column.curve-family-wave .graph-handle-hollow { stroke: #00e5ff; }
+.primary-column.curve-family-step .graph-handle-hollow { stroke: #b07cff; }
+
+/* Guide/envelope dashed lines */
+.graph-envelope-line {
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+    fill: none;
+    vector-effect: non-scaling-stroke;
+    pointer-events: none;
+    opacity: 0.35;
+}
+.primary-column.curve-family-elastic .graph-envelope-line { stroke: #4aa3ff; }
+.primary-column.curve-family-bounce .graph-envelope-line { stroke: #5fdc74; }
+.primary-column.curve-family-wave .graph-envelope-line { stroke: #00e5ff; }
+
+/* Drag tooltip */
+.graph-drag-tooltip {
+    fill: rgba(255,255,255,0.85);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+    display: none;
 }
 
 /* guide (estilo CTI tipo Graph Editor de AE) */
@@ -496,9 +556,9 @@ body {
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    justify-content: space-between;
+    justify-content: stretch;
     min-height: 26px;
-    gap: 5px;
+    gap: 0;
     padding: 3px 0;
     flex-wrap: nowrap;
 }
@@ -517,16 +577,11 @@ body {
 
 .tools-box--keys {
     flex: 1 1 auto;
+    width: 100%;
     min-width: 0;
-    max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     scrollbar-width: thin;
-    justify-content: space-around;
-}
-
-.tools-box--actions {
-    flex: 1 1 auto;
     justify-content: space-around;
 }
 
@@ -545,7 +600,13 @@ body {
 }
 
 .tools-box--keys > .kf-tools-sep {
-    display: none;
+    flex: 0 0 1px;
+    width: 1px;
+    height: 14px;
+    margin: 0 2px;
+    align-self: center;
+    background: #3a3a3a;
+    display: block;
 }
 
 .tools-box--keys::-webkit-scrollbar {
@@ -630,13 +691,13 @@ body {
     background: rgba(240, 168, 0, 0.08);
 }
 
-/* --- BOTONES DE ACCIÓN --- */
+/* --- BOTONES DE ACCIÃ“N --- */
 .action-buttons-container {
     display: flex;
     gap: 4px;
     margin-bottom: 0;
     flex-shrink: 0;
-    margin-top: 6px;
+    margin-top: 4px;
 }
 
 .copy-btn {
@@ -644,8 +705,8 @@ body {
     color: #ccc;
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    width: 40px;
-    height: 32px;
+    width: 34px;
+    height: 26px;
     padding: 0;
     font-weight: 700;
     font-size: 10px;
@@ -674,13 +735,13 @@ body {
 
 .apply-btn {
     flex-grow: 1;
-    height: 32px;
+    height: 26px;
     background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
     color: #000;
     border: none;
     border-radius: 4px;
     font-weight: 700;
-    font-size: 11px;
+    font-size: 10px;
     cursor: pointer;
     letter-spacing: 0.5px;
     transition: all 0.2s;
@@ -709,35 +770,41 @@ body {
 
 .presets-filter-row {
     display: flex;
-    flex-direction: row;
-    gap: 6px;
-    padding: 4px 2px 6px;
+    background: #1a1a1a;
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
     flex-shrink: 0;
 }
 
 .preset-filter-tab {
     flex: 1;
-    padding: 5px 8px;
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--border-color);
+    color: #666;
     font-size: 9px;
     font-weight: 700;
-    letter-spacing: 0.04em;
-    border-radius: 4px;
-    border: 1px solid #3a3a3a;
-    background: #1a1a1a;
-    color: #888;
+    padding: 4px 0;
     cursor: pointer;
-    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    transition: all 0.2s;
+}
+
+.preset-filter-tab:last-child {
+    border-right: none;
 }
 
 .preset-filter-tab:hover {
-    color: #ccc;
-    border-color: #555;
+    background: rgba(255, 255, 255, 0.05);
+    color: #999;
 }
 
 .preset-filter-tab.active {
+    background: #0d0d0d;
     color: var(--accent-primary);
-    border-color: rgba(240, 168, 0, 0.45);
-    background: rgba(240, 168, 0, 0.08);
 }
 
 .presets-panel {
@@ -758,16 +825,17 @@ body {
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 8px;
     padding: 4px 6px;
     background: transparent;
     border: none;
-    color: #5fdc74;
-    font-size: 10px;
-    font-weight: 600;
-    cursor: pointer;
+    color: var(--accent-primary);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: default;
     text-align: left;
+    user-select: none;
 }
 
 .presets-toolbar-actions {
@@ -819,9 +887,7 @@ body {
     margin-bottom: 0;
 }
 
-.presets-header:hover {
-    background: rgba(255, 255, 255, 0.03);
-}
+/* presets-header hover removed - not clickable */
 
 .presets-caret {
     color: #777;
@@ -938,7 +1004,7 @@ body {
     max-height: none;
 }
 
-/* Borrar preset: solo barra − (ya no botón ✕ en tarjeta) */
+/* Borrar preset: solo barra âˆ’ (ya no botÃ³n âœ• en tarjeta) */
 
 /* --- Modal guardar preset (reemplazo de prompt nativo) --- */
 .ge-modal-overlay {
@@ -1051,7 +1117,7 @@ body {
     transform: translateY(1px);
 }
 
-/* --- Ultra-compact (panel muy pequeño) --- */
+/* --- Ultra-compact (panel muy pequeÃ±o) --- */
 @media (max-width: 280px) {
     .tools-row {
         gap: 4px;
@@ -1099,4 +1165,235 @@ body {
         width: 10px;
         height: 10px;
     }
+}
+
+/* === PRESETS PANEL === */
+
+/* Panel */
+.presets-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 80px;
+    min-height: 60px;
+}
+.presets-panel.is-collapsed {
+    display: none !important;
+}
+
+/* Toolbar */
+.presets-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 6px;
+    flex-shrink: 0;
+    border-bottom: 1px solid #2a2a2a;
+}
+.presets-header {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    background: none;
+    border: none;
+    color: #777;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0;
+}
+.presets-header:hover { color: #ccc; }
+.presets-caret { font-size: 7px; transition: transform 0.2s; }
+.presets-toolbar-actions { display: flex; gap: 2px; margin-left: auto; }
+.preset-toolbar-btn {
+    background: none;
+    border: 1px solid #333;
+    border-radius: 3px;
+    color: #555;
+    font-size: 10px;
+    width: 20px;
+    height: 18px;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.preset-toolbar-btn:hover { background: #333; color: #ccc; border-color: #555; }
+.preset-toolbar-fav.is-on { color: var(--accent-primary); }
+
+/* Filter tabs - see .presets-filter-row above for full definition */
+
+/* Scroll & Grid */
+.presets-scroll-container {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 4px;
+    min-height: 0;
+}
+.presets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+    gap: 2px;
+}
+
+/* Cards — NeucurvePro style: flat, no animations */
+.preset-card {
+    background: #1a1a1a;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    padding: 6px 2px 2px;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.preset-card:hover { background: #222; }
+.preset-card.is-selected { border-color: #4a90d9; }
+.preset-card.is-favorite::after {
+    content: '★';
+    position: absolute;
+    top: 1px;
+    right: 2px;
+    font-size: 5px;
+    color: #f0a800;
+}
+.preset-card { position: relative; }
+.preset-card.is-custom { border-style: dashed; border-color: #333; }
+
+/* SVG — big, clean lines */
+.preset-icon { width: 100%; height: 32px; display: block; }
+.preset-icon path {
+    stroke: #999;
+    fill: none;
+    stroke-width: 1.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+.preset-card.is-selected .preset-icon path { stroke: #fff; }
+
+/* Name */
+.preset-name {
+    font-size: 5.5px;
+    color: #555;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.preset-card.is-selected .preset-name { color: #aaa; }
+
+#presetsConfigBtn.is-active { color: var(--accent-primary); background: rgba(240, 168, 0, 0.1); }
+
+/* === MODAL === */
+.ge-modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 9999;
+}
+.ge-modal { background: #2a2a2a; border: 1px solid #444; border-radius: 8px; padding: 16px; width: 200px; }
+.ge-modal-title { color: #ccc; font-size: 11px; font-weight: 700; margin: 0 0 10px 0; }
+.ge-modal-input {
+    width: 100%; background: #1a1a1a; border: 1px solid #444; border-radius: 4px;
+    color: #ddd; font-size: 10px; padding: 6px 8px; outline: none; box-sizing: border-box;
+}
+.ge-modal-input:focus { border-color: var(--accent-primary); }
+.ge-modal-actions { display: flex; gap: 6px; margin-top: 10px; justify-content: flex-end; }
+.ge-modal-btn { border: none; border-radius: 4px; padding: 5px 12px; font-size: 9px; font-weight: 600; cursor: pointer; }
+.ge-modal-btn-secondary { background: #444; color: #ccc; }
+.ge-modal-btn-secondary:hover { background: #555; }
+.ge-modal-btn-primary { background: var(--accent-primary); color: #000; }
+.ge-modal-btn-primary:hover { background: var(--accent-secondary); }
+
+
+/* === PREMIERE PRO ADDITIONS === */
+.filter-row--mid {
+    margin: 6px 0 4px;
+    padding: 0 2px;
+}
+
+.filter-row.is-empty {
+    display: none;
+}
+
+/* Propiedades activas en timeline - mismo lenguaje visual que mode-selector */
+.filter-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+    gap: 1px;
+    margin-bottom: 2px;
+    padding: 0;
+    flex-shrink: 0;
+    min-height: auto;
+    max-height: 78px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: var(--border-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    scrollbar-width: thin;
+}
+
+.filter-row::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+.filter-row::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 2px;
+}
+
+.filter-pill {
+    min-width: 0;
+    min-height: 24px;
+    background: #1a1a1a;
+    border: none;
+    border-radius: 0;
+    padding: 4px 5px;
+    font-size: 8px;
+    font-weight: 700;
+    color: #666;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    display: none;
+    white-space: normal;
+    line-height: 1.15;
+    text-align: center;
+    word-break: break-word;
+    overflow: hidden;
+}
+
+.filter-pill:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #999;
+}
+
+.filter-pill.is-available {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-pill.active {
+    background: #0d0d0d;
+    color: var(--accent-primary);
+}
+
+/* Remove border-top from controls-section */
+.controls-section.compact-mode {
+    border-top: none !important;
+    margin-top: 4px;
+    padding-top: 0;
 }

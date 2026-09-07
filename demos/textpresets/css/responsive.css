@@ -40,6 +40,10 @@ body {
     flex-shrink: 0;
 }
 
+.preset-preview-panel {
+    flex-shrink: 0;
+}
+
 .quick-animator-scroll {
     flex: 1 1 auto;
     min-height: 0;
@@ -93,11 +97,11 @@ body {
 }
 
 .btn-text-exploder {
-    color: #fc9300 !important;
+    color: #F7941D !important;
 }
 
 .btn-text-exploder:hover {
-    color: #fc9300 !important;
+    color: #F7941D !important;
     border-color: rgba(252, 147, 0, 0.45) !important;
     background: rgba(252, 147, 0, 0.1) !important;
 }

@@ -1,7 +1,13 @@
-/** Mock CSInterface for web preview — no After Effects required */
+/** Mock CSInterface for web preview */
 function CSInterface() {}
 CSInterface.prototype.evalScript = function (script, callback) {
-    if (typeof callback === 'function') callback('');
+    if (typeof callback === 'function') {
+        if (script.indexOf('scanActiveProperties') !== -1) {
+            callback('0~0~Video~Position,0~0~Video~Scale,0~0~Video~Rotation');
+        } else {
+            callback('');
+        }
+    }
 };
 CSInterface.prototype.getSystemPath = function () { return ''; };
 CSInterface.prototype.getHostEnvironment = function () {
@@ -14,3 +20,20 @@ CSInterface.prototype.requestOpenExtension = function () {};
 CSInterface.prototype.getExtensions = function () { return []; };
 CSInterface.prototype.getExtensionID = function () { return 'preview'; };
 CSInterface.prototype.openURLInDefaultBrowser = function () {};
+
+var SystemPath = {
+    USER_DATA: "USER_DATA",
+    COMMON_FILES: "COMMON_FILES",
+    MY_DOCUMENTS: "MY_DOCUMENTS",
+    APPLICATION: "APPLICATION",
+    EXTENSION: "EXTENSION",
+    HOST_APPLICATION: "HOST_APPLICATION"
+};
+var CSXSWindowType = {
+    _PANEL: "Panel",
+    _MODAL_DIALOG: "ModalDialog"
+};
+CSInterface.prototype.getApplicationID = function() {
+    if (window.location.search.indexOf('app=PPRO') !== -1) return 'PPRO';
+    return 'AEFT';
+};

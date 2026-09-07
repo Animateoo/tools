@@ -1,0 +1,25 @@
+---
+description: No tocar botones fake 3D (btn-3d y guides-pick) — ya aprobados
+globs: css/tools-pages.css, js/tools-catalog.js, index.html, guides/**/*.html
+alwaysApply: true
+---
+
+# Botones Animateo — NO MODIFICAR
+
+El usuario ya aprobó estos estilos. **No los cambies** salvo que lo pida explícitamente.
+
+## Qué dejar quieto
+
+1. **`.btn-3d` / `.btn-3d--primary` / `.btn-3d--ghost`** en `css/tools-pages.css`
+   - Primary: cara **clara** `#f6d32d`, placa con `box-shadow: 0 5px 0 #b88700` (NO usar `::after` para la placa)
+   - Ghost: fondo `#1a1a1a`, `box-shadow: 0 5px 0 #050505`
+   - `::after { display: none }` — no volver al truco de capa detrás (en cards blancas se veía invertido/oscuro)
+
+2. **`.guides-pick` / `.suite-pick`** (catálogo + Guides)
+   - Cara **blanca** `#fff`, placa gris suave con `::after`
+   - Índice `#01`, nombre, tag
+   - Hover/active: fondo `#171717` + acento amarillo
+
+## Páginas de plugin (`/grapheditor/`, etc.)
+
+Puedes trabajar layout Smooth / negro→blanco ahí, pero **reutiliza** `.btn-3d` sin reeditar su CSS.

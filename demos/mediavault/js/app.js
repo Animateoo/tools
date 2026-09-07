@@ -1,3 +1,12 @@
+/*
+Â© Mateo Crespo (Animateo)
+
+Puedes usar este plugin libremente.
+No puedes venderlo, redistribuirlo ni publicar versiones modificadas.
+
+Â¿Encontraste una mejora o correcciÃ³n?
+Por favor, compÃ¡rtela con el autor.
+*/
 /**
  * MediaVault by Animateoo — panel UI
  */
@@ -15,9 +24,11 @@
     let settings = Lib.readSettings();
     let cache = Lib.readCache();
     let hostInfo = { isAE: true, isPPRO: false };
-    let aeInsertLayerIndex = 1;
-    let aeZeroSelectionPolls = 0;
+    let aeInsertLayerIndex = 0;
+    let aeInsertLayerId = 0;
     let aeLayerPollTimer = null;
+    let aePanelHasFocus = true;
+    let aeIgnoreSelectionUntil = 0;
 
     let activeLibraryId = settings.lastLibraryId || null;
     let activeFolderId = settings.lastFolder || null;
@@ -126,6 +137,9 @@
         if (btn) {
             btn.classList.toggle("is-active", !collapsed);
             btn.title = collapsed ? "Mostrar biblioteca (Ctrl+B)" : "Ocultar biblioteca (Ctrl+B)";
+        }
+        if (settings.sidebarWidth && !collapsed) {
+            document.documentElement.style.setProperty("--sidebar-w", settings.sidebarWidth + "px");
         }
     }
 
@@ -250,7 +264,7 @@
     }
 
     function viewThumbSize(mode) {
-        const map = { "icons-xl": 220, "icons-l": 180, "icons-m": 120, grid: 120 };
+        const map = { "icons-xl": 220, "icons-l": 180, "icons-m": 120, "icons-s": 85, grid: 120 };
         return map[mode] || 120;
     }
 
@@ -269,27 +283,26 @@
         const icon = isIconView();
         const listBtn = $("view-list");
         const gridBtn = $("view-grid");
-        const sizeToggle = $("size-toggle");
+        const statusbar = $("statusbar");
+        const sizeSlider = $("size-slider");
 
         if (listBtn) listBtn.classList.toggle("active", !icon);
         if (gridBtn) gridBtn.classList.toggle("active", icon);
-        if (sizeToggle) sizeToggle.classList.toggle("is-hidden", !icon);
+        if (statusbar) statusbar.classList.toggle("list-mode", !icon);
+        if (sizeSlider && icon) sizeSlider.value = thumbSize;
 
         const favBtn = $("btn-favorites");
         if (favBtn) {
             favBtn.innerHTML = Icons.starHtml(showFavoritesOnly);
         }
-
-        document.querySelectorAll(".size-btn").forEach(function (btn) {
-            btn.classList.toggle("active", parseInt(btn.dataset.size, 10) === thumbSize);
-        });
     }
 
     function setIconView(size) {
         thumbSize = size || thumbSize;
         if (thumbSize >= 200) viewMode = "icons-xl";
         else if (thumbSize >= 165) viewMode = "icons-l";
-        else viewMode = "icons-m";
+        else if (thumbSize >= 100) viewMode = "icons-m";
+        else viewMode = "icons-s";
         saveSettings();
         renderAssets();
         syncViewUi();
@@ -380,6 +393,42 @@
         });
     }
 
+    function bindSidebarResize() {
+        const handle = $("sidebar-splitter");
+        const sidebar = $("sidebar");
+        if (!handle || !sidebar) return;
+
+        handle.addEventListener("mousedown", function (e) {
+            if (e.button !== 0) return;
+            e.preventDefault();
+
+            const startX = e.clientX;
+            const startW = sidebar.getBoundingClientRect().width;
+            document.body.classList.add("sidebar-resizing");
+
+            function onMove(ev) {
+                let newW = startW + (ev.clientX - startX);
+                if (newW < 120) newW = 120;
+                if (newW > 450) newW = 450;
+                document.documentElement.style.setProperty("--sidebar-w", newW + "px");
+            }
+
+            function onUp() {
+                document.removeEventListener("mousemove", onMove);
+                document.removeEventListener("mouseup", onUp);
+                document.body.classList.remove("sidebar-resizing");
+                const finalW = sidebar.getBoundingClientRect().width;
+                settings.sidebarWidth = Math.round(finalW);
+                document.documentElement.style.setProperty("--sidebar-w", settings.sidebarWidth + "px");
+                saveSettings();
+                relayoutIconGrid(true);
+            }
+
+            document.addEventListener("mousemove", onMove);
+            document.addEventListener("mouseup", onUp);
+        });
+    }
+
     function createFavButton(filePath) {
         const isFav = settings.favorites.indexOf(filePath) >= 0;
         const fav = document.createElement("button");
@@ -429,6 +478,79 @@
     function getFileParentRelPath(relPath) {
         if (!relPath || relPath.indexOf("/") === -1) return "";
         return relPath.substring(0, relPath.lastIndexOf("/"));
+    }
+
+    /* Search through all library tree nodes for folders matching query */
+    function findMatchingFolders(query) {
+        const ql = query.toLowerCase().trim();
+        if (!ql) return [];
+        const results = [];
+
+        function walkNodes(nodes, libId) {
+            if (!nodes) return;
+            for (let i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
+                if (node.name.toLowerCase().indexOf(ql) >= 0) {
+                    results.push({ libId: libId, folderId: node.id, name: node.name, path: node.path });
+                }
+                if (node.children && node.children.length) {
+                    walkNodes(node.children, libId);
+                }
+            }
+        }
+
+        var libIds = Object.keys(cache.libraries);
+        for (var li = 0; li < libIds.length; li++) {
+            var lib = cache.libraries[libIds[li]];
+            if (lib) walkNodes(getLibraryTree(lib), lib.id);
+        }
+        return results;
+    }
+
+    /* Navigate to a specific folder in the tree: expand, select, scroll */
+    function navigateToFolder(libId, folderId) {
+        if (!libId || !folderId) return;
+        activeLibraryId = libId;
+        activeFolderId = folderId;
+        ensureExpandedPath(libId, folderId);
+        searchQuery = "";
+        invalidateSearchState();
+        $("search-input").value = "";
+        saveSettings();
+        renderTree();
+        renderAssets();
+        setTimeout(function () {
+            var target = document.querySelector('.mv-folder[data-node="' + cssEscape(folderId) + '"]');
+            if (target) {
+                target.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                /* Flash highlight to indicate the found folder */
+                target.closest(".mv-tree-row").classList.add("active");
+            }
+        }, 80);
+    }
+
+    function navigateToFileFolder(file) {
+        if (!file || !activeLibraryId) return;
+        const folderId = getFileParentRelPath(file.relPath) || null;
+        ensureExpandedPath(activeLibraryId, folderId);
+        activeFolderId = folderId;
+        searchQuery = "";
+        invalidateSearchState();
+        $("search-input").value = "";
+        saveSettings();
+        renderTree();
+        renderAssets();
+        setTimeout(function () {
+            if (folderId) {
+                const target = document.querySelector('.mv-folder[data-node="' + cssEscape(folderId) + '"]');
+                if (target) target.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+            const assetEl = document.querySelector('[data-path="' + cssEscape(file.path) + '"]');
+            if (assetEl) {
+                assetEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                assetEl.classList.add("selected");
+            }
+        }, 80);
     }
 
     function fileBelongsToFolder(file, folderId) {
@@ -504,9 +626,8 @@
             return searchState.lastPool;
         }
 
-        const pins = getSearchPinsForLib(lib.id);
         let pool;
-
+        const pins = getSearchPinsForLib(lib.id);
         if (!pins.length) {
             pool = lib.files;
         } else {
@@ -532,6 +653,31 @@
         return pool;
     }
 
+    function fuzzyScore(str, query) {
+        if (!query) return 0;
+        let score = 0;
+        let strIdx = 0;
+        let consec = 0;
+        for (let qIdx = 0; qIdx < query.length; qIdx++) {
+            const qChar = query[qIdx];
+            let found = false;
+            while (strIdx < str.length) {
+                if (str[strIdx] === qChar) {
+                    found = true;
+                    score += 10;
+                    score += consec * 5;
+                    consec++;
+                    strIdx++;
+                    break;
+                }
+                strIdx++;
+                consec = 0;
+            }
+            if (!found) return -1;
+        }
+        return score;
+    }
+
     function searchRank(file, ql, terms) {
         let score = 0;
         if (file._base === ql) score += 1000;
@@ -544,6 +690,12 @@
             if (file._base.indexOf(t) === 0) score += 60;
             else if (file._name.indexOf(t) === 0) score += 40;
             else if (file._q.indexOf(t) >= 0) score += 15;
+        }
+        if (settings.tags && settings.tags[file.path]) {
+            const tagStr = String(settings.tags[file.path]).toLowerCase();
+            for (let i = 0; i < terms.length; i++) {
+                if (tagStr.indexOf(terms[i]) >= 0) score += 200;
+            }
         }
         return score;
     }
@@ -559,6 +711,7 @@
 
         let source = pool;
         if (
+            !settings.fuzzySearch &&
             searchState.lastResults &&
             searchState.lastQuery &&
             query.indexOf(searchState.lastQuery) === 0
@@ -570,19 +723,43 @@
         const results = [];
         for (let i = 0; i < source.length; i++) {
             const f = source[i];
-            const hay = f._q;
+            let hay = f._q;
+            if (settings.tags && settings.tags[f.path]) {
+                hay += " " + String(settings.tags[f.path]).toLowerCase();
+            }
             let ok = true;
-            for (let t = 0; t < terms.length; t++) {
-                if (hay.indexOf(terms[t]) === -1) {
-                    ok = false;
-                    break;
+            let fScore = 0;
+
+            if (settings.fuzzySearch) {
+                for (let t = 0; t < terms.length; t++) {
+                    const s = fuzzyScore(hay, terms[t]);
+                    if (s === -1) {
+                        ok = false;
+                        break;
+                    }
+                    fScore += s;
+                }
+            } else {
+                for (let t = 0; t < terms.length; t++) {
+                    if (hay.indexOf(terms[t]) === -1) {
+                        ok = false;
+                        break;
+                    }
                 }
             }
-            if (ok) results.push(f);
+
+            if (ok) {
+                f._fuzzyScore = fScore;
+                results.push(f);
+            }
         }
 
         if (results.length > 1) {
             results.sort(function (a, b) {
+                if (settings.fuzzySearch) {
+                    const diff = b._fuzzyScore - a._fuzzyScore;
+                    if (diff !== 0) return diff;
+                }
                 const diff = searchRank(b, ql, terms) - searchRank(a, ql, terms);
                 return diff || a.relPath.localeCompare(b.relPath, undefined, { sensitivity: "base" });
             });
@@ -722,6 +899,7 @@
 
         function isActive() {
             const card = wrap.closest(".asset-card");
+            if (settings.hoverPreview) return true;
             return card && card.classList.contains("selected");
         }
 
@@ -1113,26 +1291,26 @@
         } catch (e) {}
     }
 
-    async function refreshAEInsertLayerIndex() {
+    async function refreshAEInsertLayerIndex(force) {
         if (!hostInfo.isAE) return;
+        // After our own insert, AE auto-selects the new layer — ignore briefly
+        // so the user's last explicit anchor is not overwritten.
+        if (!force && Date.now() < aeIgnoreSelectionUntil) return;
         const res = await hostRun("getSelectedLayerIndex", {});
-        if (!res.ok) return;
+        if (!res || !res.ok) return;
         if (res.index > 0) {
+            // Panel focus usually clears AE selection (index 0). Keep last real selection.
             aeInsertLayerIndex = res.index;
-            aeZeroSelectionPolls = 0;
-            return;
-        }
-        aeZeroSelectionPolls++;
-        if (aeZeroSelectionPolls >= 8) {
-            aeInsertLayerIndex = 1;
-            aeZeroSelectionPolls = 0;
+            if (res.id > 0) aeInsertLayerId = res.id;
         }
     }
 
     function startAELayerIndexPoll() {
         if (aeLayerPollTimer || !hostInfo.isAE) return;
-        refreshAEInsertLayerIndex();
-        aeLayerPollTimer = setInterval(refreshAEInsertLayerIndex, 350);
+        refreshAEInsertLayerIndex(true);
+        aeLayerPollTimer = setInterval(function () {
+            refreshAEInsertLayerIndex(false);
+        }, 200);
     }
 
     function stopAELayerIndexPoll() {
@@ -1146,10 +1324,28 @@
         if (!hostInfo.isAE) return;
         const appEl = $("app");
         if (!appEl) return;
+
+        window.addEventListener("blur", function () {
+            aePanelHasFocus = false;
+            aeIgnoreSelectionUntil = 0;
+            refreshAEInsertLayerIndex(true);
+        });
+        window.addEventListener("focus", function () {
+            aePanelHasFocus = true;
+        });
+
+        // Last chance capture before AE clears selection when clicking into the panel.
         appEl.addEventListener(
-            "mousedown",
+            "pointerdown",
             function () {
-                refreshAEInsertLayerIndex();
+                refreshAEInsertLayerIndex(true);
+            },
+            true
+        );
+        document.addEventListener(
+            "dragstart",
+            function () {
+                refreshAEInsertLayerIndex(true);
             },
             true
         );
@@ -1179,10 +1375,32 @@
         return true;
     }
 
-    function bindAssetDragHost(el, getPath) {
-        Drop.bindAssetDrag(el, getPath, function (e, filePath) {
+    function getDragPathSync(file) {
+        if (!file || !file.path) return "";
+        if (settings.copyToProjectFootage === false) return file.path;
+        if (file.type === "preset" || file.type === "project") return file.path;
+        try {
+            if (window.__adobe_cep__) {
+                let rootStr = window.__adobe_cep__.evalScript("mvGetProjectFolder()");
+                if (rootStr && rootStr !== "EvalScript error.") {
+                    const projectRoot = path.resolve(rootStr.replace(/\//g, path.sep));
+                    if (fs.existsSync(projectRoot)) {
+                        const res = Project.copyToProjectFootage(file.path, projectRoot);
+                        if (res.ok && res.path) return res.path;
+                    }
+                }
+            }
+        } catch(e) {}
+        return file.path;
+    }
+
+    function bindAssetDragHost(el, getFile) {
+        Drop.bindAssetDrag(el, function () {
+            const file = typeof getFile === "function" ? getFile() : getFile;
+            return getDragPathSync(file);
+        }, function (e, filePath) {
             if (!shouldInsertOnDragEnd(e, filePath)) return;
-            useAsset(fileFromPath(filePath), true);
+            useAsset(fileFromPath(filePath), true, { forceTimeline: true });
         });
     }
 
@@ -1202,7 +1420,7 @@
             clearTimeout(clickTimer);
             e.preventDefault();
             selectAsset(file);
-            useAsset(file, true);
+            useAsset(file, true, { forceTimeline: true });
         });
 
         el.addEventListener("contextmenu", (e) => {
@@ -1210,8 +1428,22 @@
             showContextMenu(e.clientX, e.clientY, { kind: "file", file: file });
         });
 
+        /* Hover preview: auto-select + show preview on mouseenter */
+        let hoverTimer = null;
+        el.addEventListener("mouseenter", function () {
+            if (!settings.hoverPreview) return;
+            clearTimeout(hoverTimer);
+            hoverTimer = setTimeout(function () {
+                if (selectedAsset && selectedAsset.path === file.path) return;
+                selectAsset(file);
+            }, 150);
+        });
+        el.addEventListener("mouseleave", function () {
+            clearTimeout(hoverTimer);
+        });
+
         bindAssetDragHost(el, function () {
-            return file && file.path ? file.path : "";
+            return file;
         });
     }
 
@@ -1237,11 +1469,19 @@
 
             const name = document.createElement("span");
             name.className = "col-name";
+            let tagColor = settings.tags && settings.tags[file.path];
+            if (tagColor) {
+                const map = { red: '#ef4444', orange: '#f97316', yellow: '#eab308', green: '#22c55e', blue: '#3b82f6', violet: '#8b5cf6', pink: '#ec4899', gray: '#6b7280' };
+                let dot = document.createElement("span");
+                dot.className = "tag-dot";
+                dot.style.backgroundColor = map[tagColor] || map.gray;
+                name.appendChild(dot);
+            }
             if (searchQuery) {
-                name.textContent = getFileDisplayName(file);
+                name.appendChild(document.createTextNode(getFileDisplayName(file)));
             } else {
                 const sub = getSubfolderLabel(file, activeFolderId);
-                name.textContent = sub ? sub + " / " + file.name : file.name;
+                name.appendChild(document.createTextNode(sub ? sub + " / " + file.name : file.name));
             }
             name.title = file.relPath.replace(/\//g, " / ");
 
@@ -1289,11 +1529,19 @@
 
             const name = document.createElement("span");
             name.className = "col-name";
+            let tagColor = settings.tags && settings.tags[file.path];
+            if (tagColor) {
+                const map = { red: '#ef4444', orange: '#f97316', yellow: '#eab308', green: '#22c55e', blue: '#3b82f6', violet: '#8b5cf6', pink: '#ec4899', gray: '#6b7280' };
+                let dot = document.createElement("span");
+                dot.className = "tag-dot";
+                dot.style.backgroundColor = map[tagColor] || map.gray;
+                name.appendChild(dot);
+            }
             if (searchQuery) {
-                name.textContent = getFileDisplayName(file);
+                name.appendChild(document.createTextNode(getFileDisplayName(file)));
             } else {
                 const subDetail = getSubfolderLabel(file, activeFolderId);
-                name.textContent = subDetail ? subDetail + " / " + file.name : file.name;
+                name.appendChild(document.createTextNode(subDetail ? subDetail + " / " + file.name : file.name));
             }
             name.title = file.path;
 
@@ -1388,7 +1636,15 @@
 
         const name = document.createElement("span");
         name.className = "card-title";
-        name.textContent = getFileDisplayName(file);
+        let tagColor = settings.tags && settings.tags[file.path];
+        if (tagColor) {
+            const map = { red: '#ef4444', orange: '#f97316', yellow: '#eab308', green: '#22c55e', blue: '#3b82f6', violet: '#8b5cf6', pink: '#ec4899', gray: '#6b7280' };
+            let dot = document.createElement("span");
+            dot.className = "tag-dot";
+            dot.style.backgroundColor = map[tagColor] || map.gray;
+            name.appendChild(dot);
+        }
+        name.appendChild(document.createTextNode(getFileDisplayName(file)));
         name.title = file.relPath.replace(/\//g, " / ");
 
         const fav = createFavButton(file.path);
@@ -1666,6 +1922,22 @@
             html += ctxMenuItem("preview", "Previsualizar");
             html += ctxMenuItem("timeline", "Añadir a timeline");
             html += ctxMenuItem("import", "Solo importar");
+            html += ctxMenuSep();
+            
+            html += '<div class="ctx-menu-tags" style="padding: 4px 10px;">';
+            const colors = [
+              {c: 'red', hex: '#ef4444'}, {c: 'orange', hex: '#f97316'}, {c: 'yellow', hex: '#eab308'}, {c: 'green', hex: '#22c55e'},
+              {c: 'blue', hex: '#3b82f6'}, {c: 'violet', hex: '#8b5cf6'}, {c: 'pink', hex: '#ec4899'}, {c: 'gray', hex: '#6b7280'}
+            ];
+            html += '<div style="font-size:9px;color:var(--text-muted);margin-bottom:4px;">Etiqueta</div>';
+            html += '<div style="display:flex;gap:4px;">';
+            colors.forEach(col => {
+                html += '<button type="button" class="ctx-tag-btn" data-action="tag-' + col.c + '" style="width:14px;height:14px;border-radius:50%;border:none;background:' + col.hex + ';cursor:pointer;flex-shrink:0;padding:0;" aria-label="' + col.c + '"></button>';
+            });
+            html += '</div>';
+            html += '<button type="button" data-action="tag-none" style="background:transparent;border:none;color:var(--text);font-size:10px;margin-top:4px;cursor:pointer;padding:0;">Sin etiqueta</button>';
+            html += '</div>';
+
             html += ctxMenuSep();
             html += ctxMenuItem("reveal", "Mostrar en Explorer");
             html += ctxMenuItem("favorite", isFav ? "Quitar favorito" : "Marcar favorito");
@@ -2131,13 +2403,24 @@
         if (target.kind === "file") {
             const file = target.file;
             if (action === "preview") selectAsset(file);
-            else if (action === "timeline") useAsset(file, true);
+            else if (action === "timeline") useAsset(file, true, { forceTimeline: true });
             else if (action === "import") useAsset(file, false);
             else if (action === "reveal") revealInExplorer(file.path, true);
             else if (action === "favorite") toggleFavorite(file.path);
             else if (action === "copy-path") copyTextToClipboard(file.path);
             else if (action === "rename") renameFileEntry(file);
             else if (action === "delete") deleteFileEntry(file);
+            else if (action.indexOf("tag-") === 0) {
+                const color = action.substring(4);
+                settings.tags = settings.tags || {};
+                if (color === "none") {
+                    delete settings.tags[file.path];
+                } else {
+                    settings.tags[file.path] = color;
+                }
+                Lib.writeSettings(settings);
+                renderAssets();
+            }
             return;
         }
 
@@ -2187,7 +2470,8 @@
         return Project.copyToProjectFootage(file.path, projectRoot);
     }
 
-    async function useAsset(file, addToTimeline) {
+    async function useAsset(file, addToTimeline, opts) {
+        opts = opts || {};
         if (useAssetBusy) return;
         if (!file || !fs.existsSync(file.path)) {
             showToast("Archivo no encontrado", "error");
@@ -2196,6 +2480,11 @@
 
         useAssetBusy = true;
         try {
+            await ensureHostScript();
+            if (hostInfo.isAE) {
+                await refreshAEInsertLayerIndex(true);
+            }
+
             setLoading(true, "Preparando archivo…");
             const prep = await prepareImportPath(file);
             if (!prep.ok) {
@@ -2205,9 +2494,14 @@
             }
 
             const importPath = prep.path;
-            const toTimeline = addToTimeline && settings.addToTimeline !== false;
+            const toTimeline =
+                opts.forceTimeline === true
+                    ? true
+                    : addToTimeline && settings.addToTimeline !== false;
             const pathArg = importPath.replace(/\\/g, "/");
             const sourceArg = file.path.replace(/\\/g, "/");
+            const anchorIndex = aeInsertLayerIndex;
+            const anchorId = aeInsertLayerId;
 
             let res;
 
@@ -2256,7 +2550,8 @@
                     addToTimeline: toTimeline
                 };
                 if (hostInfo.isAE && toTimeline) {
-                    importPayload.layerIndex = aeInsertLayerIndex;
+                    importPayload.layerIndex = anchorIndex;
+                    importPayload.layerId = anchorId;
                 }
                 res = await hostRun("importMedia", importPayload);
                 setLoading(false);
@@ -2269,6 +2564,13 @@
                     }
                     showToast(errorMessage(res.error), "error");
                     return;
+                }
+
+                if (hostInfo.isAE && toTimeline && res.addedToTimeline) {
+                    // Keep the user's anchor; ignore AE auto-select of the new layer briefly.
+                    aeInsertLayerIndex = anchorIndex;
+                    aeInsertLayerId = anchorId;
+                    aeIgnoreSelectionUntil = Date.now() + 1200;
                 }
             }
 
@@ -2317,10 +2619,12 @@
         return map[code] || code || "Error desconocido";
     }
 
-    function rescan() {
-        setLoading(true, "Escaneando…");
+    async function rescan() {
+        /* Show loading only if scan takes > 300ms (avoids flash for fast scans) */
+        var loadingTimer = setTimeout(function () { setLoading(true, "Escaneando…"); }, 300);
         invalidateSearchState();
         cache = Lib.scanAllLibraries(settings);
+        clearTimeout(loadingTimer);
         if (!activeLibraryId && Object.keys(cache.libraries).length) {
             activeLibraryId = Object.keys(cache.libraries)[0];
         }
@@ -2498,7 +2802,7 @@
         const mediaFiles = classified.files.filter((f) => Lib.isSupportedFile(path.basename(f)));
         if (mediaFiles.length) {
             mediaFiles.forEach((f, i) => {
-                setTimeout(() => useAsset({ path: f, name: path.basename(f), type: Lib.getFileType(Lib.getExt(path.basename(f))) }, true), i * 200);
+                setTimeout(() => useAsset({ path: f, name: path.basename(f), type: Lib.getFileType(Lib.getExt(path.basename(f))) }, true, { forceTimeline: true }), i * 200);
             });
         }
 
@@ -2767,20 +3071,82 @@
             $("settings-drawer").classList.add("is-hidden");
         });
 
+        var folderNavTimer = null;
+
         $("search-input").addEventListener("input", (e) => {
             const next = e.target.value.trim();
             if (next === searchQuery) return;
             searchQuery = next;
-            if (!searchQuery) invalidateSearchState();
+
+            /* Clear any pending folder navigation */
+            if (folderNavTimer) { clearTimeout(folderNavTimer); folderNavTimer = null; }
+            document.querySelectorAll(".mv-folder.search-match").forEach(function (el) {
+                el.classList.remove("search-match");
+            });
+
+            if (!searchQuery) {
+                invalidateSearchState();
+                scheduleSearchRender();
+                return;
+            }
+
+            /* Always show file search results immediately */
             scheduleSearchRender();
+
+            /* After 400ms of no typing, also navigate to best folder match */
+            if (searchQuery.length >= 2) {
+                folderNavTimer = setTimeout(function () {
+                    folderNavTimer = null;
+                    var ql = searchQuery.toLowerCase();
+                    var folderMatches = findMatchingFolders(searchQuery);
+                    if (!folderMatches.length) return;
+
+                    /* Find best match: exact > starts-with > contains */
+                    var best = folderMatches[0];
+                    for (var fi = 0; fi < folderMatches.length; fi++) {
+                        var nm = folderMatches[fi].name.toLowerCase();
+                        if (nm === ql) { best = folderMatches[fi]; break; }
+                        if (nm.indexOf(ql) === 0 && best.name.toLowerCase() !== ql) best = folderMatches[fi];
+                    }
+
+                    /* Expand path to all matches */
+                    for (var fi = 0; fi < folderMatches.length && fi < 10; fi++) {
+                        ensureExpandedPath(folderMatches[fi].libId, folderMatches[fi].folderId);
+                    }
+
+                    /* Navigate: select the best folder, keep the search text */
+                    activeLibraryId = best.libId;
+                    activeFolderId = best.folderId;
+                    saveSettings();
+
+                    renderTree();
+
+                    /* Highlight + scroll */
+                    setTimeout(function () {
+                        var target = document.querySelector('.mv-folder[data-node="' + cssEscape(best.folderId) + '"]');
+                        if (target) {
+                            target.classList.add("search-match");
+                            target.scrollIntoView({ behavior: "smooth", block: "center" });
+                        }
+                        for (var fi = 0; fi < folderMatches.length && fi < 10; fi++) {
+                            var fmEl = document.querySelector('.mv-folder[data-node="' + cssEscape(folderMatches[fi].folderId) + '"]');
+                            if (fmEl) fmEl.classList.add("search-match");
+                        }
+                    }, 60);
+                }, 400);
+            }
         });
 
         $("search-input").addEventListener("keydown", (e) => {
-            if (e.key === "Escape" && searchQuery) {
+            if (e.key === "Escape") {
                 e.preventDefault();
+                if (folderNavTimer) { clearTimeout(folderNavTimer); folderNavTimer = null; }
                 $("search-input").value = "";
                 searchQuery = "";
                 invalidateSearchState();
+                document.querySelectorAll(".mv-folder.search-match").forEach(function (el) {
+                    el.classList.remove("search-match");
+                });
                 scheduleSearchRender();
             }
         });
@@ -2802,6 +3168,66 @@
                 setIconView(parseInt(btn.dataset.size, 10) || 180);
             });
         });
+
+        /* ---- Size slider (bottom bar) ---- */
+        const sizeSlider = $("size-slider");
+        if (sizeSlider) {
+            sizeSlider.addEventListener("input", function () {
+                setIconView(parseInt(sizeSlider.value, 10) || 180);
+            });
+        }
+
+        /* ---- Hover preview toggle (bottom bar) ---- */
+        function syncHoverToggleUi() {
+            var btn = $("btn-hover-toggle");
+            if (!btn) return;
+            var on = settings.hoverPreview !== false;
+            btn.classList.toggle("is-on", on);
+            btn.classList.toggle("is-off", !on);
+            btn.title = on ? "Preview al pasar ratón: ON" : "Preview al pasar ratón: OFF";
+        }
+        syncHoverToggleUi();
+
+        $("btn-hover-toggle").addEventListener("click", function () {
+            settings.hoverPreview = !settings.hoverPreview;
+            Lib.writeSettings(settings);
+            syncHoverToggleUi();
+            /* Sync settings drawer checkbox too */
+            var chk = $("opt-hover-preview");
+            if (chk) chk.checked = settings.hoverPreview;
+        });
+
+        /* ---- Volume slider (bottom bar) ---- */
+        const volSlider = $("volume-slider");
+        const volBtn = $("btn-volume-toggle");
+        let volumeMuted = false;
+        let volumeBeforeMute = Preview.getPreviewVolume();
+
+        if (volSlider) {
+            volSlider.value = Math.round(Preview.getPreviewVolume() * 100);
+            volSlider.addEventListener("input", function () {
+                const v = parseInt(volSlider.value, 10) / 100;
+                Preview.setPreviewVolume(v);
+                volumeMuted = v === 0;
+                if (volBtn) volBtn.classList.toggle("is-muted", volumeMuted);
+                if (v > 0) volumeBeforeMute = v;
+            });
+        }
+
+        if (volBtn) {
+            volBtn.addEventListener("click", function () {
+                volumeMuted = !volumeMuted;
+                if (volumeMuted) {
+                    volumeBeforeMute = Preview.getPreviewVolume() || 0.85;
+                    Preview.setPreviewVolume(0);
+                    if (volSlider) volSlider.value = 0;
+                } else {
+                    Preview.setPreviewVolume(volumeBeforeMute);
+                    if (volSlider) volSlider.value = Math.round(volumeBeforeMute * 100);
+                }
+                volBtn.classList.toggle("is-muted", volumeMuted);
+            });
+        }
 
         $("btn-favorites").addEventListener("click", () => {
             showFavoritesOnly = !showFavoritesOnly;
@@ -2828,6 +3254,68 @@
         $("opt-hover-preview").addEventListener("change", (e) => {
             settings.hoverPreview = e.target.checked;
             Lib.writeSettings(settings);
+            syncHoverToggleUi();
+        });
+
+        $("opt-fuzzy-search").addEventListener("change", (e) => {
+            settings.fuzzySearch = e.target.checked;
+            Lib.writeSettings(settings);
+            if (searchQuery) scheduleSearchRender();
+        });
+
+
+
+        $("btn-export-settings").addEventListener("click", function() {
+            const exportData = {
+                version: 1,
+                exportDate: new Date().toISOString(),
+                folders: settings.folders,
+                favorites: settings.favorites,
+                tags: settings.tags,
+                searchPins: settings.searchPins,
+                hiddenFolders: settings.hiddenFolders
+            };
+            try {
+                const savePath = path.join(os.homedir(), 'Desktop', 'MediaVault_backup_' + Date.now() + '.json');
+                fs.writeFileSync(savePath, JSON.stringify(exportData, null, 2), 'utf8');
+                showToast('Exportado a: ' + savePath, 'success');
+            } catch (e) {
+                showToast('Error al exportar', 'error');
+            }
+        });
+
+        $("btn-import-settings").addEventListener("click", function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    try {
+                        const importedData = JSON.parse(evt.target.result);
+                        if (importedData && importedData.version) {
+                            Object.assign(settings, {
+                                folders: importedData.folders || settings.folders,
+                                favorites: importedData.favorites || settings.favorites,
+                                tags: importedData.tags || settings.tags,
+                                searchPins: importedData.searchPins || settings.searchPins,
+                                hiddenFolders: importedData.hiddenFolders || settings.hiddenFolders
+                            });
+                            Lib.writeSettings(settings);
+                            rescan();
+                            showToast('Configuración importada', 'success');
+                        } else {
+                            showToast('Archivo de backup inválido', 'error');
+                        }
+                    } catch(err) {
+                        showToast('Error al leer el archivo', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
         });
 
         $("btn-rescan").addEventListener("click", () => {
@@ -2835,12 +3323,24 @@
             showToast("Biblioteca actualizada", "success");
         });
 
-        $("btn-preview-use").addEventListener("click", () => {
-            if (selectedAsset) useAsset(selectedAsset, true);
+        $("btn-preview-use").addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!selectedAsset) {
+                showToast("Selecciona un archivo primero", "error");
+                return;
+            }
+            useAsset(selectedAsset, true, { forceTimeline: true });
         });
 
-        $("btn-preview-import").addEventListener("click", () => {
-            if (selectedAsset) useAsset(selectedAsset, false);
+        $("btn-preview-import").addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!selectedAsset) {
+                showToast("Selecciona un archivo primero", "error");
+                return;
+            }
+            useAsset(selectedAsset, false);
         });
 
         $("btn-preview-close").addEventListener("click", dismissPreview);
@@ -2883,10 +3383,10 @@
         });
 
         Drop.bindAssetDrag($("preview-info"), function () {
-            return selectedAsset && selectedAsset.path ? selectedAsset.path : "";
+            return getDragPathSync(selectedAsset);
         }, function (e, filePath) {
             if (!shouldInsertOnDragEnd(e, filePath)) return;
-            useAsset(fileFromPath(filePath), true);
+            useAsset(fileFromPath(filePath), true, { forceTimeline: true });
         });
 
         $("ctx-menu").addEventListener("click", (e) => {
@@ -2913,6 +3413,8 @@
         mountToolbarIcons();
         syncSidebarUi();
         bindPreviewWaveResize();
+        bindSidebarResize();
+        syncViewUi();
 
         await ensureHostScript();
         hostInfo = await hostRun("getHostInfo", {});
@@ -2938,6 +3440,7 @@
         $("opt-copy-footage").checked = settings.copyToProjectFootage !== false;
         $("opt-scan-subfolders").checked = settings.scanSubfolders !== false;
         $("opt-hover-preview").checked = settings.hoverPreview !== false;
+        $("opt-fuzzy-search").checked = settings.fuzzySearch === true;
 
         activeFolderId = settings.lastFolder || null;
 

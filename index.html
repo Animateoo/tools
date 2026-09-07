@@ -4,48 +4,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tools | Animateo</title>
-    <meta name="description" content="Extensiones y scripts para After Effects, Premiere, Illustrator y Photoshop.">
+    <title>Animateo Tools | Extensiones y scripts para motion</title>
+    <meta name="description" content="Extensiones CEP y scripts ScriptUI para After Effects, Premiere, Illustrator y Photoshop. Pruébalas en el navegador.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <script>
-        try {
-            var savedTheme = localStorage.getItem('animateo-theme');
-            if (savedTheme === 'light' || savedTheme === 'dark') {
-                document.documentElement.dataset.theme = savedTheme;
-            }
-        } catch (e) {}
-    </script>
     <link rel="stylesheet" href="css/tools-pages.css">
+    <link rel="stylesheet" href="css/v3-rebrand.css">
 </head>
 
-<body class="tools-body">
-    <header class="tools-header">
-        <div class="tools-container tools-header-inner">
-            <a class="tools-logo" href="./">Animateo</a>
-            <nav class="tools-nav">
-                <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar a modo claro" title="Cambiar tema">
-                    <span aria-hidden="true">☀</span>
-                </button>
-                <a href="./" class="is-active">Tools</a>
-                <a href="https://github.com/Animateoo" target="_blank" rel="noopener">GitHub</a>
-                <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener">Portfolio</a>
-            </nav>
-        </div>
-    </header>
+<body class="tools-body home-contrast">
+    <canvas class="particle-canvas" id="particleCanvas" aria-hidden="true"></canvas>
+    <div class="pointer-glow" id="pointerGlow" aria-hidden="true"></div>
+    <div class="home-dark">
+        <header class="tools-header home-header">
+            <div class="tools-container tools-header-inner">
+                <a class="tools-logo" href="./">Animateo</a>
+                <nav class="tools-nav">
+                    <a href="#catalog" class="is-active">Tools</a>
+                    <a href="guides/">Guides</a>
+                    <a href="https://github.com/Animateoo" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener">Portfolio</a>
+                </nav>
+            </div>
+        </header>
 
-    <main>
-        <section class="tools-hero">
-            <div class="tools-container">
-                <h1>Tools para motion</h1>
-                <p>Extensiones CEP y scripts ScriptUI listos para producción. Elige una, entra a su página y pruébala en el navegador.</p>
+        <section class="lucky-hero" aria-labelledby="heroTitle">
+            <div class="tools-container lucky-hero-grid">
+                <div class="lucky-hero-copy">
+                    <div class="lucky-badges" aria-label="Plataformas">
+                        <span>After Effects</span>
+                        <span>Premiere Pro</span>
+                        <span>Ai · Ps</span>
+                        <span id="toolsCountBadge">10 tools</span>
+                    </div>
+
+
+                    <h1 id="heroTitle">Sí, otro plugin.<br>Pero este<br><em>sí sirve.</em></h1>
+                    <p class="lucky-lead">
+                        Si todavía limpias caché a mano y peleas con el graph editor nativo...
+                        esto te va a cambiar la vida. O al menos te ahorra 3 horas.
+                    </p>
+
+                    <div class="lucky-cta">
+                        <a class="btn-3d btn-3d--primary" href="#catalog">Ver tools →</a>
+                        <a class="btn-3d btn-3d--ghost" href="guides/">Guides</a>
+                    </div>
+
+                    <p class="lucky-note">CEP + ScriptUI · Demo en vivo · Sin plantillas</p>
+                </div>
+
+                <div class="lucky-hero-visual" aria-hidden="true">
+                    <div class="hero-curve-stage" id="heroCurveStage"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="home-light">
+        <section class="lucky-proof" aria-labelledby="proofTitle">
+            <div class="tools-container lucky-proof-head">
+                <div>
+                    <span class="lucky-kicker">// la cruda realidad</span>
+                    <h2 id="proofTitle">Si editar no te hizo sufrir, <em>no eres de los nuestros.</em></h2>
+                </div>
+                <p>Feedback y flujos reales: curves, media, footage, audio y cache sin salir del panel.</p>
+            </div>
+
+            <div class="tools-container lucky-proof-grid">
+                <article class="lucky-proof-card">
+                    <span class="lucky-proof-num">01</span>
+                    <h3>Paneles nativos</h3>
+                    <p>CEP y ScriptUI dentro de AE, Pr, Ai y Ps — no apps aparte.</p>
+                </article>
+                <article class="lucky-proof-card">
+                    <span class="lucky-proof-num">02</span>
+                    <h3>Demo en vivo</h3>
+                    <p>Prueba la interfaz en el navegador antes de instalar el .zxp o .jsx.</p>
+                </article>
+                <article class="lucky-proof-card">
+                    <span class="lucky-proof-num">03</span>
+                    <h3>Guides claras</h3>
+                    <p>Instalación y uso por tool, paso a paso, sin rodeos.</p>
+                </article>
             </div>
         </section>
 
-        <section class="tools-container">
-            <div class="tools-grid" id="toolsGrid"></div>
+        <!-- Meme employee card -->
+        <div class="tools-container meme-staff-wrap">
+            <div class="meme-staff-card">
+                <img src="img/this-is-fine.jpg" alt="This is fine dog" class="meme-staff-img" loading="lazy">
+                <div class="meme-staff-info">
+                    <span class="meme-staff-role">Senior Editor</span>
+                    <p class="meme-staff-bio">No sabe atajos, pero le echa ganas.</p>
+                </div>
+                <div class="meme-staff-stats">
+                    <div class="meme-stat">
+                        <span class="meme-stat-label">Paciencia</span>
+                        <div class="meme-stat-bar"><div class="meme-stat-fill" style="width: 80%"></div></div>
+                        <span class="meme-stat-val">80%</span>
+                    </div>
+                    <div class="meme-stat">
+                        <span class="meme-stat-label">Ctrl+Z</span>
+                        <div class="meme-stat-bar"><div class="meme-stat-fill" style="width: 97%"></div></div>
+                        <span class="meme-stat-val">97%</span>
+                    </div>
+                    <div class="meme-stat">
+                        <span class="meme-stat-label">Cafeína</span>
+                        <div class="meme-stat-bar"><div class="meme-stat-fill" style="width: 20%"></div></div>
+                        <span class="meme-stat-val">20%</span>
+                    </div>
+                </div>
+            </div>
+            <p class="meme-staff-credit">Meme "This is Fine" © KC Green · <a href="https://gunshowcomic.com/" target="_blank" rel="noopener">gunshowcomic.com</a></p>
+        </div>
+
+        <section class="lucky-catalog" id="catalog" aria-labelledby="catalogTitle">
+            <div class="tools-container">
+                <header class="lucky-section-head lucky-section-head--left">
+                    <span class="lucky-kicker">// toolkit suite</span>
+                    <h2 id="catalogTitle">Elige una tool y pruébala.</h2>
+                    <p>Grid de extensiones y scripts listos para producción.</p>
+                </header>
+                <div class="tools-grid" id="toolsGrid"></div>
+            </div>
+        </section>
+
+        <section class="guides-teaser tools-container" aria-labelledby="guidesTeaserTitle">
+            <div class="guides-teaser-card">
+                <div>
+                    <span class="lucky-kicker">Guides</span>
+                    <h2 id="guidesTeaserTitle">User manual</h2>
+                    <p>Instala, abre el panel y sigue el flujo de cada tool. Busca por nombre y lee de arriba abajo.</p>
+                </div>
+                <a class="btn-3d btn-3d--primary" href="guides/">Abrir Guides →</a>
+            </div>
         </section>
 
         <section class="ecosystem-section tools-container" aria-labelledby="ecosystemTitle">
@@ -79,23 +174,39 @@
                 </a>
             </div>
         </section>
-    </main>
+    </div>
 
-    <footer class="tools-footer">
-        <div class="tools-container tools-footer-inner">
-            <p>&copy; 2026 Animateo Tools</p>
-            <div class="tools-footer-links">
-                <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener">Behance</a>
-                <a href="https://x.com/animateofx" target="_blank" rel="noopener">X</a>
-                <a href="https://github.com/Animateoo" target="_blank" rel="noopener">GitHub</a>
+    <footer class="tools-footer home-footer">
+        <div class="tools-container home-footer-grid">
+            <div>
+                <a class="tools-logo" href="./">Animateo</a>
+                <p>Toolkit para motion designers y editors. Automatiza lo tedioso, enfócate en crear.</p>
             </div>
+            <div>
+                <h3>Quick links</h3>
+                <div class="home-footer-links">
+                    <a href="./">Home</a>
+                    <a href="#catalog">Tools</a>
+                    <a href="guides/">Guides</a>
+                    <a href="https://github.com/Animateoo" target="_blank" rel="noopener">GitHub</a>
+                </div>
+            </div>
+            <div>
+                <h3>Support</h3>
+                <div class="home-footer-links">
+                    <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener">Behance</a>
+                    <a href="https://x.com/animateofx" target="_blank" rel="noopener">X</a>
+                </div>
+            </div>
+        </div>
+        <div class="tools-container home-footer-copy">
+            <p>&copy; 2026 Animateo Tools. All rights reserved.</p>
         </div>
     </footer>
 
     <script src="js/tools-data.js"></script>
     <script src="js/tool-icons.js"></script>
     <script src="js/tools-catalog.js"></script>
-    <script src="js/theme-toggle.js"></script>
 </body>
 
 </html>

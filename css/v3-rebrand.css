@@ -1,0 +1,606 @@
+/* ── Animateo v3 — Dev/terminal aesthetic + orange accent ──
+   Loaded AFTER tools-pages.css. Only overrides typography and polish.
+   Does NOT change layout, buttons, or color scheme.                     */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+    --display-font: 'Space Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif;
+    --mono-font: 'JetBrains Mono', 'Fira Code', monospace;
+    --accent-orange: #d97706;
+    --accent-orange-deep: #b45309;
+}
+
+/* ── Strike-like Background Effects ── */
+.particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.pointer-glow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(217, 119, 6, 0.08) 0%, transparent 60%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+    will-change: transform;
+}
+
+/* ── Hero title — big italic like Strike ── */
+.lucky-hero-copy h1 {
+    font-family: var(--display-font);
+    font-size: clamp(2.2rem, 5.5vw, 4.2rem);
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: -0.04em;
+    line-height: 1.0;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.lucky-hero-copy h1 em {
+    font-style: italic;
+    color: var(--accent-orange);
+}
+
+/* Blinking terminal cursor after the title */
+.lucky-hero-copy h1::after {
+    content: '|';
+    display: inline-block;
+    color: var(--accent-orange);
+    font-style: normal;
+    animation: cursorBlink 1s step-end infinite;
+    margin-left: 0.05em;
+    font-size: 0.6em;
+    font-weight: 400;
+    vertical-align: baseline;
+}
+
+@keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* ── Badges — terminal tag style ── */
+.lucky-badges span {
+    font-family: var(--mono-font) !important;
+    font-size: 0.68rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.03em !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-radius: 4px !important;
+    padding: 0.25rem 0.6rem !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ── Hero perspective grid background ── */
+.home-dark {
+    background: #0a0a0f;
+    background-image: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.home-dark::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+    background-size: 60px 60px;
+    transform: perspective(500px) rotateX(35deg);
+    transform-origin: center 120%;
+    mask-image: linear-gradient(to top, transparent 5%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,0.25) 80%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, transparent 5%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,0.25) 80%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── Subtle scanlines + grain overlay ── */
+.home-dark::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.08) 2px,
+        rgba(0, 0, 0, 0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+}
+
+.home-dark > * {
+    position: relative;
+    z-index: 1;
+}
+
+.lucky-hero {
+    background: transparent;
+}
+
+/* ── Hero curve stage — bigger ── */
+.hero-curve-stage {
+    width: min(100%, 480px);
+    height: 420px;
+}
+
+/* ── Section headings — italic display ── */
+.lucky-proof-head h2,
+.lucky-section-head h2,
+#guidesTeaserTitle,
+#ecosystemTitle {
+    font-family: var(--display-font);
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: -0.03em;
+}
+
+.lucky-proof-head h2 {
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+}
+
+.lucky-proof-head h2 em,
+.lucky-section-head h2 em,
+#guidesTeaserTitle em,
+#ecosystemTitle em,
+.lucky-hero-copy h1 em {
+    color: var(--accent-orange) !important;
+    -webkit-text-fill-color: var(--accent-orange);
+}
+
+/* ── Kicker labels — terminal prompt style ── */
+.lucky-kicker,
+.ecosystem-kicker {
+    font-family: var(--mono-font);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent-orange);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.lucky-kicker::before,
+.ecosystem-kicker::before {
+    content: '>_';
+    font-family: var(--mono-font);
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: var(--accent-orange);
+    opacity: 0.7;
+}
+
+/* ── Proof cards — subtle orange glow on hover ── */
+.lucky-proof-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.lucky-proof-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(246, 211, 45, 0.12);
+}
+
+.lucky-proof-num {
+    font-family: var(--mono-font);
+    font-weight: 700;
+    font-style: normal;
+    color: var(--accent-orange);
+    font-size: 0.8rem;
+}
+
+/* ── Catalog cards — orange hover accent ── */
+.suite-pick,
+.guides-pick {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.suite-pick:hover,
+.guides-pick:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(246, 211, 45, 0.1);
+}
+
+.guides-pick-index {
+    font-family: var(--mono-font);
+    font-weight: 700;
+    font-style: normal;
+    color: var(--accent-orange);
+    font-size: 0.75rem;
+}
+
+.guides-pick-name {
+    font-family: var(--display-font);
+    font-weight: 700;
+}
+
+/* ── Nav — clean underline only, no box ── */
+.tools-nav a,
+.home-header .tools-nav a,
+.tools-header .tools-nav a {
+    position: relative;
+    border: none !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0.45rem 0.6rem;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.tools-nav a:hover,
+.tools-nav a.is-active,
+.home-header .tools-nav a:hover,
+.home-header .tools-nav a.is-active,
+.tools-header .tools-nav a:hover,
+.tools-header .tools-nav a.is-active {
+    color: #fff;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Hide any leftover LEARN badges */
+.nav-learn {
+    display: none !important;
+}
+
+.tools-nav a::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent-orange);
+    transition: width 0.25s ease, left 0.25s ease;
+}
+
+.tools-nav a:hover::after,
+.tools-nav a.is-active::after {
+    width: 70%;
+    left: 15%;
+}
+
+/* ── Footer — thin accent line on top ── */
+.tools-footer {
+    position: relative;
+}
+
+.tools-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-orange), transparent);
+}
+
+/* ── Guides teaser card — italic heading ── */
+.guides-teaser-card h2 {
+    font-family: var(--display-font);
+    font-style: italic;
+    font-weight: 700;
+}
+
+/* ── Ecosystem card — italic heading ── */
+.ecosystem-card h3 {
+    font-family: var(--display-font);
+    font-style: italic;
+    font-weight: 700;
+}
+
+/* ── Hero meme GIF — big, camera focus brackets ── */
+.hero-meme-floater {
+    position: absolute;
+    z-index: 3;
+    top: 2%;
+    right: -5%;
+    width: 420px;
+    border-radius: 6px;
+    overflow: visible;
+    background: transparent;
+    animation: heroFloat 5s ease-in-out infinite;
+}
+
+.hero-meme-floater img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+/* Camera focus bracket corners */
+.hero-meme-floater::before,
+.hero-meme-floater::after {
+    content: '';
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-color: var(--accent-orange);
+    border-style: solid;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.hero-meme-floater::before {
+    top: -6px;
+    left: -6px;
+    border-width: 3px 0 0 3px;
+}
+
+.hero-meme-floater::after {
+    bottom: 24px;
+    right: -6px;
+    border-width: 0 3px 3px 0;
+}
+
+.hero-meme-label {
+    display: block;
+    margin-top: 0.5rem;
+    font-family: var(--display-font);
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: left;
+    background: transparent;
+}
+
+@keyframes heroFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+/* ── Hide redundant CTA on tool pages ── */
+.tool-cta {
+    display: none !important;
+}
+
+/* ── FAQ grid — 2 columns, full width on tool pages ── */
+.tool-faq {
+    text-align: left !important;
+}
+
+.tool-faq .faq-list,
+.faq-list {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    max-width: 100% !important;
+    margin: 0 !important;
+    flex-direction: unset !important;
+}
+
+@media (max-width: 640px) {
+    .tool-faq .faq-list,
+    .faq-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Selection — clean orange ── */
+
+/* ── Compact hero buttons ── */
+.lucky-cta .btn-3d.btn-3d--primary,
+.lucky-cta .btn-3d.btn-3d--ghost,
+.lucky-cta .btn-3d {
+    padding: 0.55rem 1.5rem !important;
+    font-size: 0.82rem !important;
+    border-radius: 8px !important;
+    min-height: unset !important;
+    height: auto !important;
+    line-height: 1.3 !important;
+}
+
+::selection {
+    background: var(--accent-orange);
+    color: #000;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .lucky-hero-copy h1 {
+        font-size: clamp(1.8rem, 8vw, 2.8rem);
+    }
+
+    .lucky-brand {
+        font-size: clamp(2.2rem, 10vw, 3.5rem);
+    }
+}
+
+/* ── Terminal-style monospace details ── */
+.lucky-note {
+    font-family: var(--mono-font) !important;
+    font-size: 0.72rem !important;
+    letter-spacing: 0.02em;
+    opacity: 0.5;
+}
+
+.tools-nav a {
+    font-family: var(--mono-font) !important;
+    font-size: 0.78rem !important;
+    letter-spacing: 0.01em;
+}
+
+.tools-logo {
+    font-family: var(--mono-font) !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em;
+}
+
+/* ── TLDR in guides — monospace accent ── */
+.guides-tldr {
+    font-family: var(--mono-font);
+    font-size: 0.82rem;
+    color: var(--accent-orange);
+    opacity: 0.85;
+    border-left: 2px solid var(--accent-orange);
+    padding-left: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+/* ── Bare panel (screenshot-only, no shell chrome) ── */
+.tryit-live.tryit-live--bare {
+    border-radius: 0 !important;
+    overflow: visible !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    width: 100% !important;
+    height: auto !important;
+}
+
+.tryit-live--bare iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 242 / 189;
+    height: auto !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+}
+
+/* ── Meme staff card ── */
+.meme-staff-wrap {
+    padding: 2rem 0 2.5rem;
+}
+
+.meme-staff-credit {
+    font-family: var(--mono-font);
+    font-size: 0.6rem;
+    color: #aaa;
+    margin-top: 0.5rem;
+    text-align: right;
+}
+
+.meme-staff-credit a {
+    color: #999;
+    text-decoration: underline;
+}
+
+.meme-staff-card {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.2rem 1.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.meme-staff-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.meme-staff-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.meme-staff-role {
+    font-family: var(--mono-font);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-orange);
+}
+
+.meme-staff-bio {
+    font-family: var(--display-font);
+    font-size: 0.88rem;
+    font-style: italic;
+    color: #555;
+    margin-top: 0.15rem;
+}
+
+.meme-staff-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 200px;
+}
+
+.meme-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.meme-stat-label {
+    font-family: var(--mono-font);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #888;
+    width: 70px;
+    flex-shrink: 0;
+}
+
+.meme-stat-bar {
+    flex: 1;
+    height: 6px;
+    background: #eee;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.meme-stat-fill {
+    height: 100%;
+    background: var(--accent-orange);
+    border-radius: 3px;
+    transition: width 1.5s ease;
+}
+
+.meme-stat-val {
+    font-family: var(--mono-font);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #333;
+    width: 30px;
+    text-align: right;
+}
+
+@media (max-width: 640px) {
+    .meme-staff-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    .meme-staff-stats {
+        min-width: 100%;
+    }
+    .meme-stat-label {
+        width: 60px;
+    }
+}

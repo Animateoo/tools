@@ -1,0 +1,124 @@
+/* Preview panel — rectángulo fijo arriba (MediaVault / BadFX style) */
+
+.preset-preview-panel {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid var(--bfx-border, #282828);
+    background: var(--bfx-bg, #1c1c1c);
+}
+
+.preset-preview-stage {
+    position: relative;
+    width: auto;
+    height: 88px;
+    max-height: 88px;
+    margin: 0 10px;
+    aspect-ratio: auto;
+    background: #0a0a0a;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.preset-preview-video {
+    display: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    background: #0a0a0a;
+}
+
+.preset-preview-panel.has-video .preset-preview-video {
+    display: block;
+}
+
+.preset-preview-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 10px;
+    text-align: center;
+    pointer-events: none;
+}
+
+.preset-preview-panel.has-video .preset-preview-empty {
+    display: none;
+}
+
+.preset-preview-empty-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--bfx-text-dim, #6f6f6f);
+    letter-spacing: -0.01em;
+}
+
+.preset-preview-empty-hint {
+    font-size: 9px;
+    color: var(--bfx-text-faint, #505050);
+    line-height: 1.3;
+    max-width: 220px;
+}
+
+.preset-preview-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    border-top: 1px solid var(--bfx-border, #282828);
+    background: var(--bfx-bg-elevated, #1c1c1c);
+    min-height: 0;
+    box-sizing: border-box;
+}
+
+.preset-preview-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--bfx-text-muted, #717171);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.preset-preview-panel.has-selection .preset-preview-name {
+    color: var(--bfx-text-secondary, #b9b9b9);
+}
+
+.preset-preview-export {
+    flex-shrink: 0;
+    appearance: none;
+    border: none;
+    border-radius: 3px;
+    padding: 4px 8px;
+    background: var(--bfx-brand, #F7941D);
+    color: var(--bfx-brand-on, #111);
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    line-height: 1.2;
+    transition: background 0.12s, opacity 0.12s;
+}
+
+.preset-preview-export:hover:not(:disabled) {
+    background: var(--bfx-brand-hover, #FFA733);
+}
+
+.preset-preview-export:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.preset-preview-export.is-busy {
+    opacity: 0.7;
+    cursor: wait;
+}

@@ -1,3 +1,12 @@
+﻿/*
+Â© Mateo Crespo (Animateo)
+
+Puedes usar este plugin libremente.
+No puedes venderlo, redistribuirlo ni publicar versiones modificadas.
+
+Â¿Encontraste una mejora o correcciÃ³n?
+Por favor, compÃ¡rtela con el autor.
+*/
 /**
  * TextPresets - Complete Application Logic
  * Includes: Quick Animator + Full Preset Manager
@@ -21,6 +30,198 @@ function getAnimateFFXFolderPath() {
         return path.join(getPresetsRootPath(), 'animate');
     }
     return getPresetsRootPath().replace(/[/\\]+$/, '') + '/animate';
+}
+
+/** Carpeta de previews MP4 dentro de la extensión: presets/Preview */
+function getPreviewFolderPath() {
+    if (path) return path.join(getPresetsRootPath(), 'Preview');
+    return getPresetsRootPath().replace(/[/\\]+$/, '') + '/Preview';
+}
+
+/** Fallback legado (exports antiguos en AppData). */
+function getLegacyPreviewFolderPath() {
+    try {
+        const userData = csInterface.getSystemPath(SystemPath.USER_DATA);
+        if (path) return path.join(userData, 'TextPresets', 'Preview');
+        return String(userData).replace(/[/\\]+$/, '') + '/TextPresets/Preview';
+    } catch (e) {
+        return null;
+    }
+}
+
+function ensurePreviewFolder() {
+    const folder = getPreviewFolderPath();
+    if (fs && !fs.existsSync(folder)) {
+        try { fs.mkdirSync(folder, { recursive: true }); } catch (e) { }
+    }
+    return folder;
+}
+
+function getPreviewMp4PathForPreset(preset, forWrite) {
+    if (!preset || !preset.name) return null;
+    const safeName = String(preset.name).replace(/[<>:"/\\|?*]/g, '').replace(/^\s+|\s+$/g, '');
+    if (!safeName) return null;
+
+    const fileName = safeName + '.mp4';
+    const extPath = path
+        ? path.join(getPreviewFolderPath(), fileName)
+        : getPreviewFolderPath() + '/' + fileName;
+
+    if (forWrite) return extPath;
+    if (previewFileExists(extPath)) return extPath;
+
+    const legacyRoot = getLegacyPreviewFolderPath();
+    if (legacyRoot) {
+        const legacyPath = path ? path.join(legacyRoot, fileName) : legacyRoot + '/' + fileName;
+        if (previewFileExists(legacyPath)) return legacyPath;
+    }
+    return extPath;
+}
+
+function pathToFileUrl(filePath) {
+    if (!filePath) return '';
+    let normalized = String(filePath).replace(/\\/g, '/');
+    if (/^[a-zA-Z]:/.test(normalized)) {
+        return 'file:///' + normalized.split('/').map(function (seg, i) {
+            return i === 0 ? seg : encodeURIComponent(seg);
+        }).join('/');
+    }
+    if (normalized.charAt(0) !== '/') normalized = '/' + normalized;
+    return 'file://' + normalized.split('/').map(function (seg) {
+        return seg ? encodeURIComponent(seg) : '';
+    }).join('/');
+}
+
+function previewFileExists(filePath) {
+    if (!filePath || !fs) return false;
+    try { return fs.existsSync(filePath); } catch (e) { return false; }
+}
+
+function getPreviewDom() {
+    return {
+        panel: document.getElementById('presetPreviewPanel'),
+        video: document.getElementById('presetPreviewVideo'),
+        empty: document.getElementById('presetPreviewEmpty'),
+        name: document.getElementById('presetPreviewName'),
+        exportBtn: document.getElementById('exportPreviewBtn')
+    };
+}
+
+function clearPresetPreview() {
+    const ui = getPreviewDom();
+    if (ui.video) {
+        try {
+            ui.video.pause();
+            ui.video.removeAttribute('src');
+            ui.video.load();
+        } catch (e) { }
+    }
+    if (ui.panel) {
+        ui.panel.classList.remove('has-video', 'has-selection');
+    }
+    if (ui.name) ui.name.textContent = '—';
+    if (ui.exportBtn) ui.exportBtn.disabled = true;
+}
+
+function updatePresetPreview(preset) {
+    const ui = getPreviewDom();
+    if (!ui.panel || !ui.video) return;
+
+    if (!preset) {
+        clearPresetPreview();
+        return;
+    }
+
+    ui.panel.classList.add('has-selection');
+    if (ui.name) ui.name.textContent = preset.name || '—';
+    if (ui.exportBtn) ui.exportBtn.disabled = false;
+
+    const mp4Path = getPreviewMp4PathForPreset(preset);
+    if (!previewFileExists(mp4Path)) {
+        ui.panel.classList.remove('has-video');
+        try {
+            ui.video.pause();
+            ui.video.removeAttribute('src');
+            ui.video.load();
+        } catch (e) { }
+        return;
+    }
+
+    const url = pathToFileUrl(mp4Path) + '?t=' + Date.now();
+    ui.panel.classList.add('has-video');
+    try {
+        ui.video.pause();
+        ui.video.src = url;
+        ui.video.load();
+        const playPromise = ui.video.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(function () { });
+        }
+    } catch (e) {
+        ui.panel.classList.remove('has-video');
+    }
+}
+
+function handleExportPresetPreview() {
+    const preset = state.selectedApplyPreset || state.lastClickedAEPreset;
+    if (!preset || !preset.path) {
+        setStatus('Selecciona un preset .ffx primero', 'error');
+        return;
+    }
+
+    const ui = getPreviewDom();
+    const outPath = getPreviewMp4PathForPreset(preset, true);
+    if (!outPath) {
+        setStatus('Nombre de preset inválido', 'error');
+        return;
+    }
+
+    ensurePreviewFolder();
+
+    if (ui.exportBtn) {
+        ui.exportBtn.disabled = true;
+        ui.exportBtn.classList.add('is-busy');
+        ui.exportBtn.textContent = 'Exportando…';
+    }
+    setStatus('Exportando preview ligero…', 'loading');
+
+    const payload = {
+        presetPath: toExtendScriptPath(preset.path),
+        outputPath: toExtendScriptPath(outPath),
+        width: 480,
+        height: 160,
+        duration: 1.5,
+        frameRate: 24,
+        sampleText: 'Aa Bb'
+    };
+
+    evalScript(
+        '$.global.exportLightPresetPreview(' + JSON.stringify(JSON.stringify(payload)) + ')',
+        function (result) {
+            if (ui.exportBtn) {
+                ui.exportBtn.classList.remove('is-busy');
+                ui.exportBtn.textContent = 'Exportar';
+                ui.exportBtn.disabled = false;
+            }
+
+            if (!result || result === 'undefined' || result.indexOf('Error') === 0) {
+                setStatus('Error exportando preview', 'error');
+                return;
+            }
+
+            try {
+                const data = JSON.parse(result);
+                if (data.error) {
+                    setStatus(data.error, 'error');
+                    return;
+                }
+                setStatus('✓ Preview ligero listo (' + (data.sizeKB || '?') + ' KB)', 'success');
+                updatePresetPreview(preset);
+            } catch (e) {
+                setStatus('Error de datos al exportar', 'error');
+            }
+        }
+    );
 }
 
 /** ExtendScript en Windows necesita rutas nativas para File.exists. */
@@ -518,7 +719,7 @@ function showConfirmDialog(opts) {
         title,
         message,
         confirmLabel = 'Aceptar',
-        cancelLabel = 'Cancelar',
+        cancelLabel = 'Cerrar',
         danger = false
     } = opts;
     const modal = elements.uiConfirmModal;
@@ -677,8 +878,20 @@ function showMessageDialog(opts) {
 // INITIALIZATION
 // ============================================================================
 
+function registerTextPresetsPaths() {
+    const extPath = extensionPath.replace(/\\/g, '/').replace(/\/+$/, '');
+    const customExploder = 'F:/jsxer-master/bin/release/Release/TextExploder.jsx';
+    const script = `$.global.registerTextPresetsPaths(${JSON.stringify(extPath)}, ${JSON.stringify(customExploder)});`;
+    evalScript(script, function (result) {
+        console.log('TextPresets jsx paths:', result);
+    });
+}
+
 function init() {
     console.log('Initializing TextPresets...');
+
+    // Ruta jsx fiable para TextExploder (evalScript no puede usar $.fileName)
+    registerTextPresetsPaths();
 
     // Load saved state first so it's available for populate functions
     loadState();
@@ -930,7 +1143,7 @@ function createAEPresetButton(preset) {
     const nameDiv = document.createElement('div');
     nameDiv.className = 'effect-name';
     const typeHint = applyType === 'exit' ? ' · salida' : applyType === 'both' ? ' · ambos' : '';
-    nameDiv.textContent = `🎬 ${preset.name}${typeHint}`;
+    nameDiv.textContent = preset.name + typeHint;
 
     const starBtn = document.createElement('button');
     starBtn.className = 'favorite-star';
@@ -970,6 +1183,7 @@ function handleAEPresetClick(btn, preset) {
         state.selectedEffects.entrance = null;
         state.selectedEffects.exit = null;
         state.lastClickedAEPreset = null;
+        clearPresetPreview();
         saveState();
         return;
     }
@@ -990,6 +1204,7 @@ function handleAEPresetClick(btn, preset) {
     state.selectedEffects.exit = null;
     state.lastClickedAEPreset = presetObj;
 
+    updatePresetPreview(presetObj);
     saveState();
 }
 
@@ -1715,6 +1930,13 @@ function setupEventListeners() {
         elements.applyBtn.addEventListener('click', handleApply);
     }
 
+    const exportPreviewBtn = document.getElementById('exportPreviewBtn');
+    if (exportPreviewBtn) {
+        exportPreviewBtn.disabled = true;
+        exportPreviewBtn.addEventListener('click', handleExportPresetPreview);
+    }
+    clearPresetPreview();
+
     const applyPresetManagerBtn = document.getElementById('applyPresetManagerBtn');
     if (applyPresetManagerBtn) {
         applyPresetManagerBtn.addEventListener('click', applySelectedPreset);
@@ -1846,7 +2068,7 @@ function handleReset() {
     const batchMode = false; // Apply only to selected text layers
 
     elements.resetBtn.disabled = true;
-    setStatus('Reseteando animaciones...', 'loading');
+    setStatus('Quitando animación del preset...', 'loading');
 
     const script = `$.global.resetAnimations(${batchMode})`;
 
@@ -1862,7 +2084,7 @@ function handleReset() {
             }
 
             if (data.success) {
-                setStatus(`✓ ${data.layersReset} capas reseteadas`, 'success');
+                setStatus(`✓ ${data.layersReset} capa(s) — preset quitado`, 'success');
                 updateCompInfo();
             }
 
@@ -1938,6 +2160,7 @@ function handleTextToolsResult(result, successMsg) {
     try {
         const data = JSON.parse(result);
         if (data.error) {
+            closeTextToolsModal();
             setStatus(data.error, 'error');
             showMessageDialog({ title: 'Texto', message: data.error });
             return;

@@ -1,3 +1,12 @@
+﻿/*
+Â© Mateo Crespo (Animateo)
+
+Puedes usar este plugin libremente.
+No puedes venderlo, redistribuirlo ni publicar versiones modificadas.
+
+Â¿Encontraste una mejora o correcciÃ³n?
+Por favor, compÃ¡rtela con el autor.
+*/
 /**
  * MediaVault by Animateoo — audio preview with scrubbing + mini waveforms
  */
@@ -238,7 +247,7 @@ const MediaVaultPreview = (function () {
         return m || 1;
     }
 
-    /* BadFX-style: barras verticales con gap + línea central punteada */
+    /* Estilo Animateoo: barras verticales con gap + línea central punteada */
     const WAVE_THEME = {
         bgCard: "#141414",
         bgPreview: "#161616",
@@ -334,7 +343,7 @@ const MediaVaultPreview = (function () {
         const buckets = peaks.peaks0.length;
         const step = w / buckets;
         const unplayed = style.unplayed || "#2a2a32";
-        const played = style.played || "#e84545";
+        const played = style.played || "#F7941D";
         const bg = style.bg || "#0d0d10";
         const playhead = style.playhead !== false;
         const fit = style.fit !== false;
@@ -409,7 +418,7 @@ const MediaVaultPreview = (function () {
 
         if (playhead && progress > 0) {
             const px = progress * w;
-            ctx.strokeStyle = style.playheadColor || "#ff5c5c";
+            ctx.strokeStyle = style.playheadColor || "#F7941D";
             ctx.lineWidth = style.playheadWidth || 2;
             ctx.beginPath();
             ctx.moveTo(px, 0);

@@ -7,7 +7,10 @@
         'Safe Zone', 'Background', 'Adjustment', 'Matte Layer'
     ];
 
-    var LAYER_COLORS = ['#e8a735', '#5eb8ff', '#5eb8ff', '#c678dd', '#c678dd', '#e06c75', '#98c379', '#61afef', '#e5c07b', '#e06c75', '#56b6c2', '#abb2bf', '#d19a66', '#82cfff'];
+    var LAYER_COLORS = [
+        '#e8a735', '#5eb8ff', '#5eb8ff', '#c678dd', '#c678dd', '#e06c75', '#98c379',
+        '#61afef', '#e5c07b', '#e06c75', '#56b6c2', '#abb2bf', '#d19a66', '#82cfff'
+    ];
 
     var TRACK_WIDTHS = [72, 48, 85, 60, 92, 40, 76, 54, 88, 62, 44, 80, 58, 70];
 
@@ -62,14 +65,20 @@
         }
     }
 
+    function pluginHeight(tool) {
+        var h = tool.h || 320;
+        if (h < 120) return 280;
+        return Math.max(h, 240);
+    }
+
     function buildAeShell(tool) {
         var shell = document.createElement('div');
         shell.className = 'tryit-shell';
-        shell.style.setProperty('--plugin-w', tool.w + 'px');
-        shell.style.setProperty('--plugin-h', tool.h + 'px');
-        shell.style.setProperty('--plugin-bg', tool.bg);
+        shell.style.setProperty('--plugin-w', (tool.w || 300) + 'px');
+        shell.style.setProperty('--plugin-h', pluginHeight(tool) + 'px');
+        shell.style.setProperty('--plugin-bg', tool.bg || '#161616');
 
-        var wide = tool.w > 400 ? ' tryit-body--wide' : '';
+        var wide = (tool.w || 300) > 400 ? ' tryit-body--wide' : '';
 
         shell.innerHTML =
             '<div class="tryit-transport">' +
@@ -101,9 +110,9 @@
     function buildAiShell(tool) {
         var shell = document.createElement('div');
         shell.className = 'tryit-shell tryit-shell--ai';
-        shell.style.setProperty('--plugin-w', tool.w + 'px');
-        shell.style.setProperty('--plugin-h', tool.h + 'px');
-        shell.style.setProperty('--plugin-bg', tool.bg);
+        shell.style.setProperty('--plugin-w', (tool.w || 300) + 'px');
+        shell.style.setProperty('--plugin-h', pluginHeight(tool) + 'px');
+        shell.style.setProperty('--plugin-bg', tool.bg || '#161616');
 
         shell.innerHTML =
             '<div class="tryit-transport">' +
@@ -138,6 +147,32 @@
         return shell;
     }
 
+    function buildLivePanel(tool) {
+        var shell = document.createElement('div');
+        shell.className = 'tryit-live';
+        var h = pluginHeight(tool);
+        shell.style.setProperty('--plugin-h', h + 'px');
+        shell.style.setProperty('--plugin-bg', tool.bg || '#161616');
+        shell.innerHTML =
+            '<div class="tryit-live-bar">' +
+                '<span>' + tool.name + '</span>' +
+                '<em>en vivo</em>' +
+            '</div>' +
+            '<iframe title="' + tool.name + '" src="' + tool.src + '" loading="lazy"></iframe>';
+        return shell;
+    }
+
+    function buildBarePanel(tool) {
+        var shell = document.createElement('div');
+        shell.className = 'tryit-live tryit-live--bare';
+        var h = pluginHeight(tool);
+        shell.style.setProperty('--plugin-h', h + 'px');
+        shell.style.setProperty('--plugin-bg', tool.bg || '#161616');
+        shell.innerHTML =
+            '<iframe title="' + tool.name + '" src="' + tool.src + '" loading="lazy"></iframe>';
+        return shell;
+    }
+
     function mountTryIt(tool, variant) {
         var mount = document.getElementById('tryitMount');
         if (!mount) return;
@@ -146,12 +181,17 @@
         var demoTool = Object.assign({}, tool, {
             src: active.demo || tool.src,
             w: active.w || tool.w,
-            h: active.h || tool.h
+            h: active.h || tool.h,
+            bg: active.bg || tool.bg
         });
 
         mount.innerHTML = '';
-        var shell = demoTool.shell === 'ai' ? buildAiShell(demoTool) : buildAeShell(demoTool);
-        mount.appendChild(shell);
+        /* Smooth: plugin real (panel en vivo) | info al lado */
+        var panel;
+        if (demoTool.shell === 'none') panel = buildBarePanel(demoTool);
+        else if (demoTool.shell === 'ai') panel = buildAiShell(demoTool);
+        else panel = buildLivePanel(demoTool);
+        mount.appendChild(panel);
     }
 
     function renderRepoControls(tool) {
@@ -162,9 +202,9 @@
         actions.innerHTML = '';
 
         if (tool.repos && tool.repos.length) {
-            tool.repos.forEach(function (repo, i) {
+            tool.repos.forEach(function (repo) {
                 var a = document.createElement('a');
-                a.className = 'tool-btn tool-btn--primary';
+                a.className = 'btn-3d btn-3d--primary';
                 a.href = repo.url;
                 a.target = '_blank';
                 a.rel = 'noopener';
@@ -172,7 +212,7 @@
                 actions.appendChild(a);
             });
             var docs = document.createElement('a');
-            docs.className = 'tool-btn tool-btn--ghost';
+            docs.className = 'btn-3d btn-3d--ghost';
             docs.href = tool.repos[0].url;
             docs.target = '_blank';
             docs.rel = 'noopener';
@@ -198,8 +238,7 @@
             }
         } else {
             var dl = document.createElement('a');
-            dl.className = 'tool-btn tool-btn--primary';
-            dl.id = 'toolDownload';
+            dl.className = 'btn-3d btn-3d--primary';
             dl.href = tool.repo;
             dl.target = '_blank';
             dl.rel = 'noopener';
@@ -207,8 +246,7 @@
             actions.appendChild(dl);
 
             var docsSingle = document.createElement('a');
-            docsSingle.className = 'tool-btn tool-btn--ghost';
-            docsSingle.id = 'toolDocs';
+            docsSingle.className = 'btn-3d btn-3d--ghost';
             docsSingle.href = tool.repo;
             docsSingle.target = '_blank';
             docsSingle.rel = 'noopener';
@@ -220,6 +258,7 @@
     function renderFaq(tool) {
         var list = document.getElementById('faqList');
         if (!list || !tool.faq) return;
+        list.innerHTML = '';
 
         tool.faq.forEach(function (item) {
             var wrap = document.createElement('div');
@@ -234,6 +273,16 @@
         });
     }
 
+    function toolIndexLabel(tool) {
+        if (typeof ANIMATEO_TOOLS === 'undefined') return '01';
+        for (var i = 0; i < ANIMATEO_TOOLS.length; i++) {
+            if (ANIMATEO_TOOLS[i].id === tool.id) {
+                return String(i + 1).padStart(2, '0');
+            }
+        }
+        return '01';
+    }
+
     function renderPage(tool) {
         document.title = tool.name + ' | Animateo Tools';
 
@@ -244,20 +293,30 @@
         var title = document.getElementById('toolTitle');
         var desc = document.getElementById('toolDesc');
         var features = document.getElementById('toolFeatures');
+        var infoTitle = document.getElementById('toolInfoTitle');
+        var infoSub = document.getElementById('toolInfoSub');
+        var toolIndex = document.getElementById('toolIndex');
         var ctaTitle = document.getElementById('ctaTitle');
         var ctaDesc = document.getElementById('ctaDesc');
         var ctaDownload = document.getElementById('ctaDownload');
 
         if (tag) tag.textContent = tool.tag;
         if (title) title.textContent = tool.name;
+        if (infoTitle) infoTitle.textContent = tool.name;
+        if (infoSub) infoSub.textContent = tool.shortDesc;
+        if (toolIndex) toolIndex.textContent = toolIndexLabel(tool) + '.';
         if (desc) desc.textContent = tool.longDesc;
-        if (ctaTitle) ctaTitle.textContent = '¿Listo para probar ' + tool.name + '?';
+        if (ctaTitle) ctaTitle.textContent = 'Listo para probar ' + tool.name + '?';
         if (ctaDesc) ctaDesc.textContent = tool.shortDesc;
-        if (ctaDownload) ctaDownload.href = tool.repo;
+        if (ctaDownload) {
+            ctaDownload.href = tool.repo;
+            ctaDownload.className = 'btn-3d btn-3d--primary';
+        }
 
         renderRepoControls(tool);
 
         if (features && tool.features) {
+            features.innerHTML = '';
             tool.features.forEach(function (f) {
                 var li = document.createElement('li');
                 li.textContent = f;
@@ -266,17 +325,14 @@
         }
 
         mountTryIt(tool, tool.repos ? tool.repos[0] : null);
-
         renderFaq(tool);
     }
 
     function showNotFound() {
-        var main = document.querySelector('.tool-detail-main');
+        var main = document.querySelector('.tool-detail-main') || document.querySelector('.home-dark');
         if (main) {
             main.innerHTML =
-                '<div class="tools-container">' +
-                    '<p>Tool no encontrada. <a href="../">Volver al catálogo</a></p>' +
-                '</div>';
+                '<div class="tools-container"><p>Tool no encontrada. <a href="../">Volver</a></p></div>';
         }
     }
 
@@ -289,14 +345,4 @@
     }
 
     renderPage(tool);
-
-    window.addEventListener('resize', function () {
-        var shell = document.querySelector('.tryit-shell');
-        if (!shell || tool.shell === 'ai') return;
-        var tracks = shell.querySelector('.tryit-tracks');
-        if (!tracks) return;
-        var h = tracks.clientHeight;
-        var count = Math.max(8, Math.min(14, Math.floor(h / 14)));
-        fillTimeline(shell, count);
-    });
 })();
