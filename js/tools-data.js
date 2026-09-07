@@ -10,7 +10,7 @@ var ANIMATEO_TOOLS = [
         repo: 'https://github.com/Animateoo/GraphEditorAE',
         repos: [
             { label: 'Descargar After Effects', url: 'https://github.com/Animateoo/GraphEditorAE', demo: '../demos/grapheditor/index.html', w: 300, h: 480 },
-            { label: 'Descargar Premiere Pro', url: 'https://github.com/Animateoo/GraphEditorPR', demo: '../demos/grapheditor/index.html?app=PPRO', w: 300, h: 480 }
+            { label: 'Descargar Premiere Pro', url: 'https://github.com/Animateoo/GraphEditorAE', demo: '../demos/grapheditor/index.html?app=PPRO', w: 300, h: 480 }
         ],
         src: '../demos/grapheditor/index.html',
         w: 300,
