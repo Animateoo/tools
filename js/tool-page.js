@@ -239,7 +239,7 @@
         } else {
             var dl = document.createElement('a');
             dl.className = 'btn-3d btn-3d--primary';
-            dl.href = tool.repo;
+            dl.href = tool.download || tool.repo;
             dl.target = '_blank';
             dl.rel = 'noopener';
             dl.textContent = 'Descargar';
@@ -253,6 +253,7 @@
             docsSingle.textContent = 'Ver repo';
             actions.appendChild(docsSingle);
         }
+
     }
 
     function renderFaq(tool) {
@@ -309,9 +310,10 @@
         if (ctaTitle) ctaTitle.textContent = 'Listo para probar ' + tool.name + '?';
         if (ctaDesc) ctaDesc.textContent = tool.shortDesc;
         if (ctaDownload) {
-            ctaDownload.href = tool.repo;
+            ctaDownload.href = tool.download || tool.repo;
             ctaDownload.className = 'btn-3d btn-3d--primary';
         }
+
 
         renderRepoControls(tool);
 

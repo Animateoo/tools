@@ -233,7 +233,9 @@ var ANIMATEO_TOOLS = [
         shortDesc: 'Pasa arte entre Illustrator y Photoshop sin copiar a mano.',
         longDesc: 'Mandas tu arte de Illustrator a Photoshop, o al revés, con un solo clic. Chau al Copy+Paste fallido.',
         tldr: 'El puente mágico entre vectores y píxeles.',
-        repo: 'https://github.com/Animateoo',
+        repo: 'https://github.com/Animateoo/Shuttle',
+        download: 'https://github.com/Animateoo/Shuttle/releases/latest',
+
         src: '../demos/shuttle/preview.html',
         w: 300,
         h: 78,
