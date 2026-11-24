@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mateo Crespo | Trabajo & Portafolio · Diseñador Multimedia y Animador 2D</title>
+    <meta name="description" content="Portafolio de Mateo Crespo (@Animateoo). Edición de video de alto impacto, animación 2D y motion design para marcas y creadores.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../css/tools-pages.css">
+    <link rel="stylesheet" href="../css/v3-rebrand.css">
+    <link rel="stylesheet" href="../css/trabajo.css">
+</head>
+
+<body class="trabajo-body">
+    <canvas class="particle-canvas" id="particleCanvas" aria-hidden="true"></canvas>
+    <div class="pointer-glow" id="pointerGlow" aria-hidden="true"></div>
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="tools-header home-header">
+        <div class="trabajo-container tools-header-inner">
+            <a class="tools-logo" href="../">Animateo</a>
+            <nav class="tools-nav">
+                <a href="../#catalog">Tools</a>
+                <a href="./" class="is-active">Trabajo</a>
+                <a href="../guides/">Guides</a>
+                <a href="https://github.com/Animateoo" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener">Behance</a>
+            </nav>
+            <div class="status-pill">
+                <span class="status-dot"></span>
+                <span>Disponible para proyectos</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <main>
+        <section class="tr-hero">
+            <div class="trabajo-container tr-hero-grid">
+                <div class="tr-hero-copy">
+                    <div class="tr-kicker-row">
+                        <span class="tr-kicker">Mateo Crespo · @Animateoo</span>
+                        <span class="tr-kicker">Diseñador Multimedia & Animador 2D</span>
+                    </div>
+
+                    <h1 class="tr-hero-title">
+                        HAGO QUE TU CONTENIDO SE VEA <em>ÉPICO.</em>
+                    </h1>
+
+                    <p class="tr-hero-lead">
+                        Soy <strong>Mateo Crespo (@Animateoo)</strong>, Creativo Multimedia y Animador 2D. 
+                        Retengo la atención con <strong>edición dinámica de alto impacto</strong>, ritmo implacable y motion graphics publicitario de nivel internacional. Si quieres que la gente se quede hasta el final del video... llegaste al lugar correcto.
+                    </p>
+
+                    <div class="tr-cta-row">
+                        <a href="#trabajos" class="tr-btn tr-btn--primary">Ver selección ↓</a>
+                        <a href="#estimador" class="tr-btn tr-btn--ghost">Calcular proyecto</a>
+                        <a href="https://wa.me/573196916587?text=Hola%20Mateo!%20Vi%20tu%20portafolio%20y%20me%20gustar%C3%ADa%20conversar%20sobre%20un%20proyecto" target="_blank" rel="noopener" class="tr-btn tr-btn--whatsapp">WhatsApp directo</a>
+                    </div>
+
+                    <div class="tr-stack-row" style="justify-content: flex-start; margin: 1.5rem 0 0;">
+                        <span class="tr-stack-badge"><b>Pr</b> Premiere Pro</span>
+                        <span class="tr-stack-badge"><b>Ae</b> After Effects</span>
+                        <span class="tr-stack-badge"><b>Ai</b> Illustrator</span>
+                        <span class="tr-stack-badge"><b>Ps</b> Photoshop</span>
+                        <span class="tr-stack-badge"><b>Fg</b> Figma</span>
+                    </div>
+                </div>
+
+                <!-- HERO SHOWCASE CARD -->
+                <div class="tr-hero-visual">
+                    <div class="tr-hero-card">
+                        <div class="tr-card-badge-top">
+                            <span>TRABAJO DESTACADO // 2026</span>
+                            <span style="color: var(--tr-accent-bright);">● SHOWCASE</span>
+                        </div>
+                        <div class="tr-card-preview-stage">
+                            <img src="../img/portfolio/cow_motion.gif" alt="Campaña Tienda D1 Motion Animation" loading="lazy">
+                            <div class="tr-card-play-overlay">
+                                <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener" class="tr-play-pill">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                    Explorar en Behance
+                                </a>
+                            </div>
+                        </div>
+                        <div class="tr-card-meta">
+                            <h3>Campaña Retail Tienda D1</h3>
+                            <p>Animación publicitaria, motion graphics de productos y efectos parallax con ritmo de retención masiva.</p>
+                            <div class="tr-card-tags">
+                                <span class="tr-tag">Motion Design</span>
+                                <span class="tr-tag">After Effects</span>
+                                <span class="tr-tag">Publicidad 2D</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MARQUEE CLIENTS TICKER -->
+        <div class="tr-marquee-wrap" aria-hidden="true">
+            <div class="tr-marquee-inner">
+                <span class="tr-marquee-item">Winclap</span>
+                <span class="tr-marquee-item">Davivienda</span>
+                <span class="tr-marquee-item">Engie</span>
+                <span class="tr-marquee-item">Promigas</span>
+                <span class="tr-marquee-item">Constructora Bolívar</span>
+                <span class="tr-marquee-item">Peak Team</span>
+                <span class="tr-marquee-item">Sigma</span>
+                <span class="tr-marquee-item">FicFusa Festival</span>
+                <span class="tr-marquee-item">O-lab App</span>
+                <!-- Loop duplicates -->
+                <span class="tr-marquee-item">Winclap</span>
+                <span class="tr-marquee-item">Davivienda</span>
+                <span class="tr-marquee-item">Engie</span>
+                <span class="tr-marquee-item">Promigas</span>
+                <span class="tr-marquee-item">Constructora Bolívar</span>
+                <span class="tr-marquee-item">Peak Team</span>
+                <span class="tr-marquee-item">Sigma</span>
+                <span class="tr-marquee-item">FicFusa Festival</span>
+                <span class="tr-marquee-item">O-lab App</span>
+            </div>
+        </div>
+
+        <!-- 4 PILLARS -->
+        <div class="trabajo-container">
+            <div class="tr-pillars-grid">
+                <div class="tr-pillar-card">
+                    <div class="tr-pillar-num">01 // PILAR</div>
+                    <h4>NARRATIVA</h4>
+                    <p>El mensaje entra claro y sin rellenos. Cero confusión, retención máxima desde el gancho inicial hasta el cierre.</p>
+                </div>
+                <div class="tr-pillar-card">
+                    <div class="tr-pillar-num">02 // PILAR</div>
+                    <h4>RITMO</h4>
+                    <p>Cortes calculados al compás exacto. Movimientos de cámara y transiciones que mantienen la vista pegada a la pantalla.</p>
+                </div>
+                <div class="tr-pillar-card">
+                    <div class="tr-pillar-num">03 // PILAR</div>
+                    <h4>MOTION 2D</h4>
+                    <p>Animación vectorial orgánica, rigging de personajes y gráficos con físicas reales creados en After Effects.</p>
+                </div>
+                <div class="tr-pillar-card">
+                    <div class="tr-pillar-num">04 // PILAR</div>
+                    <h4>DISEÑO SONORO</h4>
+                    <p>Foley, whooshes, texturas acústicas y mezclas limpias. El audio no acompaña: potencia cada impacto visual.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 01: CHECA MI EDICIÓN -->
+        <section class="tr-section" id="trabajos">
+            <div class="trabajo-container">
+                <div class="tr-section-head">
+                    <span class="tr-section-kicker">01 / TRABAJO SELECCIONADO</span>
+                    <h2 class="tr-section-title">CHECA MI EDICIÓN.</h2>
+                    <p class="tr-section-desc">
+                        Aquí coloqué una selección compacta en donde puedes evaluar mi ritmo de edición, animación 2D y motion graphics. Cada proyecto incorpora muestras directas de mi portafolio en Behance.
+                    </p>
+                </div>
+
+                <!-- FILTER TABS -->
+                <div class="tr-filter-nav">
+                    <button class="tr-filter-btn active" data-filter="all">TODOS</button>
+                    <button class="tr-filter-btn" data-filter="motion">MOTION GRAPHICS</button>
+                    <button class="tr-filter-btn" data-filter="anim2d">ANIMACIÓN 2D</button>
+                    <button class="tr-filter-btn" data-filter="brands">PUBLICIDAD & MARCAS</button>
+                    <button class="tr-filter-btn" data-filter="editing">EDICIÓN DINÁMICA</button>
+                </div>
+
+                <!-- PROJECTS GRID -->
+                <div class="tr-projects-grid">
+                    <!-- Project 1: Tienda D1 -->
+                    <div class="tr-project-card" data-category="motion brands">
+                        <div class="tr-project-thumb">
+                            <img src="../img/portfolio/d1_tienda.png" alt="Tienda D1 Motion Publicitario" loading="lazy">
+                            <div class="tr-project-overlay">
+                                <span class="tr-tag" style="background: rgba(0,0,0,0.8);">Campaña Retail</span>
+                            </div>
+                        </div>
+                        <div class="tr-project-content">
+                            <h3>Tienda D1 · Motion Publicitario</h3>
+                            <p>Animación de productos, composición de escenas en parallax y diseño gráfico comercial para alta difusión digital.</p>
+                            <div class="tr-project-footer">
+                                <span class="tr-tag">After Effects · Illustrator</span>
+                                <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener" class="tr-behance-btn">
+                                    Ver en Behance ↗
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 2: Winclap Campaigns -->
+                    <div class="tr-project-card" data-category="editing brands">
+                        <div class="tr-project-thumb">
+                            <img src="../img/portfolio/portada_design.jpeg" alt="Winclap Campañas Digitales" loading="lazy">
+                            <div class="tr-project-overlay">
+                                <span class="tr-tag" style="background: rgba(0,0,0,0.8);">Growth Creative</span>
+                            </div>
+                        </div>
+                        <div class="tr-project-content">
+                            <h3>Winclap · Campañas Digitales & Reels</h3>
+                            <p>Creación de contenido visual enfocado en resultados: reels virales, pautas dinámicas en paid media y motion design comercial.</p>
+                            <div class="tr-project-footer">
+                                <span class="tr-tag">Premiere · After Effects</span>
+                                <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener" class="tr-behance-btn">
+                                    Ver en Behance ↗
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 3: Walk Cycles 2D -->
+                    <div class="tr-project-card" data-category="anim2d motion">
+                        <div class="tr-project-thumb">
+                            <img src="../img/portfolio/walk_cycle_anim.gif" alt="Walk Cycles & Animación 2D" loading="lazy">
+                            <div class="tr-project-overlay">
+                                <span class="tr-tag" style="background: rgba(0,0,0,0.8);">Character Animation</span>
+                            </div>
+                        </div>
+                        <div class="tr-project-content">
+                            <h3>Walk Cycles & Personajes 2D</h3>
+                            <p>Desarrollo de ciclos de caminata, animación frame a frame y rigging de personajes vectoriales con fluidez natural.</p>
+                            <div class="tr-project-footer">
+                                <span class="tr-tag">2D Rigging · Loop</span>
+                                <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener" class="tr-behance-btn">
+                                    Ver en Behance ↗
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 4: Plaza Médica -->
+                    <div class="tr-project-card" data-category="brands">
+                        <div class="tr-project-thumb">
+                            <img src="../img/portfolio/plaza_medica.png" alt="Plaza Médica Identidad" loading="lazy">
+                            <div class="tr-project-overlay">
+                                <span class="tr-tag" style="background: rgba(0,0,0,0.8);">Identidad Visual</span>
+                            </div>
+                        </div>
+                        <div class="tr-project-content">
+                            <h3>Plaza Médica · Branding & Campaña</h3>
+                            <p>Diseño publicitario integral, renovación de imagen de marca y carruseles informativos de alta conversión para sector salud.</p>
+                            <div class="tr-project-footer">
+                                <span class="tr-tag">Illustrator · Photoshop</span>
+                                <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener" class="tr-behance-btn">
+                                    Ver en Behance ↗
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 5: O-lab App & Davivienda -->
+                    <div class="tr-project-card" data-category="motion editing">
+                        <div class="tr-project-thumb">
+                            <img src="../img/portfolio/cow_motion.gif" alt="Videos Explicativos Corporativos" loading="lazy">
+                            <div class="tr-project-overlay">
+                                <span class="tr-tag" style="background: rgba(0,0,0,0.8);">Explicativos & Banca</span>
+                            </div>
+                        </div>
+                        <div class="tr-project-content">
+                            <h3>O-lab App · Davivienda, Engie & Promigas</h3>
+                            <p>Tutoriales interactivos, infografías animadas y material audiovisual corporativo para empresas multinacionales y sector financiero.</p>
+                            <div class="tr-project-footer">
+                                <span class="tr-tag">Motion Graphics · UI/UX</span>
+                                <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener" class="tr-behance-btn">
+                                    Ver en Behance ↗
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 6: FicFusa Festival de Cine -->
+                    <div class="tr-project-card" data-category="editing">
+                        <div class="tr-project-thumb">
+                            <img src="../img/portfolio/walk_cycle_design.png" alt="FicFusa Festival de Cine" loading="lazy">
+                            <div class="tr-project-overlay">
+                                <span class="tr-tag" style="background: rgba(0,0,0,0.8);">Producción Audiovisual</span>
+                            </div>
+                        </div>
+                        <div class="tr-project-content">
+                            <h3>Festival de Cine FicFusa · Somos Tribu</h3>
+                            <p>Filmación, edición cinematográfica y postproducción visual para festival de cine independiente en Colombia.</p>
+                            <div class="tr-project-footer">
+                                <span class="tr-tag">Producción · Cine</span>
+                                <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener" class="tr-behance-btn">
+                                    Ver en Behance ↗
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BEHANCE INCORPORAR EMBED BOX -->
+                <div class="tr-behance-embed-box">
+                    <div class="tr-behance-info">
+                        <span class="tr-kicker">PORTAFOLIO EN BEHANCE</span>
+                        <h3>¿Quieres ver el portafolio completo con todos los desgloses?</h3>
+                        <p>
+                            En mi perfil de Behance encontrarás los proyectos completos, procesos cuadro a cuadro, pruebas de animación y diseño gráfico comercial en alta resolución.
+                        </p>
+                        <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener" class="tr-btn tr-btn--primary">
+                            Explorar Behance /animateoo ↗
+                        </a>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.4); border: 1px solid var(--tr-border); border-radius: 12px; padding: 1.5rem; text-align: center;">
+                        <div style="font-family: var(--tr-font-mono); font-size: 0.8rem; color: var(--tr-accent-bright); margin-bottom: 0.5rem;">PERFIL OFICIAL VERIFICADO</div>
+                        <h4 style="font-family: var(--tr-font-display); font-size: 1.4rem; margin: 0 0 0.5rem; color: #fff;">behance.net/animateoo</h4>
+                        <p style="font-size: 0.85rem; color: var(--tr-muted); margin: 0 0 1rem;">Animación 2D · Motion Design · Edición de Video · UI/UX</p>
+                        <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener" class="tr-btn tr-btn--ghost" style="width: 100%; justify-content: center;">
+                            Abrir en pestaña nueva ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 02: CÓMO TRABAJO -->
+        <section class="tr-section" id="proceso">
+            <div class="trabajo-container">
+                <div class="tr-section-head">
+                    <span class="tr-section-kicker">02 / CÓMO TRABAJO</span>
+                    <h2 class="tr-section-title">TRABAJO LIMPIO, RITMO EXACTO Y CERO VUELTAS.</h2>
+                    <p class="tr-section-desc">
+                        Un proceso claro para que tu proyecto se entregue a tiempo, con comunicación fluida y resultados que hablan por sí solos.
+                    </p>
+                </div>
+
+                <div class="tr-process-timeline">
+                    <div class="tr-process-card">
+                        <div class="tr-process-head">
+                            <span class="tr-process-badge">FASE 01</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tr-accent)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        </div>
+                        <h3>BRIEF & VISIÓN</h3>
+                        <p>Me cuentas el objetivo, la audiencia y el tono que buscas. Definimos entregables, formatos y plazos sin rodeos técnicos.</p>
+                    </div>
+
+                    <div class="tr-process-card">
+                        <div class="tr-process-head">
+                            <span class="tr-process-badge">FASE 02</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tr-accent)" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line></svg>
+                        </div>
+                        <h3>ESTRUCTURA & RITMO</h3>
+                        <p>Selecciono las mejores tomas y armo el esqueleto narrativo. Cada corte responde a una intención de retención visual.</p>
+                    </div>
+
+                    <div class="tr-process-card">
+                        <div class="tr-process-head">
+                            <span class="tr-process-badge">FASE 03</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tr-accent)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                        </div>
+                        <h3>MOTION & SONIDO</h3>
+                        <p>Entran los motion graphics en After Effects, diseño sonoro, color grading y animación 2D que elevan la pieza a nivel pro.</p>
+                    </div>
+
+                    <div class="tr-process-card">
+                        <div class="tr-process-head">
+                            <span class="tr-process-badge">FASE 04</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tr-accent)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        </div>
+                        <h3>ENTREGA & REVISIÓN</h3>
+                        <p>Exportación en la máxima tasa de bits requerida. Ronda de ajustes rápidos para dejar el video 100% listo para publicar.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 03: ESTIMADOR DE PRECIO -->
+        <section class="tr-section" id="estimador">
+            <div class="trabajo-container">
+                <div class="tr-section-head">
+                    <span class="tr-section-kicker">03 / ESTIMADOR DE PROYECTO</span>
+                    <h2 class="tr-section-title">AQUÍ VIENE LO QUE MÁS IMPORTA: EL PRESUPUESTO.</h2>
+                    <p class="tr-section-desc">
+                        Selecciona formato, nivel de animación y duración aproximada para tener un estimado al instante antes de coordinar.
+                    </p>
+                </div>
+
+                <div class="tr-estimator-wrap">
+                    <!-- CONTROLES -->
+                    <div class="tr-est-controls">
+                        <!-- FORMAT SWITCH -->
+                        <div class="tr-est-type-switch">
+                            <button class="tr-est-type-btn active" data-format="vertical">
+                                9:16 VERTICAL (Reels / TikTok / Shorts)
+                            </button>
+                            <button class="tr-est-type-btn" data-format="horizontal">
+                                16:9 HORIZONTAL (YouTube / Pautas / Corporativo)
+                            </button>
+                        </div>
+
+                        <!-- PLAN SELECTION -->
+                        <div class="tr-plans-grid">
+                            <div class="tr-plan-card" data-plan="basic">
+                                <div class="tr-plan-tier">Nivel 01</div>
+                                <div class="tr-plan-title">BÁSICA</div>
+                                <ul class="tr-plan-features">
+                                    <li>✓ Corte dinámico</li>
+                                    <li>✓ Subtítulos estilizados</li>
+                                    <li>✓ Zooms funcionales</li>
+                                </ul>
+                            </div>
+
+                            <div class="tr-plan-card active" data-plan="intermediate">
+                                <div class="tr-plan-tier" style="color: #38bdf8;">Nivel 02 (Recomendado)</div>
+                                <div class="tr-plan-title">INTERMEDIA</div>
+                                <ul class="tr-plan-features">
+                                    <li>✓ Todo lo anterior</li>
+                                    <li>✓ Efectos visuales / Motion 2D</li>
+                                    <li>✓ Diseño sonoro inmersivo</li>
+                                </ul>
+                            </div>
+
+                            <div class="tr-plan-card" data-plan="complex">
+                                <div class="tr-plan-tier" style="color: #a855f7;">Nivel 03</div>
+                                <div class="tr-plan-title">COMPLEJA</div>
+                                <ul class="tr-plan-features">
+                                    <li>✓ Todo lo anterior</li>
+                                    <li>✓ Animación de personajes</li>
+                                    <li>✓ Branding completo y 3D</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- DURATION SLIDER -->
+                        <div class="tr-slider-group">
+                            <div class="tr-slider-head">
+                                <span>Duración aproximada</span>
+                                <span id="durationDisplay" style="color: var(--tr-accent-bright); font-weight: 700;">2 min aprox.</span>
+                            </div>
+                            <input type="range" class="tr-slider-range" id="durationRange" min="1" max="5" value="2" step="1">
+                        </div>
+
+                        <!-- MEME ASSISTANT CARD -->
+                        <div class="tr-meme-assistant">
+                            <img src="../img/Typing Dog.gif" alt="Asistente de Presupuesto">
+                            <div class="tr-meme-copy">
+                                <h5>ASISTENTE FINANCIERO</h5>
+                                <p>No sabe calcular impuestos, pero juzga tu presupuesto si pides un largometraje de Marvel por $15.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RESULTADO EN VIVO -->
+                    <div class="tr-est-result-card">
+                        <div>
+                            <div class="tr-est-result-head">ESTIMADO INICIAL</div>
+                            <div class="tr-est-price-display" id="estPriceDisplay">
+                                <span>$</span>93 <small style="font-size: 1rem; color: #9ca3af; font-family: var(--tr-font-mono);">USD</small>
+                            </div>
+                            <div class="tr-est-details" id="estDetailsDisplay">
+                                <!-- Llena JS dinámicamente -->
+                            </div>
+                        </div>
+
+                        <a href="#" id="estCtaBtn" target="_blank" rel="noopener" class="tr-btn tr-btn--primary" style="justify-content: center; width: 100%;">
+                            Consultar disponibilidad →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 04: REFERENCIAS DE CLIENTES (DEL CV) -->
+        <section class="tr-section" id="clientes">
+            <div class="trabajo-container">
+                <div class="tr-section-head">
+                    <span class="tr-section-kicker">05 / COLABORACIONES & CLIENTES</span>
+                    <h2 class="tr-section-title">REFERENCIAS DE CLIENTES CON LOS QUE TRABAJÉ.</h2>
+                    <p class="tr-section-desc">
+                        Entregué tan buenos resultados que sigo trabajando con ellos. Sí, debido a lo bueno que soy. La humildad se exportó en baja resolución.
+                    </p>
+                </div>
+
+                <div class="tr-clients-grid">
+                    <!-- Winclap -->
+                    <div class="tr-client-card">
+                        <div class="tr-client-card-head">
+                            <span class="tr-client-note">NOTA DE PROYECTO // 01</span>
+                            <span style="font-family: var(--tr-font-mono); font-size: 0.75rem; color: #34d399;">2025 - ACTUAL</span>
+                        </div>
+                        <p class="tr-client-quote">
+                            "Como Content Specialist Senior Analyst en Winclap, creo contenido visual para campañas digitales enfocadas en resultados. Trabajo con reels, animación 2D, diseño gráfico y motion design, buscando que cada pieza sea atractiva y cumpla su objetivo comercial."
+                        </p>
+                        <div class="tr-client-profile">
+                            <div class="tr-client-avatar">W</div>
+                            <div class="tr-client-info">
+                                <h4>Winclap</h4>
+                                <span>Content Specialist Senior Analyst · Remoto</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Davivienda / O-lab -->
+                    <div class="tr-client-card">
+                        <div class="tr-client-card-head">
+                            <span class="tr-client-note">NOTA DE PROYECTO // 02</span>
+                            <span style="font-family: var(--tr-font-mono); font-size: 0.75rem; color: #38bdf8;">VÍA O-LAB APP</span>
+                        </div>
+                        <p class="tr-client-quote">
+                            "Creación de contenido visual para la plataforma de O-lab desarrollando material explicativo y tutoriales para Davivienda. Videos instructivos y piezas animadas enfocadas en máxima claridad para el usuario."
+                        </p>
+                        <div class="tr-client-profile">
+                            <div class="tr-client-avatar" style="background: linear-gradient(135deg, #ef4444, #991b1b);">D</div>
+                            <div class="tr-client-info">
+                                <h4>Davivienda</h4>
+                                <span>Banca & Finanzas · Tutoriales y Pautas</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Engie / O-lab -->
+                    <div class="tr-client-card">
+                        <div class="tr-client-card-head">
+                            <span class="tr-client-note">NOTA DE PROYECTO // 03</span>
+                            <span style="font-family: var(--tr-font-mono); font-size: 0.75rem; color: #38bdf8;">VÍA O-LAB APP</span>
+                        </div>
+                        <p class="tr-client-quote">
+                            "Desarrollo de piezas audiovisuales y material explicativo para Engie, multinacional líder en energía y transición ecológica. Rigor conceptual traducido a animación dinámica y atractiva."
+                        </p>
+                        <div class="tr-client-profile">
+                            <div class="tr-client-avatar" style="background: linear-gradient(135deg, #0284c7, #0369a1);">E</div>
+                            <div class="tr-client-info">
+                                <h4>Engie</h4>
+                                <span>Energía Global · Motion Graphics Explicativo</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Promigas / O-lab -->
+                    <div class="tr-client-card">
+                        <div class="tr-client-card-head">
+                            <span class="tr-client-note">NOTA DE PROYECTO // 04</span>
+                            <span style="font-family: var(--tr-font-mono); font-size: 0.75rem; color: #38bdf8;">VÍA O-LAB APP</span>
+                        </div>
+                        <p class="tr-client-quote">
+                            "Producción de infografías animadas y contenido corporativo para Promigas. Motion design limpio para comunicación interna, marketing digital y capacitaciones de alto alcance."
+                        </p>
+                        <div class="tr-client-profile">
+                            <div class="tr-client-avatar" style="background: linear-gradient(135deg, #f59e0b, #b45309);">P</div>
+                            <div class="tr-client-info">
+                                <h4>Promigas</h4>
+                                <span>Energía & Gas · Animación Corporativa</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Constructora Bolívar / O-lab -->
+                    <div class="tr-client-card">
+                        <div class="tr-client-card-head">
+                            <span class="tr-client-note">NOTA DE PROYECTO // 05</span>
+                            <span style="font-family: var(--tr-font-mono); font-size: 0.75rem; color: #38bdf8;">VÍA O-LAB APP</span>
+                        </div>
+                        <p class="tr-client-quote">
+                            "Diseño de tutoriales, reels para redes sociales y piezas publicitarias en YouTube para proyectos de Constructora Bolívar. Material visual para campañas de captación e instrucción."
+                        </p>
+                        <div class="tr-client-profile">
+                            <div class="tr-client-avatar" style="background: linear-gradient(135deg, #10b981, #047857);">B</div>
+                            <div class="tr-client-info">
+                                <h4>Constructora Bolívar</h4>
+                                <span>Sector Inmobiliario · Pautas & Tutoriales</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Peak Team -->
+                    <div class="tr-client-card">
+                        <div class="tr-client-card-head">
+                            <span class="tr-client-note">NOTA DE PROYECTO // 06</span>
+                            <span style="font-family: var(--tr-font-mono); font-size: 0.75rem; color: #a855f7;">ECUADOR - QUITO</span>
+                        </div>
+                        <p class="tr-client-quote">
+                            "Parte de Peak Team, equipo freelance de diseño publicitario para redes sociales. Creación de piezas estáticas, carruseles y formatos dinámicos para clientes en turismo, salud y psicología para atraer más clientes."
+                        </p>
+                        <div class="tr-client-profile">
+                            <div class="tr-client-avatar" style="background: linear-gradient(135deg, #8b5cf6, #5b21b6);">PT</div>
+                            <div class="tr-client-info">
+                                <h4>Peak Team</h4>
+                                <span>Agencia de Redes Sociales · Quito, Ecuador</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Somos Tribu / FicFusa -->
+                    <div class="tr-client-card">
+                        <div class="tr-client-card-head">
+                            <span class="tr-client-note">NOTA DE PROYECTO // 07</span>
+                            <span style="font-family: var(--tr-font-mono); font-size: 0.75rem; color: #eab308;">2018 - 2020</span>
+                        </div>
+                        <p class="tr-client-quote">
+                            "Colaboré en proyectos audiovisuales incluyendo el Festival de Cine de Fusagasugá (FicFusa). Filmación, edición de video y producción audiovisual en campo y sala de montaje."
+                        </p>
+                        <div class="tr-client-profile">
+                            <div class="tr-client-avatar" style="background: linear-gradient(135deg, #d97706, #92400e);">ST</div>
+                            <div class="tr-client-info">
+                                <h4>Somos Tribu / FicFusa</h4>
+                                <span>Festival de Cine · Producción & Montaje</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 05: CONTACTO DIRECTO -->
+        <section class="tr-contact-section" id="contacto">
+            <div class="trabajo-container">
+                <div class="tr-contact-box">
+                    <span class="tr-section-kicker">CONTACTO DIRECTO · LIMA / BOGOTÁ / REMOTO</span>
+                    <h2>¿QUIERES TRABAJAR CONMIGO? CONTÁCTAME.</h2>
+                    <p>
+                        Envíame datos del proyecto que tengas en mente. Respondo más rápido de lo que After Effects tarda en renderizar un desenfoque de movimiento.
+                    </p>
+                    <div class="tr-contact-buttons">
+                        <a href="https://wa.me/573196916587?text=Hola%20Mateo!%20Vi%20tu%20p%C3%A1gina%20de%20Trabajo%20y%20quiero%20cotizar%20un%20proyecto" target="_blank" rel="noopener" class="tr-btn tr-btn--whatsapp">
+                            WhatsApp: +57 319 691 6587 ↗
+                        </a>
+                        <a href="mailto:animateofx@gmail.com" class="tr-btn tr-btn--primary">
+                            animateofx@gmail.com ✉
+                        </a>
+                        <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener" class="tr-btn tr-btn--ghost">
+                            Behance /animateoo ↗
+                        </a>
+                        <a href="https://github.com/Animateoo" target="_blank" rel="noopener" class="tr-btn tr-btn--ghost">
+                            GitHub /Animateoo ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="tools-footer home-footer">
+        <div class="trabajo-container home-footer-grid">
+            <div>
+                <a class="tools-logo" href="../">Animateo</a>
+                <p>Mateo Crespo · Diseñador Multimedia y Animador 2D. Edición y motion graphics de alto impacto.</p>
+            </div>
+            <div>
+                <h4>Secciones</h4>
+                <a href="#trabajos">Checa mi edición</a>
+                <a href="#proceso">Cómo trabajo</a>
+                <a href="#estimador">Estimador de precios</a>
+                <a href="#clientes">Referencias de clientes</a>
+            </div>
+            <div>
+                <h4>Ecosistema</h4>
+                <a href="../#catalog">Tools de After Effects & Premiere</a>
+                <a href="../guides/">Guides</a>
+                <a href="https://www.behance.net/animateoo" target="_blank" rel="noopener">Behance Portfolio</a>
+                <a href="https://github.com/Animateoo" target="_blank" rel="noopener">GitHub Oficial</a>
+            </div>
+        </div>
+        <div class="trabajo-container" style="border-top: 1px solid var(--tr-border); padding-top: 1.5rem; margin-top: 2rem; text-align: center; font-size: 0.8rem; color: var(--tr-muted);">
+            © 2026 Mateo Crespo (@Animateoo). Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <script src="../js/v3-effects.js"></script>
+    <script src="../js/trabajo.js"></script>
+</body>
+
+</html>
