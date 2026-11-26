@@ -11,6 +11,25 @@
     --accent-orange-deep: #b45309;
 }
 
+/* ── Clean viewport reset (eliminates default 8px white browser margin) ── */
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.tools-container {
+    width: min(1140px, 100%) !important;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* ── Strike-like Background Effects ── */
 .particle-canvas {
     position: fixed;
@@ -421,14 +440,104 @@
     color: #000;
 }
 
-/* ── Responsive ── */
+/* ── Responsive (Global Mobile Polish) ── */
+@media (max-width: 900px) {
+    /* Put Hero headline & CTAs FIRST on mobile, visual below */
+    .lucky-hero {
+        padding: 2rem 0 2.75rem !important;
+    }
+
+    .lucky-hero-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+
+    .lucky-hero-visual {
+        order: 1 !important;
+    }
+
+    .hero-curve-stage {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 220px;
+    }
+
+    .hero-meme-floater {
+        position: relative !important;
+        top: auto !important;
+        right: auto !important;
+        width: 100% !important;
+        max-width: 340px;
+        margin: 0.5rem auto 0;
+    }
+
+    .hero-meme-floater::before {
+        top: -5px;
+        left: -5px;
+        width: 20px;
+        height: 20px;
+    }
+
+    .hero-meme-floater::after {
+        bottom: 22px;
+        right: -5px;
+        width: 20px;
+        height: 20px;
+    }
+}
+
 @media (max-width: 768px) {
     .lucky-hero-copy h1 {
-        font-size: clamp(1.8rem, 8vw, 2.8rem);
+        font-size: clamp(1.9rem, 8.5vw, 2.75rem);
+        line-height: 1.04;
     }
 
     .lucky-brand {
-        font-size: clamp(2.2rem, 10vw, 3.5rem);
+        font-size: clamp(2.1rem, 9vw, 3rem);
+    }
+
+    .lucky-cta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+    }
+}
+
+@media (max-width: 600px) {
+    /* ALWAYS keep all 3 nav links (Portfolio · Tools · Guides) visible on mobile! */
+    .tools-header-inner {
+        height: 56px;
+        gap: 0.5rem;
+    }
+
+    .tools-logo {
+        font-size: 1rem !important;
+    }
+
+    .tools-nav {
+        gap: 0.15rem !important;
+    }
+
+    .tools-nav a,
+    .home-header .tools-nav a,
+    .tools-nav a:not(.is-active),
+    .home-header .tools-nav a:not(.is-active):not(.nav-guides) {
+        display: inline-flex !important;
+        align-items: center;
+        padding: 0.4rem 0.5rem !important;
+        font-size: 0.72rem !important;
+        white-space: nowrap;
+    }
+
+    .tools-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .meme-staff-credit {
+        text-align: center;
+        font-size: 0.62rem;
+        line-height: 1.4;
     }
 }
 
